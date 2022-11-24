@@ -1,11 +1,11 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-const MessageSchema = schema({
-    emmiter: { type: schema.ObjectId, ref: 'User' },
-    receiver: { type: schema.ObjectId, ref: 'User' },
+const MessageSchema = Schema({
+    emmiter: { type: Schema.ObjectId, ref: 'User' },
+    receiver: { type: Schema.ObjectId, ref: 'User' },
     text: String,
     createdAt: String
 });

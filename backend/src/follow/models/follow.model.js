@@ -1,11 +1,11 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-const FollowSchema = schema({
-    user: { type: schema.ObjectId, ref: 'User' },
-    followed: { type: schema.ObjectId, ref: 'User' }
+const FollowSchema = Schema({
+    user: { type: Schema.ObjectId, ref: 'User' },
+    followed: { type: Schema.ObjectId, ref: 'User' }
 });
 
 module.exports = mongoose.model('Follow', FollowSchema);

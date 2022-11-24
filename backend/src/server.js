@@ -9,10 +9,14 @@ dotenvFlow.config({ path: 'environments' });
 moduleAlias.addAliases({
     '@core': `${__dirname}/core`,
     '@utils': `${__dirname}/utils`,
+    '@follow': `${__dirname}/follow`,
+    '@messages': `${__dirname}/messages`,
+    '@publication': `${__dirname}/publication`,
+    '@user': `${__dirname}/user`,
     '@root': __dirname
 });
 
-const app = require('@core/app.js');
+const app = require('@core/app');
 const host = process.env.APP_HOST;
 const port = process.env.APP_PORT;
 

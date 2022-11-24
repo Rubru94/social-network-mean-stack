@@ -1,8 +1,8 @@
 'use strict';
 
-const bcrypt = require('bcrypt-nodejs');
 const error = require('@core/models/error.model');
 const User = require('@user/models/user.model');
+const bcryptService = require('@utils/services/bcrypt.service');
 
 function hello(req, res) {
     res.status(200).send({ msg: 'hello world !' });
@@ -13,12 +13,10 @@ async function create(req, res, next) {
         const user = new User(req.body);
         if (user.validateSync()) throw new error.BadRequestError(user.validateSync().message);
 
-        const userExistent = await User.findOne({ $or: [{ email: user.email.toLowerCase() }, { nick: user.nick.toLowerCase() }] });
-        if (userExistent) throw new error.BadRequestError('Email or nick already used');
+        const userExistent = await User.findOne({ email: user.email });
+        if (userExistent) throw new error.BadRequestError('Email already used');
 
-        await bcrypt.hash(user.password, null, null, (err, hash) => {
-            user.password = hash;
-        });
+        user.password = await bcryptService.hashPromise(user.password);
 
         return res.status(200).send(await user.save());
     } catch (err) {
@@ -26,7 +24,25 @@ async function create(req, res, next) {
     }
 }
 
+async function login(req, res, next) {
+    try {
+        const user = new User(req.body);
+        if (user.validateSync()) throw new error.BadRequestError(user.validateSync().message);
+
+        const userExistent = await User.findOne({ email: user.email });
+        if (!userExistent) throw new error.NotFoundError('User not exist');
+
+        let isValidPassword = await bcryptService.comparePromise(user.password, userExistent.password);
+        if (!isValidPassword) throw new error.BadRequestError('Invalid password');
+
+        return res.status(200).send(userExistent);
+    } catch (err) {
+        next(err);
+    }
+}
+
 module.exports = {
     hello,
-    create
+    create,
+    login
 };

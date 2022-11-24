@@ -8,7 +8,6 @@ class CustomError extends Error {
     constructor(error) {
         super();
         this.statusCode = error?.statusCode ?? http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR;
-        console.log(error);
         this.error = error?.error ?? error?.message ?? 'Unhandled error';
     }
 }

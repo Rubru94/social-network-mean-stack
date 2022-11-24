@@ -3,6 +3,7 @@
 const error = require('@core/models/error.model');
 const User = require('@user/models/user.model');
 const bcryptService = require('@utils/services/bcrypt.service');
+const loginResponse = require('@user/models/loginResponse.model');
 
 function hello(req, res) {
     res.status(200).send({ msg: 'hello world !' });
@@ -35,7 +36,7 @@ async function login(req, res, next) {
         let isValidPassword = await bcryptService.comparePromise(user.password, userExistent.password);
         if (!isValidPassword) throw new error.BadRequestError('Invalid password');
 
-        return res.status(200).send(userExistent);
+        return res.status(200).send(new loginResponse(userExistent));
     } catch (err) {
         next(err);
     }

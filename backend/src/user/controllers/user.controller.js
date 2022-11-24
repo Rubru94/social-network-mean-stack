@@ -12,6 +12,10 @@ async function create(req, res, next) {
     try {
         const user = new User(req.body);
         if (user.validateSync()) throw new error.BadRequestError(user.validateSync().message);
+
+        const userExistent = await User.findOne({ $or: [{ email: user.email.toLowerCase() }, { nick: user.nick.toLowerCase() }] });
+        if (userExistent) throw new error.BadRequestError('Email or nick already used');
+
         await bcrypt.hash(user.password, null, null, (err, hash) => {
             user.password = hash;
         });

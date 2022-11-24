@@ -1,4 +1,4 @@
-class loginResponse {
+class LoginResponse {
     name;
     surname;
     nick;
@@ -16,4 +16,4 @@ class loginResponse {
     }
 }
 
-module.exports = loginResponse;
+module.exports = LoginResponse;

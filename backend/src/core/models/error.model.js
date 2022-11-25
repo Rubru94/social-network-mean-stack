@@ -22,6 +22,26 @@ class BadRequestError extends CustomError {
     }
 }
 
+class UnauthorizedError extends CustomError {
+    /**
+     * @status 401
+     * @param message (Optional) Specify error message
+     */
+    constructor(message) {
+        super({ statusCode: http2.constants.HTTP_STATUS_UNAUTHORIZED, error: message ?? httpStatusCodes.ReasonPhrases.UNAUTHORIZED });
+    }
+}
+
+class ForbiddenError extends CustomError {
+    /**
+     * @status 403
+     * @param message (Optional) Specify error message
+     */
+    constructor(message) {
+        super({ statusCode: http2.constants.HTTP_STATUS_FORBIDDEN, error: message ?? httpStatusCodes.ReasonPhrases.FORBIDDEN });
+    }
+}
+
 class NotFoundError extends CustomError {
     /**
      * @status 404
@@ -35,5 +55,7 @@ class NotFoundError extends CustomError {
 module.exports = {
     CustomError,
     BadRequestError,
+    UnauthorizedError,
+    ForbiddenError,
     NotFoundError
 };

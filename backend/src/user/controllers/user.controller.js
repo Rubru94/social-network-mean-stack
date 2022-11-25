@@ -4,7 +4,7 @@ const error = require('@core/models/error.model');
 const User = require('@user/models/user.model');
 const bcryptService = require('@utils/services/bcrypt.service');
 const LoginResponse = require('@user/models/LoginResponse.model');
-const createToken = require('@utils/services/jwt.service');
+const jwtService = require('@utils/services/jwt.service');
 
 function hello(req, res) {
     res.status(200).send({ msg: 'hello world !' });
@@ -37,7 +37,7 @@ async function login(req, res, next) {
         let isValidPassword = await bcryptService.comparePromise(user.password, userExistent.password);
         if (!isValidPassword) throw new error.BadRequestError('Invalid password');
 
-        if (req.query?.token) return res.status(200).send({ token: createToken(userExistent) });
+        if (req.query?.token) return res.status(200).send({ token: jwtService.createToken(userExistent) });
         return res.status(200).send(new LoginResponse(userExistent));
     } catch (err) {
         next(err);

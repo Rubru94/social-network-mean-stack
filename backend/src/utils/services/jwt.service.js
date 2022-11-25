@@ -33,4 +33,8 @@ function createToken(user) {
     return jwt.encode(payload, secret);
 }
 
-module.exports = createToken;
+function decodeToken(token) {
+    return jwt.decode(token, secret);
+}
+
+module.exports = { createToken, decodeToken };

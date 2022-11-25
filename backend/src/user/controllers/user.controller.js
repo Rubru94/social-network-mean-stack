@@ -5,12 +5,26 @@ const User = require('@user/models/user.model');
 const bcryptService = require('@utils/services/bcrypt.service');
 const LoginResponse = require('@user/models/LoginResponse.model');
 const jwtService = require('@utils/services/jwt.service');
+const mongooseService = require('@utils/services/mongoose.service');
 
 function hello(req, res) {
     res.status(200).send({ msg: 'hello world !' });
 }
 
-async function create(req, res, next) {
+async function findById(req, res, next) {
+    try {
+        const id = req.params?.id;
+        if (!mongooseService.isValidObjectId(id)) throw new error.BadRequestError('Invalid id');
+        const user = await User.findById(id);
+        if (!user) throw new error.NotFoundError('User not found');
+
+        res.status(200).send(user);
+    } catch (err) {
+        next(err);
+    }
+}
+
+async function register(req, res, next) {
     try {
         const user = new User(req.body);
         if (user.validateSync()) throw new error.BadRequestError(user.validateSync().message);
@@ -46,6 +60,7 @@ async function login(req, res, next) {
 
 module.exports = {
     hello,
-    create,
+    findById,
+    register,
     login
 };

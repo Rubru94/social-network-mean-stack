@@ -1,5 +1,6 @@
 'use strict';
 
+const mongoosePagination = require('mongoose-pagination');
 const error = require('@core/models/error.model');
 const User = require('@user/models/user.model');
 const bcryptService = require('@utils/services/bcrypt.service');
@@ -9,6 +10,27 @@ const mongooseService = require('@utils/services/mongoose.service');
 
 function hello(req, res) {
     res.status(200).send({ msg: 'hello world !' });
+}
+
+async function getAll(req, res, next) {
+    try {
+        const currentUserId = req.user.sub;
+        const page = req.params.page ?? 1;
+        const itemsPerPage = req.query?.itemsPerPage ?? 5;
+
+        /**
+         * @info using callback()
+         */
+        User.find()
+            .sort('_id')
+            .paginate(page, itemsPerPage, (err, users, total) => {
+                if (err) next(err);
+                if (!users) throw new error.NotFoundError('Users not found');
+                return res.status(200).send({ users, total, pages: Math.ceil(total / itemsPerPage) });
+            });
+    } catch (err) {
+        next(err);
+    }
 }
 
 async function findById(req, res, next) {
@@ -60,6 +82,7 @@ async function login(req, res, next) {
 
 module.exports = {
     hello,
+    getAll,
     findById,
     register,
     login

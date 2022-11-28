@@ -5,8 +5,11 @@ const error = require('@core/models/error.model');
 const User = require('@user/models/user.model');
 const bcryptService = require('@utils/services/bcrypt.service');
 const PublicUser = require('@user/models/public-user.model');
+const ImageUser = require('@user/models/image-user.model');
 const jwtService = require('@utils/services/jwt.service');
 const mongooseService = require('@utils/services/mongoose.service');
+const isImage = require('is-image');
+const fsService = require('@utils/services/fs.service');
 
 function hello(req, res) {
     res.status(200).send({ msg: 'hello world !' });
@@ -85,14 +88,37 @@ async function update(req, res, next) {
         const currentUserId = req.user.sub;
         if (userId !== currentUserId) throw new error.UnauthorizedError('You do not have permissions to update user data');
 
-        let newUser = new PublicUser(req.body);
+        let updatedUser = new PublicUser(req.body);
         /**
          * @info { new: true } --> It returns updated object. By default it returns object to update (old object).
          */
-        newUser = await User.findByIdAndUpdate(userId, newUser, { new: true });
-        if (!newUser) throw new error.NotFoundError('Failed to update user');
+        updatedUser = await User.findByIdAndUpdate(userId, updatedUser, { new: true });
+        if (!updatedUser) throw new error.NotFoundError('Failed to update user');
 
-        return res.status(200).send(newUser);
+        return res.status(200).send(updatedUser);
+    } catch (err) {
+        next(err);
+    }
+}
+
+async function uploadImage(req, res, next) {
+    try {
+        const userId = req.params.id;
+        const currentUserId = req.user.sub;
+        if (userId !== currentUserId) throw new error.UnauthorizedError('You do not have permissions to update user image');
+
+        if (!req.files?.image) throw new error.BadRequestError('There is no attached image');
+        const filePath = req.files.image.path;
+        const fileName = filePath.split('\\').pop();
+
+        if (!isImage(fileName)) {
+            await fsService.unlinkPromise(filePath);
+            throw new error.BadRequestError('Invalid image format/extension');
+        }
+        const updatedUser = await User.findByIdAndUpdate(userId, new ImageUser(fileName), { new: true });
+        if (!updatedUser) throw new error.NotFoundError('Failed to update image user');
+
+        return res.status(200).send(updatedUser);
     } catch (err) {
         next(err);
     }
@@ -104,5 +130,6 @@ module.exports = {
     findById,
     register,
     login,
-    update
+    update,
+    uploadImage
 };

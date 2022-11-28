@@ -3,13 +3,16 @@
 const express = require('express');
 const userController = require('@user/controllers/user.controller');
 const api = express.Router();
-const ensureAuth = require('@core/middlewares/auth.middleware');
+const authMiddleware = require('@core/middlewares/auth.middleware');
+const multipart = require('connect-multiparty');
+const uploadMiddleware = multipart({ uploadDir: 'src/user/uploads' });
 
-api.get('/:id', ensureAuth, userController.findById);
-api.get('/all/:page?', ensureAuth, userController.getAll);
-api.get('/hello', ensureAuth, userController.hello);
+api.get('/:id', authMiddleware, userController.findById);
+api.get('/all/:page?', authMiddleware, userController.getAll);
+api.get('/hello', authMiddleware, userController.hello);
 api.post('/register', userController.register);
 api.post('/login', userController.login);
-api.put('/update/:id', ensureAuth, userController.update);
+api.put('/update/:id', authMiddleware, userController.update);
+api.post('/uploadImage/:id', [authMiddleware, uploadMiddleware], userController.uploadImage);
 
 module.exports = api;

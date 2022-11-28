@@ -1,4 +1,5 @@
 class PublicUser {
+    _id;
     name;
     surname;
     nick;
@@ -7,6 +8,7 @@ class PublicUser {
     image;
 
     constructor(user) {
+        this._id = user._id;
         this.name = user.name;
         this.surname = user.surname;
         this.nick = user.nick;

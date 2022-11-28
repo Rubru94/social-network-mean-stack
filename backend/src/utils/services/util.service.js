@@ -4,6 +4,25 @@ function isEmptyObject(value) {
     return value && Object.keys(value).length === 0 && value.constructor === Object;
 }
 
+function strToBoolean(stringValue) {
+    switch (stringValue?.toLowerCase()?.trim()) {
+        case 'true':
+        case 'yes':
+        case '1':
+            return true;
+
+        case 'false':
+        case 'no':
+        case '0':
+        case null:
+        case undefined:
+            return false;
+
+        default:
+            return JSON.parse(stringValue);
+    }
+}
+
 function findValue(object, key) {
     let value;
     Object.keys(object).some(function (k) {
@@ -19,4 +38,4 @@ function findValue(object, key) {
     return value;
 }
 
-module.exports = { isEmptyObject, findValue };
+module.exports = { isEmptyObject, strToBoolean, findValue };

@@ -6,17 +6,13 @@ const mongooseService = require('@utils/services/mongoose.service');
 const User = require('@user/models/user.model');
 const PublicUser = require('@user/models/public-user.model');
 const Follow = require('@follow/models/follow.model');
-const fsService = require('@utils/services/fs.service');
+const utilService = require('@utils/services/util.service');
 const path = require('path');
-
-function hello(req, res) {
-    res.status(200).send({ msg: 'follow hello world !' });
-}
 
 async function create(req, res, next) {
     try {
         let follow = new Follow(req.body);
-        follow.user = req.user.sub;
+        follow.user = follow.user ?? req.user.sub;
         if (follow.validateSync()) throw new error.BadRequestError(follow.validateSync().message);
 
         /**
@@ -62,7 +58,10 @@ async function getFollowingUsers(req, res, next) {
                 if (!follows) throw new error.NotFoundError('Follows not found');
 
                 return res.status(200).send({
-                    follows: follows.map((follow) => (follow.followed = new PublicUser(follow.followed))),
+                    follows: follows.map((follow) => {
+                        follow.followed = new PublicUser(follow.followed);
+                        return follow;
+                    }),
                     total,
                     pages: Math.ceil(total / itemsPerPage)
                 });
@@ -72,23 +71,53 @@ async function getFollowingUsers(req, res, next) {
     }
 }
 
-async function findById(req, res, next) {
+async function getFollowers(req, res, next) {
     try {
-        const id = req.params?.id;
-        if (!mongooseService.isValidObjectId(id)) throw new error.BadRequestError('Invalid id');
-        const user = await User.findById(id);
-        if (!user) throw new error.NotFoundError('User not found');
+        const page = req.params.page ?? 1;
+        const user = req.query?.user ? req.query.user : req.user.sub;
+        if (!mongooseService.isValidObjectId(user)) throw new error.BadRequestError('Invalid user id');
+        const itemsPerPage = req.query?.itemsPerPage ?? 5;
 
-        res.status(200).send(user);
+        Follow.find({ followed: user })
+            .sort('_id')
+            .populate({ path: 'user' })
+            .paginate(page, itemsPerPage, (err, follows, total) => {
+                if (err) return next(err);
+                if (!follows) throw new error.NotFoundError('Follows not found');
+
+                return res.status(200).send({
+                    follows: follows.map((follow) => {
+                        follow.followed = new PublicUser(follow.followed);
+                        return follow;
+                    }),
+                    total,
+                    pages: Math.ceil(total / itemsPerPage)
+                });
+            });
+    } catch (err) {
+        next(err);
+    }
+}
+
+async function getFollows(req, res, next) {
+    try {
+        const user = req.user.sub;
+        if (!mongooseService.isValidObjectId(user)) throw new error.BadRequestError('Invalid user id');
+
+        const find = Follow.find(utilService.strToBoolean(req.query?.followed) ? { followed: user } : { user });
+
+        const follows = await find.sort('_id').populate({ path: 'user followed' });
+        if (!follows) throw new error.NotFoundError('Follows not found');
+        return res.status(200).send(follows);
     } catch (err) {
         next(err);
     }
 }
 
 module.exports = {
-    hello,
     create,
     remove,
     getFollowingUsers,
-    findById
+    getFollowers,
+    getFollows
 };

@@ -6,6 +6,7 @@ const cors = require('cors');
 const handleError = require('@core/middlewares/error-handler.middleware');
 
 const userRoutes = require('@user/routes/user.routes');
+const followRoutes = require('@follow/routes/follow.routes');
 
 const app = express();
 config();
@@ -14,6 +15,7 @@ capture();
 
 function build() {
     app.use('/api/user', userRoutes);
+    app.use('/api/follow', followRoutes);
 }
 
 function config() {

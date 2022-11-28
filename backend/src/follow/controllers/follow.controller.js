@@ -12,6 +12,26 @@ function hello(req, res) {
     res.status(200).send({ msg: 'follow hello world !' });
 }
 
+async function create(req, res, next) {
+    try {
+        let follow = new Follow(req.body);
+        follow.user = req.user.sub;
+        if (follow.validateSync()) throw new error.BadRequestError(follow.validateSync().message);
+
+        /**
+         * @info Every ObjectId instance supports the "equals" method allowing you to provide your comparison value
+         */
+        if (follow.user.equals(follow.followed)) throw new error.BadRequestError('User & followed cannot be the same user');
+
+        follow = await follow.save();
+        if (!follow) throw new error.BadRequestError('Follow not saved');
+
+        return res.status(200).send(follow);
+    } catch (err) {
+        next(err);
+    }
+}
+
 async function getAll(req, res, next) {
     try {
         const page = req.params.page ?? 1;
@@ -47,6 +67,7 @@ async function findById(req, res, next) {
 
 module.exports = {
     hello,
+    create,
     getAll,
     findById
 };

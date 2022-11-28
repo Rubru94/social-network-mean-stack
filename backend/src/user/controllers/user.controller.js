@@ -10,6 +10,8 @@ const jwtService = require('@utils/services/jwt.service');
 const mongooseService = require('@utils/services/mongoose.service');
 const isImage = require('is-image');
 const fsService = require('@utils/services/fs.service');
+const path = require('path');
+const utilService = require('@utils/services/util.service');
 
 function hello(req, res) {
     res.status(200).send({ msg: 'hello world !' });
@@ -107,9 +109,15 @@ async function uploadImage(req, res, next) {
         const currentUserId = req.user.sub;
         if (userId !== currentUserId) throw new error.UnauthorizedError('You do not have permissions to update user image');
 
-        if (!req.files?.image) throw new error.BadRequestError('There is no attached image');
-        const filePath = req.files.image.path;
+        if (utilService.isEmptyObject(req.files)) throw new error.BadRequestError('There is no attached image');
+        const isValidParam = !!req.files.image;
+        const filePath = isValidParam ? req.files.image.path : utilService.findValue(req.files, 'path');
         const fileName = filePath.split('\\').pop();
+
+        if (!isValidParam) {
+            await fsService.unlinkPromise(filePath);
+            throw new error.BadRequestError('Invalid image param');
+        }
 
         if (!isImage(fileName)) {
             await fsService.unlinkPromise(filePath);
@@ -124,6 +132,20 @@ async function uploadImage(req, res, next) {
     }
 }
 
+async function getImageFile(req, res, next) {
+    try {
+        if (!req.params?.imageFile) throw new error.BadRequestError('No param imageFile');
+        const filePath = `./src/user/uploads/${req.params.imageFile}`;
+
+        const file = await fsService.existsPromise(filePath);
+        if (!file) throw new error.NotFoundError('Image does not exist');
+
+        res.status(200).sendFile(path.resolve(filePath));
+    } catch (err) {
+        next(err);
+    }
+}
+
 module.exports = {
     hello,
     getAll,
@@ -131,5 +153,6 @@ module.exports = {
     register,
     login,
     update,
-    uploadImage
+    uploadImage,
+    getImageFile
 };

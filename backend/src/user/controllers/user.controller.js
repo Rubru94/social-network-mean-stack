@@ -28,7 +28,7 @@ async function getAll(req, res, next) {
         User.find()
             .sort('_id')
             .paginate(page, itemsPerPage, (err, users, total) => {
-                if (err) next(err);
+                if (err) return next(err);
                 if (!users) throw new error.NotFoundError('Users not found');
                 return res.status(200).send({ users, total, pages: Math.ceil(total / itemsPerPage) });
             });

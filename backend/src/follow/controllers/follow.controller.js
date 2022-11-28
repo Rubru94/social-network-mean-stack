@@ -4,6 +4,7 @@ const mongoosePagination = require('mongoose-pagination');
 const error = require('@core/models/error.model');
 const mongooseService = require('@utils/services/mongoose.service');
 const User = require('@user/models/user.model');
+const PublicUser = require('@user/models/public-user.model');
 const Follow = require('@follow/models/follow.model');
 const fsService = require('@utils/services/fs.service');
 const path = require('path');
@@ -46,20 +47,25 @@ async function remove(req, res, next) {
     }
 }
 
-async function getAll(req, res, next) {
+async function getFollowingUsers(req, res, next) {
     try {
         const page = req.params.page ?? 1;
+        const user = req.query?.user ? req.query.user : req.user.sub;
+        if (!mongooseService.isValidObjectId(user)) throw new error.BadRequestError('Invalid user id');
         const itemsPerPage = req.query?.itemsPerPage ?? 5;
 
-        /**
-         * @info using callback()
-         */
-        User.find()
+        Follow.find({ user })
             .sort('_id')
-            .paginate(page, itemsPerPage, (err, users, total) => {
-                if (err) next(err);
-                if (!users) throw new error.NotFoundError('Users not found');
-                return res.status(200).send({ users, total, pages: Math.ceil(total / itemsPerPage) });
+            .populate({ path: 'followed' })
+            .paginate(page, itemsPerPage, (err, follows, total) => {
+                if (err) return next(err);
+                if (!follows) throw new error.NotFoundError('Follows not found');
+
+                return res.status(200).send({
+                    follows: follows.map((follow) => (follow.followed = new PublicUser(follow.followed))),
+                    total,
+                    pages: Math.ceil(total / itemsPerPage)
+                });
             });
     } catch (err) {
         next(err);
@@ -83,6 +89,6 @@ module.exports = {
     hello,
     create,
     remove,
-    getAll,
+    getFollowingUsers,
     findById
 };

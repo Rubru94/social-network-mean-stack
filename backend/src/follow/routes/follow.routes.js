@@ -6,8 +6,8 @@ const authMiddleware = require('@core/middlewares/auth.middleware');
 const api = express.Router();
 
 api.get('/hello', authMiddleware, followController.hello);
-api.get('/:id', followController.findById);
-api.get('/all/:page?', authMiddleware, followController.getAll);
+//api.get('/:id', followController.findById);
+api.get('/following/:page?', authMiddleware, followController.getFollowingUsers);
 api.post('/', authMiddleware, followController.create);
 api.delete('/:id', authMiddleware, followController.remove);
 

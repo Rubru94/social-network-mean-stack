@@ -4,7 +4,7 @@ const mongoosePagination = require('mongoose-pagination');
 const error = require('@core/models/error.model');
 const User = require('@user/models/user.model');
 const bcryptService = require('@utils/services/bcrypt.service');
-const LoginResponse = require('@user/models/LoginResponse.model');
+const PublicUser = require('@user/models/public-user.model');
 const jwtService = require('@utils/services/jwt.service');
 const mongooseService = require('@utils/services/mongoose.service');
 
@@ -14,7 +14,6 @@ function hello(req, res) {
 
 async function getAll(req, res, next) {
     try {
-        const currentUserId = req.user.sub;
         const page = req.params.page ?? 1;
         const itemsPerPage = req.query?.itemsPerPage ?? 5;
 
@@ -74,7 +73,26 @@ async function login(req, res, next) {
         if (!isValidPassword) throw new error.BadRequestError('Invalid password');
 
         if (req.query?.token) return res.status(200).send({ token: jwtService.createToken(userExistent) });
-        return res.status(200).send(new LoginResponse(userExistent));
+        return res.status(200).send(new PublicUser(userExistent));
+    } catch (err) {
+        next(err);
+    }
+}
+
+async function update(req, res, next) {
+    try {
+        const userId = req.params.id;
+        const currentUserId = req.user.sub;
+        if (userId !== currentUserId) throw new error.UnauthorizedError('You do not have permissions to update user data');
+
+        let newUser = new PublicUser(req.body);
+        /**
+         * @info { new: true } --> It returns updated object. By default it returns object to update (old object).
+         */
+        newUser = await User.findByIdAndUpdate(userId, newUser, { new: true });
+        if (!newUser) throw new error.NotFoundError('Failed to update user');
+
+        return res.status(200).send(newUser);
     } catch (err) {
         next(err);
     }
@@ -85,5 +103,6 @@ module.exports = {
     getAll,
     findById,
     register,
-    login
+    login,
+    update
 };

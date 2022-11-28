@@ -10,5 +10,6 @@ api.get('/all/:page?', ensureAuth, userController.getAll);
 api.get('/hello', ensureAuth, userController.hello);
 api.post('/register', userController.register);
 api.post('/login', userController.login);
+api.put('/update/:id', ensureAuth, userController.update);
 
 module.exports = api;

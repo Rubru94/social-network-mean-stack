@@ -32,6 +32,20 @@ async function create(req, res, next) {
     }
 }
 
+async function remove(req, res, next) {
+    try {
+        const user = req.user.sub;
+        const followed = req.params.id;
+
+        const follow = await Follow.find({ user, followed });
+        await Follow.find({ user, followed }).deleteMany();
+
+        return res.status(200).send(follow);
+    } catch (err) {
+        next(err);
+    }
+}
+
 async function getAll(req, res, next) {
     try {
         const page = req.params.page ?? 1;
@@ -68,6 +82,7 @@ async function findById(req, res, next) {
 module.exports = {
     hello,
     create,
+    remove,
     getAll,
     findById
 };

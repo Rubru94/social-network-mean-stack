@@ -5,6 +5,6 @@ const messageController = require('@message/controllers/message.controller');
 const authMiddleware = require('@core/middlewares/auth.middleware');
 const api = express.Router();
 
-api.get('/hello', authMiddleware, messageController.hello);
+api.post('/', authMiddleware, messageController.create);
 
 module.exports = api;

@@ -13,6 +13,26 @@ const Publication = require('@publication/models/publication.model');
 const Follow = require('@follow/models/follow.model');
 const utilService = require('@utils/services/util.service');
 
+async function getReceivedMessages(req, res, next) {
+    try {
+        const user = req.user.sub;
+        const page = req.params.page ?? 1;
+        const itemsPerPage = req.query?.itemsPerPage ?? 5;
+
+        Message.find({ receiver: user })
+            .sort('_id')
+            .populate('emitter')
+            .paginate(page, itemsPerPage, async (err, messages, total) => {
+                if (err) return next(err);
+                if (!messages) throw new error.NotFoundError('Received messages not found');
+
+                return res.status(200).send({ messages, total, pages: Math.ceil(total / itemsPerPage) });
+            });
+    } catch (err) {
+        next(err);
+    }
+}
+
 async function create(req, res, next) {
     try {
         let message = new Message(req.body);
@@ -29,5 +49,6 @@ async function create(req, res, next) {
 }
 
 module.exports = {
+    getReceivedMessages,
     create
 };

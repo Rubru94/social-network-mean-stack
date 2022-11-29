@@ -10,6 +10,7 @@ const path = require('path');
 const User = require('@user/models/user.model');
 const Message = require('@message/models/message.model');
 const Publication = require('@publication/models/publication.model');
+const PublicUser = require('@user/models/public-user.model');
 const Follow = require('@follow/models/follow.model');
 const utilService = require('@utils/services/util.service');
 
@@ -26,7 +27,41 @@ async function getReceivedMessages(req, res, next) {
                 if (err) return next(err);
                 if (!messages) throw new error.NotFoundError('Received messages not found');
 
-                return res.status(200).send({ messages, total, pages: Math.ceil(total / itemsPerPage) });
+                return res.status(200).send({
+                    messages: messages.map((message) => {
+                        message.emitter = new PublicUser(message.emitter);
+                        return message;
+                    }),
+                    total,
+                    pages: Math.ceil(total / itemsPerPage)
+                });
+            });
+    } catch (err) {
+        next(err);
+    }
+}
+
+async function getSentMessages(req, res, next) {
+    try {
+        const user = req.user.sub;
+        const page = req.params.page ?? 1;
+        const itemsPerPage = req.query?.itemsPerPage ?? 5;
+
+        Message.find({ emitter: user })
+            .sort('_id')
+            .populate('receiver')
+            .paginate(page, itemsPerPage, async (err, messages, total) => {
+                if (err) return next(err);
+                if (!messages) throw new error.NotFoundError('Emitter messages not found');
+
+                return res.status(200).send({
+                    messages: messages.map((message) => {
+                        message.receiver = new PublicUser(message.receiver);
+                        return message;
+                    }),
+                    total,
+                    pages: Math.ceil(total / itemsPerPage)
+                });
             });
     } catch (err) {
         next(err);
@@ -50,5 +85,6 @@ async function create(req, res, next) {
 
 module.exports = {
     getReceivedMessages,
+    getSentMessages,
     create
 };

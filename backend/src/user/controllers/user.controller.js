@@ -58,6 +58,20 @@ async function findById(req, res, next) {
     }
 }
 
+async function followCounters(req, res, next) {
+    try {
+        const user = req.query?.user ?? req.user.sub;
+        if (!mongooseService.isValidObjectId(user)) throw new error.BadRequestError('Invalid id');
+
+        const followingCount = await Follow.count({ user });
+        const followerCount = await Follow.count({ followed: user });
+
+        res.status(200).send({ followingCount, followerCount });
+    } catch (err) {
+        next(err);
+    }
+}
+
 async function register(req, res, next) {
     try {
         const user = new User(req.body);
@@ -158,6 +172,7 @@ module.exports = {
     hello,
     getAll,
     findById,
+    followCounters,
     register,
     login,
     update,

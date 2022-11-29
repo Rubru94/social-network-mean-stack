@@ -10,8 +10,26 @@ const Publication = require('@publication/models/publication.model');
 const utilService = require('@utils/services/util.service');
 const path = require('path');
 
-function hello(req, res) {
-    res.status(200).send({ msg: 'hello world publications!' });
+async function getAllFromFollowing(req, res, next) {
+    try {
+        const page = req.params.page ?? 1;
+        const itemsPerPage = req.query?.itemsPerPage ?? 5;
+
+        let follows = await Follow.find({ user: req.user.sub }).sort('_id').populate({ path: 'followed' });
+        follows = follows.map((follow) => follow.followed);
+
+        Publication.find({ user: { $in: follows } })
+            .sort({ createdAt: -1 })
+            .populate('user')
+            .paginate(page, itemsPerPage, async (err, publications, total) => {
+                if (err) return next(err);
+                if (!publications) throw new error.NotFoundError('Publications from following users not found');
+
+                return res.status(200).send({ publications, total, pages: Math.ceil(total / itemsPerPage) });
+            });
+    } catch (err) {
+        next(err);
+    }
 }
 
 async function create(req, res, next) {
@@ -30,6 +48,6 @@ async function create(req, res, next) {
 }
 
 module.exports = {
-    hello,
+    getAllFromFollowing,
     create
 };

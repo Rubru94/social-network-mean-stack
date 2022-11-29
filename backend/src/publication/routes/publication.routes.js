@@ -7,7 +7,7 @@ const api = express.Router();
 const multipart = require('connect-multiparty');
 const uploadMiddleware = multipart({ uploadDir: './src/publication/uploads' });
 
-api.get('/hello', authMiddleware, publicationController.hello);
+api.get('/all-following/:page?', authMiddleware, publicationController.getAllFromFollowing);
 api.post('/', authMiddleware, publicationController.create);
 
 module.exports = api;

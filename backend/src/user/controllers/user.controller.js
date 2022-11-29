@@ -45,9 +45,10 @@ async function findById(req, res, next) {
         const user = await User.findById(id);
         if (!user) throw new error.NotFoundError('User not found');
 
-        const follow = await Follow.findOne({ user: req.user.sub, followed: id });
+        const following = await Follow.findOne({ user: req.user.sub, followed: id });
+        const follower = await Follow.findOne({ user: id, followed: req.user.sub });
 
-        res.status(200).send({ user, follow });
+        res.status(200).send({ user: new PublicUser(user), following, follower });
     } catch (err) {
         next(err);
     }

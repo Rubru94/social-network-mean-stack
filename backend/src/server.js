@@ -10,7 +10,7 @@ moduleAlias.addAliases({
     '@core': `${__dirname}/core`,
     '@utils': `${__dirname}/utils`,
     '@follow': `${__dirname}/follow`,
-    '@messages': `${__dirname}/messages`,
+    '@message': `${__dirname}/message`,
     '@publication': `${__dirname}/publication`,
     '@user': `${__dirname}/user`,
     '@root': __dirname

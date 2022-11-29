@@ -8,6 +8,7 @@ const handleError = require('@core/middlewares/error-handler.middleware');
 const userRoutes = require('@user/routes/user.routes');
 const followRoutes = require('@follow/routes/follow.routes');
 const publicationRoutes = require('@publication/routes/publication.routes');
+const messageRoutes = require('@message/routes/message.routes');
 
 const app = express();
 config();
@@ -18,6 +19,7 @@ function build() {
     app.use('/api/user', userRoutes);
     app.use('/api/follow', followRoutes);
     app.use('/api/publication', publicationRoutes);
+    app.use('/api/message', messageRoutes);
 }
 
 function config() {

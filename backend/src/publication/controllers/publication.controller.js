@@ -16,9 +16,14 @@ function hello(req, res) {
 
 async function create(req, res, next) {
     try {
-        /* let publication = new Publication(req.body);
+        let publication = new Publication(req.body);
+        publication.user ??= req.user.sub;
+        if (publication.validateSync()) throw new error.BadRequestError(publication.validateSync().message);
 
-        return res.status(200).send(publication); */
+        publication = await publication.save();
+        if (!publication) throw new error.BadRequestError('Publication not saved');
+
+        return res.status(200).send(publication);
     } catch (err) {
         next(err);
     }

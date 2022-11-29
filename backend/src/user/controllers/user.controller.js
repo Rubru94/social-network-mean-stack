@@ -28,10 +28,14 @@ async function getAll(req, res, next) {
          */
         User.find()
             .sort('_id')
-            .paginate(page, itemsPerPage, (err, users, total) => {
+            .paginate(page, itemsPerPage, async (err, users, total) => {
                 if (err) return next(err);
                 if (!users) throw new error.NotFoundError('Users not found');
-                return res.status(200).send({ users, total, pages: Math.ceil(total / itemsPerPage) });
+
+                const followings = (await Follow.find({ user: req.user.sub })).map((following) => following.followed);
+                const followers = (await Follow.find({ followed: req.user.sub })).map((follower) => follower.user);
+
+                return res.status(200).send({ users, followings, followers, total, pages: Math.ceil(total / itemsPerPage) });
             });
     } catch (err) {
         next(err);

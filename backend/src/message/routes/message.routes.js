@@ -9,5 +9,6 @@ api.get('/received/:page?', authMiddleware, messageController.getReceivedMessage
 api.get('/sent/:page?', authMiddleware, messageController.getSentMessages);
 api.get('/unviewed/', authMiddleware, messageController.getUnviewedCount);
 api.post('/', authMiddleware, messageController.create);
+api.put('/set-viewed', authMiddleware, messageController.setViewed);
 
 module.exports = api;

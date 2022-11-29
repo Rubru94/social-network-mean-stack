@@ -94,9 +94,21 @@ async function create(req, res, next) {
     }
 }
 
+async function setViewed(req, res, next) {
+    try {
+        const user = req.user.sub;
+        const messagesUpdated = await Message.updateMany({ receiver: user, viewed: false }, { viewed: true }, { new: true });
+
+        return res.status(200).send(messagesUpdated);
+    } catch (err) {
+        next(err);
+    }
+}
+
 module.exports = {
     getReceivedMessages,
     getSentMessages,
     getUnviewedCount,
-    create
+    create,
+    setViewed
 };

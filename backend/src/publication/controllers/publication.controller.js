@@ -32,6 +32,19 @@ async function getAllFromFollowing(req, res, next) {
     }
 }
 
+async function findById(req, res, next) {
+    try {
+        const id = req.params?.id;
+        if (!mongooseService.isValidObjectId(id)) throw new error.BadRequestError('Invalid id');
+        const publication = await Publication.findById(id);
+        if (!publication) throw new error.NotFoundError('Publication not found');
+
+        res.status(200).send(publication);
+    } catch (err) {
+        next(err);
+    }
+}
+
 async function create(req, res, next) {
     try {
         let publication = new Publication(req.body);
@@ -49,5 +62,6 @@ async function create(req, res, next) {
 
 module.exports = {
     getAllFromFollowing,
+    findById,
     create
 };

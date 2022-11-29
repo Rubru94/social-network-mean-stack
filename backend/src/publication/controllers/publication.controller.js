@@ -60,8 +60,25 @@ async function create(req, res, next) {
     }
 }
 
+async function remove(req, res, next) {
+    try {
+        const user = req.user.sub;
+        const id = req.params?.id;
+        if (!mongooseService.isValidObjectId(id)) throw new error.BadRequestError('Invalid id');
+
+        const publication = await Publication.findOne({ user, _id: id });
+        if (!publication) throw new error.UnauthorizedError('It is not possible to delete this publication');
+        await Publication.find({ user, _id: id }).deleteOne();
+
+        return res.status(200).send(publication);
+    } catch (err) {
+        next(err);
+    }
+}
+
 module.exports = {
     getAllFromFollowing,
     findById,
-    create
+    create,
+    remove
 };

@@ -33,6 +33,7 @@ async function remove(req, res, next) {
     try {
         const user = req.user.sub;
         const followed = req.params.id;
+        if (!mongooseService.isValidObjectId(followed)) throw new error.BadRequestError('Invalid id');
 
         const follow = await Follow.find({ user, followed });
         await Follow.find({ user, followed }).deleteMany();

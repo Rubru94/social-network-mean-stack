@@ -20,7 +20,7 @@ async function getReceivedMessages(req, res, next) {
         const page = req.params.page ?? 1;
         const itemsPerPage = req.query?.itemsPerPage ?? 5;
 
-        Message.find({ receiver: user })
+        Message.find(utilService.strToBoolean(req.query?.unviewed) ? { receiver: user, viewed: false } : { receiver: user })
             .sort('_id')
             .populate('emitter')
             .paginate(page, itemsPerPage, async (err, messages, total) => {
@@ -36,6 +36,17 @@ async function getReceivedMessages(req, res, next) {
                     pages: Math.ceil(total / itemsPerPage)
                 });
             });
+    } catch (err) {
+        next(err);
+    }
+}
+
+async function getUnviewedCount(req, res, next) {
+    try {
+        const user = req.user.sub;
+        const unviewedMessages = await Message.count({ receiver: user, viewed: false });
+
+        res.status(200).send({ unviewedMessages });
     } catch (err) {
         next(err);
     }
@@ -86,5 +97,6 @@ async function create(req, res, next) {
 module.exports = {
     getReceivedMessages,
     getSentMessages,
+    getUnviewedCount,
     create
 };

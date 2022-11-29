@@ -7,6 +7,7 @@ const api = express.Router();
 
 api.get('/received/:page?', authMiddleware, messageController.getReceivedMessages);
 api.get('/sent/:page?', authMiddleware, messageController.getSentMessages);
+api.get('/unviewed/', authMiddleware, messageController.getUnviewedCount);
 api.post('/', authMiddleware, messageController.create);
 
 module.exports = api;

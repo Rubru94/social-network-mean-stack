@@ -10,6 +10,7 @@ const jwtService = require('@utils/services/jwt.service');
 const mongoosePagination = require('mongoose-pagination');
 const mongooseService = require('@utils/services/mongoose.service');
 const path = require('path');
+const Publication = require('@publication/models/publication.model');
 const PublicUser = require('@user/models/public-user.model');
 const User = require('@user/models/user.model');
 const utilService = require('@utils/services/util.service');
@@ -58,15 +59,16 @@ async function findById(req, res, next) {
     }
 }
 
-async function followCounters(req, res, next) {
+async function getCounters(req, res, next) {
     try {
         const user = req.query?.user ?? req.user.sub;
         if (!mongooseService.isValidObjectId(user)) throw new error.BadRequestError('Invalid id');
 
         const followingCount = await Follow.count({ user });
         const followerCount = await Follow.count({ followed: user });
+        const publications = await Publication.count({ user });
 
-        res.status(200).send({ followingCount, followerCount });
+        res.status(200).send({ followingCount, followerCount, publications });
     } catch (err) {
         next(err);
     }
@@ -173,7 +175,7 @@ module.exports = {
     hello,
     getAll,
     findById,
-    followCounters,
+    getCounters,
     register,
     login,
     update,

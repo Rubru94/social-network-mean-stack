@@ -1,17 +1,15 @@
 'use strict';
 
-const mongoosePagination = require('mongoose-pagination');
 const error = require('@core/models/error.model');
-const mongooseService = require('@utils/services/mongoose.service');
-const User = require('@user/models/user.model');
-const PublicUser = require('@user/models/public-user.model');
-const Follow = require('@follow/models/follow.model');
-const Publication = require('@publication/models/publication.model');
 const FilePublication = require('@publication/models/file-publication.model');
-const utilService = require('@utils/services/util.service');
+const Follow = require('@follow/models/follow.model');
 const fsService = require('@utils/services/fs.service');
 const isImage = require('is-image');
+const mongoosePagination = require('mongoose-pagination');
+const mongooseService = require('@utils/services/mongoose.service');
 const path = require('path');
+const Publication = require('@publication/models/publication.model');
+const utilService = require('@utils/services/util.service');
 
 async function getAllFromFollowing(req, res, next) {
     try {

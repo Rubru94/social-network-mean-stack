@@ -8,7 +8,7 @@ const multipart = require('connect-multiparty');
 const uploadMiddleware = multipart({ uploadDir: './src/user/uploads' });
 
 api.get('/all/:page?', authMiddleware, userController.getAll);
-api.get('/follow-counters', authMiddleware, userController.followCounters);
+api.get('/counters', authMiddleware, userController.getCounters);
 api.get('/hello', authMiddleware, userController.hello);
 api.get('/image/:imageFile', userController.getImageFile);
 api.get('/:id', authMiddleware, userController.findById);

@@ -1,13 +1,11 @@
 'use strict';
 
-const mongoosePagination = require('mongoose-pagination');
 const error = require('@core/models/error.model');
-const mongooseService = require('@utils/services/mongoose.service');
-const User = require('@user/models/user.model');
-const PublicUser = require('@user/models/public-user.model');
 const Follow = require('@follow/models/follow.model');
+const mongoosePagination = require('mongoose-pagination');
+const mongooseService = require('@utils/services/mongoose.service');
+const PublicUser = require('@user/models/public-user.model');
 const utilService = require('@utils/services/util.service');
-const path = require('path');
 
 async function create(req, res, next) {
     try {

@@ -7,7 +7,10 @@ const User = require('@user/models/user.model');
 const PublicUser = require('@user/models/public-user.model');
 const Follow = require('@follow/models/follow.model');
 const Publication = require('@publication/models/publication.model');
+const FilePublication = require('@publication/models/file-publication.model');
 const utilService = require('@utils/services/util.service');
+const fsService = require('@utils/services/fs.service');
+const isImage = require('is-image');
 const path = require('path');
 
 async function getAllFromFollowing(req, res, next) {
@@ -76,9 +79,60 @@ async function remove(req, res, next) {
     }
 }
 
+async function getImageFile(req, res, next) {
+    try {
+        if (!req.params?.imageFile) throw new error.BadRequestError('No param imageFile');
+        const filePath = `./src/publication/uploads/${req.params.imageFile}`;
+
+        const file = await fsService.existsPromise(filePath);
+        if (!file) throw new error.NotFoundError('Image does not exist');
+
+        res.status(200).sendFile(path.resolve(filePath));
+    } catch (err) {
+        next(err);
+    }
+}
+
+async function uploadImage(req, res, next) {
+    try {
+        const publicationId = req.params?.publicationId;
+        if (!mongooseService.isValidObjectId(publicationId)) throw new error.BadRequestError('Invalid id');
+
+        const publication = await Publication.findOne({ _id: publicationId, user: req.user.sub });
+
+        if (utilService.isEmptyObject(req.files)) throw new error.BadRequestError('There is no attached image');
+        const isValidParam = !!req.files.image;
+        const filePath = isValidParam ? req.files.image.path : utilService.findValue(req.files, 'path');
+        const fileName = filePath.split('\\').pop();
+
+        if (!publication) {
+            await fsService.unlinkPromise(filePath);
+            throw new error.UnauthorizedError('You do not have permissions to update publication image');
+        }
+
+        if (!isValidParam) {
+            await fsService.unlinkPromise(filePath);
+            throw new error.BadRequestError('Invalid image param');
+        }
+
+        if (!isImage(fileName)) {
+            await fsService.unlinkPromise(filePath);
+            throw new error.BadRequestError('Invalid image format/extension');
+        }
+        const updatedPublication = await Publication.findByIdAndUpdate(publicationId, new FilePublication(fileName), { new: true });
+        if (!updatedPublication) throw new error.NotFoundError('Failed to update file publication');
+
+        return res.status(200).send(updatedPublication);
+    } catch (err) {
+        next(err);
+    }
+}
+
 module.exports = {
     getAllFromFollowing,
     findById,
     create,
-    remove
+    remove,
+    getImageFile,
+    uploadImage
 };

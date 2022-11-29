@@ -14,7 +14,7 @@ api.get('/image/:imageFile', userController.getImageFile);
 api.get('/:id', authMiddleware, userController.findById);
 api.post('/register', userController.register);
 api.post('/login', userController.login);
+api.post('/upload-image/:userId', [authMiddleware, uploadMiddleware], userController.uploadImage);
 api.put('/update/:id', authMiddleware, userController.update);
-api.post('/upload-image/:id', [authMiddleware, uploadMiddleware], userController.uploadImage);
 
 module.exports = api;

@@ -127,7 +127,8 @@ async function update(req, res, next) {
 
 async function uploadImage(req, res, next) {
     try {
-        const userId = req.params.id;
+        const userId = req.params?.userId;
+        if (!mongooseService.isValidObjectId(userId)) throw new error.BadRequestError('Invalid id');
         const currentUserId = req.user.sub;
         if (userId !== currentUserId) throw new error.UnauthorizedError('You do not have permissions to update user image');
 

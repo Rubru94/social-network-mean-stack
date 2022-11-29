@@ -1,16 +1,17 @@
 'use strict';
 
-const mongoosePagination = require('mongoose-pagination');
-const error = require('@core/models/error.model');
-const User = require('@user/models/user.model');
 const bcryptService = require('@utils/services/bcrypt.service');
-const PublicUser = require('@user/models/public-user.model');
-const ImageUser = require('@user/models/image-user.model');
-const jwtService = require('@utils/services/jwt.service');
-const mongooseService = require('@utils/services/mongoose.service');
-const isImage = require('is-image');
+const error = require('@core/models/error.model');
+const Follow = require('@follow/models/follow.model');
 const fsService = require('@utils/services/fs.service');
+const ImageUser = require('@user/models/image-user.model');
+const isImage = require('is-image');
+const jwtService = require('@utils/services/jwt.service');
+const mongoosePagination = require('mongoose-pagination');
+const mongooseService = require('@utils/services/mongoose.service');
 const path = require('path');
+const PublicUser = require('@user/models/public-user.model');
+const User = require('@user/models/user.model');
 const utilService = require('@utils/services/util.service');
 
 function hello(req, res) {
@@ -44,7 +45,9 @@ async function findById(req, res, next) {
         const user = await User.findById(id);
         if (!user) throw new error.NotFoundError('User not found');
 
-        res.status(200).send(user);
+        const follow = await Follow.findOne({ user: req.user.sub, followed: id });
+
+        res.status(200).send({ user, follow });
     } catch (err) {
         next(err);
     }

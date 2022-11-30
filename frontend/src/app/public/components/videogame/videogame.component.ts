@@ -6,10 +6,17 @@ import { Component } from '@angular/core';
     styleUrls: ['./videogame.component.scss']
 })
 export class VideogameComponent {
-    name = 'videogame';
-    bestGame2019 = 'Sekiro';
-    retroGame = 'Crash Bandicoot';
-    retroShow = true;
+    name: string;
+    bestGame2019: string;
+    retroGame: string;
+    retroShow: boolean;
+    games2022: string[];
 
-    games2022 = ['God of War: Ragnarok', 'Elden Ring', 'Sifu', 'Poinpy', 'Xenoblade Chronicles 3'];
+    constructor() {
+        this.name = 'videogame';
+        this.bestGame2019 = 'Sekiro';
+        this.retroGame = 'Crash Bandicoot';
+        this.retroShow = true;
+        this.games2022 = ['God of War: Ragnarok', 'Elden Ring', 'Sifu', 'Poinpy', 'Xenoblade Chronicles 3'];
+    }
 }

@@ -1,1 +1,16 @@
 <h2>Component {{ name }}</h2>
+
+<div class="grid">
+    <div>
+        <span>
+            <strong>Best 2019 game:</strong>
+            {{ bestGame2019 }}
+        </span>
+    </div>
+    <div *ngIf="retroShow">
+        <span>
+            <strong>Retro game:</strong>
+            {{ retroGame }}
+        </span>
+    </div>
+</div>

@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
 })
 export class VideogameComponent {
     name = 'videogame';
+    bestGame2019 = 'Sekiro';
+    retroGame = 'Crash Bandicoot';
+    retroShow = true;
 }

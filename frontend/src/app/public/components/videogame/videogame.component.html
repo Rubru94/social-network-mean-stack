@@ -1,4 +1,6 @@
-<h2>Component {{ name }}</h2>
+<div>
+    <h2>Component {{ name }}</h2>
+</div>
 
 <div class="grid">
     <div>
@@ -11,6 +13,14 @@
         <span>
             <strong>Retro game:</strong>
             {{ retroGame }}
+        </span>
+    </div>
+    <div>
+        <span>
+            <strong>Game Awards 2022 - My Nominees:</strong>
+            <ul>
+                <li *ngFor="let game of games2022">{{ game }}</li>
+            </ul>
         </span>
     </div>
 </div>

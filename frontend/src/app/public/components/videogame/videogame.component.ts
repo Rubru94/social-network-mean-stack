@@ -10,4 +10,6 @@ export class VideogameComponent {
     bestGame2019 = 'Sekiro';
     retroGame = 'Crash Bandicoot';
     retroShow = true;
+
+    games2022 = ['God of War: Ragnarok', 'Elden Ring', 'Sifu', 'Poinpy', 'Xenoblade Chronicles 3'];
 }

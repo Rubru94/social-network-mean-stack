@@ -1,13 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormStatus } from '../../models/form-status.model';
 import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 
-enum RegisterStatus {
-    Valid,
-    Invalid,
-    None
-}
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
@@ -16,14 +12,14 @@ enum RegisterStatus {
 export class RegisterComponent implements OnInit {
     title: string;
     user: User;
-    status: RegisterStatus;
+    status: FormStatus;
     errMsg?: string;
     registerForm: FormGroup;
 
     constructor(private fb: FormBuilder, private userService: UserService) {
         this.title = 'Register';
         this.user = new User();
-        this.status = RegisterStatus.None;
+        this.status = FormStatus.None;
         this.registerForm = this.fb.group({});
     }
 
@@ -33,7 +29,7 @@ export class RegisterComponent implements OnInit {
             surname: new FormControl('', [Validators.required]),
             nick: new FormControl('', [Validators.required]),
             email: new FormControl('', [Validators.required, Validators.email]),
-            password: new FormControl('', [Validators.required, Validators.minLength(8)])
+            password: new FormControl('', [Validators.required, Validators.minLength(4)])
         });
     }
 
@@ -41,8 +37,8 @@ export class RegisterComponent implements OnInit {
         return this.registerForm.controls;
     }
 
-    get RegisterStatus() {
-        return RegisterStatus;
+    get FormStatus() {
+        return FormStatus;
     }
 
     isInvalidControl(field: string) {
@@ -54,12 +50,12 @@ export class RegisterComponent implements OnInit {
     onSubmit(form: FormGroup) {
         this.user = new User(form.value);
         this.userService.register(this.user).subscribe({
-            next: (user: User) => {
-                this.status = RegisterStatus.Valid;
+            next: (res: User) => {
+                this.status = FormStatus.Valid;
                 form.reset();
             },
             error: (err: Error) => {
-                this.status = RegisterStatus.Invalid;
+                this.status = FormStatus.Invalid;
                 this.errMsg = err.message;
             }
             /* complete: () => console.info('complete') */

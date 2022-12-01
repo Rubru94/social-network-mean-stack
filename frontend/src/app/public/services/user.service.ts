@@ -17,4 +17,8 @@ export class UserService {
     register(user: User): Observable<User> {
         return this.http.post<User>(`${this.api}/register`, user);
     }
+
+    login(user: User, token: boolean = false): Observable<{ token: string }> {
+        return this.http.post<{ token: string }>(`${this.api}/login`, user, { params: { token } });
+    }
 }

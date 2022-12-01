@@ -1,6 +1,13 @@
 <div class="form-container col-lg-12">
     <h1 class="h1-strong">{{ title }}</h1>
 
+    <div *ngIf="status === FormStatus.Invalid" class="alert alert-danger">
+        <div>
+            <span>Info: {{ errMsg }}</span>
+        </div>
+        <div><span>The login process has failed. Try again.</span></div>
+    </div>
+
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm)">
         <div>
             <div>
@@ -18,7 +25,7 @@
                     <input type="password" formControlName="password" placeholder="" [class.invalid]="isInvalidControl('password')" />
                 </label>
                 <div>
-                    <small *ngIf="isInvalidControl('password')">Please provide a valid password (8 chars minLength).</small>
+                    <small *ngIf="isInvalidControl('password')">Please provide a valid password (4 chars minLength).</small>
                 </div>
             </div>
             <div class="button">

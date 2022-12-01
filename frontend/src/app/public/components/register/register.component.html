@@ -1,1 +1,56 @@
-<h2>{{ title }}</h2>
+<div class="cont col-lg-12">
+    <h2>{{ title }}</h2>
+
+    <form [formGroup]="registerForm" (ngSubmit)="submit(registerForm)">
+        <div>
+            <div>
+                <label>
+                    Name:
+                    <input type="text" formControlName="name" placeholder="" [class.invalid]="isInvalidControl('name')" />
+                </label>
+                <div>
+                    <small *ngIf="isInvalidControl('name')">Please provide a name.</small>
+                </div>
+            </div>
+            <div>
+                <label>
+                    Surname:
+                    <input type="text" formControlName="surname" placeholder="" [class.invalid]="isInvalidControl('surname')" />
+                </label>
+                <div>
+                    <small *ngIf="isInvalidControl('surname')">Please provide a surname.</small>
+                </div>
+            </div>
+            <div>
+                <label>
+                    Nick:
+                    <input type="text" formControlName="nick" placeholder="" [class.invalid]="isInvalidControl('nick')" />
+                </label>
+                <div>
+                    <small *ngIf="isInvalidControl('nick')">Please provide a nick.</small>
+                </div>
+            </div>
+            <div>
+                <label>
+                    Email:
+                    <input type="email" formControlName="email" placeholder="" [class.invalid]="isInvalidControl('email')" />
+                </label>
+                <div>
+                    <small *ngIf="isInvalidControl('email')">Please provide a valid email.</small>
+                </div>
+            </div>
+            <div>
+                <label>
+                    Password:
+                    <input type="password" formControlName="password" placeholder="" [class.invalid]="isInvalidControl('password')" />
+                </label>
+                <div>
+                    <small *ngIf="isInvalidControl('password')">Please provide a valid password (8 chars minLength).</small>
+                </div>
+            </div>
+            <div class="button">
+                <button type="submit" [disabled]="registerForm.invalid">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>

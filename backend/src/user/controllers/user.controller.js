@@ -101,7 +101,7 @@ async function login(req, res, next) {
         let isValidPassword = await bcryptService.comparePromise(user.password, userExistent.password);
         if (!isValidPassword) throw new error.BadRequestError('Invalid password');
 
-        if (req.query?.token) return res.status(200).send({ token: jwtService.createToken(userExistent) });
+        if (utilService.strToBoolean(req.query?.token)) return res.status(200).send({ token: jwtService.createToken(userExistent) });
         return res.status(200).send(new PublicUser(userExistent));
     } catch (err) {
         next(err);

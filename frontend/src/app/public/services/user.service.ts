@@ -10,7 +10,11 @@ import { User } from '../models/user.model';
 export class UserService {
     api: string;
 
-    constructor(private httpClient: HttpClient) {
-        this.api = `${environment.apiURL}/api/users`;
+    constructor(private http: HttpClient) {
+        this.api = `${environment.apiURL}/api/user`;
+    }
+
+    register(user: User): Observable<User> {
+        return this.http.post<User>(`${this.api}/register`, user);
     }
 }

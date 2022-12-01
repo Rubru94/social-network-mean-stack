@@ -4,7 +4,7 @@ export class PublicUser {
     surname: string;
     nick: string;
     email: string;
-    role: string;
+    role?: string;
     image?: string;
 
     constructor(user?: { _id: string; name: string; surname: string; nick: string; email: string; role: string; image?: string }) {
@@ -13,7 +13,7 @@ export class PublicUser {
         this.surname = user?.surname ?? '';
         this.nick = user?.nick ?? '';
         this.email = user?.email ?? '';
-        this.role = user?.role ?? '';
+        this.role = user?.role;
         this.image = user?.image;
     }
 }

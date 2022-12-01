@@ -3,6 +3,11 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 
+enum RegisterStatus {
+    Valid,
+    Invalid,
+    None
+}
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
@@ -11,12 +16,15 @@ import { UserService } from '../../services/user.service';
 export class RegisterComponent implements OnInit {
     title: string;
     user: User;
+    status: RegisterStatus;
+    errMsg?: string;
 
     registerForm: FormGroup;
 
     constructor(private fb: FormBuilder, private userService: UserService) {
         this.title = 'Register';
         this.user = new User();
+        this.status = RegisterStatus.None;
         this.registerForm = this.fb.group({});
     }
 
@@ -34,14 +42,28 @@ export class RegisterComponent implements OnInit {
         return this.registerForm.controls;
     }
 
+    get RegisterStatus() {
+        return RegisterStatus;
+    }
+
     isInvalidControl(field: string) {
         return (
             this.registerFormControl[field].invalid && (this.registerFormControl[field].dirty || this.registerFormControl[field].touched)
         );
     }
 
-    onSubmit(form: FormGroup) {
+    async onSubmit(form: FormGroup) {
         this.user = new User(form.value);
-        console.log(this.user);
+        this.userService.register(this.user).subscribe({
+            next: (user: User) => {
+                this.status = RegisterStatus.Valid;
+                form.reset();
+            },
+            error: (err: Error) => {
+                this.status = RegisterStatus.Invalid;
+                this.errMsg = err.message;
+            }
+            /* complete: () => console.info('complete') */
+        });
     }
 }

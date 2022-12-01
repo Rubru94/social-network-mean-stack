@@ -18,7 +18,6 @@ export class RegisterComponent implements OnInit {
     user: User;
     status: RegisterStatus;
     errMsg?: string;
-
     registerForm: FormGroup;
 
     constructor(private fb: FormBuilder, private userService: UserService) {
@@ -52,7 +51,7 @@ export class RegisterComponent implements OnInit {
         );
     }
 
-    async onSubmit(form: FormGroup) {
+    onSubmit(form: FormGroup) {
         this.user = new User(form.value);
         this.userService.register(this.user).subscribe({
             next: (user: User) => {

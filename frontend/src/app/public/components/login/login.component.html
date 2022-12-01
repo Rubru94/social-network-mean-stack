@@ -1,1 +1,29 @@
-<h2>{{ title }}</h2>
+<div class="form-container col-lg-12">
+    <h1 class="h1-strong">{{ title }}</h1>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm)">
+        <div>
+            <div>
+                <label>
+                    Email:
+                    <input type="email" formControlName="email" placeholder="" [class.invalid]="isInvalidControl('email')" />
+                </label>
+                <div>
+                    <small *ngIf="isInvalidControl('email')">Please provide a valid email.</small>
+                </div>
+            </div>
+            <div>
+                <label>
+                    Password:
+                    <input type="password" formControlName="password" placeholder="" [class.invalid]="isInvalidControl('password')" />
+                </label>
+                <div>
+                    <small *ngIf="isInvalidControl('password')">Please provide a valid password (8 chars minLength).</small>
+                </div>
+            </div>
+            <div class="button">
+                <button type="submit" [disabled]="loginForm.invalid">Login</button>
+            </div>
+        </div>
+    </form>
+</div>

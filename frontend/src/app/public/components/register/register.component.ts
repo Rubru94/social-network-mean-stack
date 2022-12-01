@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../../models/user.model';
+import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-register',
@@ -13,7 +14,7 @@ export class RegisterComponent implements OnInit {
 
     registerForm: FormGroup;
 
-    constructor(private fb: FormBuilder) {
+    constructor(private fb: FormBuilder, private userService: UserService) {
         this.title = 'Register';
         this.user = new User();
         this.registerForm = this.fb.group({});
@@ -39,7 +40,7 @@ export class RegisterComponent implements OnInit {
         );
     }
 
-    submit(form: FormGroup) {
+    onSubmit(form: FormGroup) {
         this.user = new User(form.value);
         console.log(this.user);
     }

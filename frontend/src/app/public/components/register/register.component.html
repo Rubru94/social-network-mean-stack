@@ -1,7 +1,7 @@
 <div class="cont col-lg-12">
-    <h2>{{ title }}</h2>
+    <h1 class="h1-strong">{{ title }}</h1>
 
-    <form [formGroup]="registerForm" (ngSubmit)="submit(registerForm)">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit(registerForm)">
         <div>
             <div>
                 <label>

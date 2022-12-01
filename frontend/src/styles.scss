@@ -1,2 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~bootstrap-icons/font/bootstrap-icons.css';
+
+.h1-strong {
+    font-weight: bold;
+    padding: 0 2rem;
+    border-bottom: 1px solid #eee;
+}

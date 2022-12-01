@@ -12,23 +12,37 @@
 
             <ul class="nav">
                 <li class="nav-item">
-                    <a href="#">
+                    <a routerLink="/home" routerLinkActive="active">
                         <em class="bi bi-house-fill"></em>
                         <span>Home</span>
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a href="#">
+                <li *ngIf="token" class="nav-item">
+                    <a routerLink="#" routerLinkActive="active">
                         <em class="bi bi-list-ul"></em>
                         <span>Timeline</span>
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a routerLink="/register">
+                <li *ngIf="token" class="nav-item">
+                    <a routerLink="#" routerLinkActive="active">
                         <em class="bi bi-people-fill"></em>
                         <span>Users</span>
+                    </a>
+                </li>
+
+                <li *ngIf="!token" class="nav-item">
+                    <a routerLink="/login" routerLinkActive="active">
+                        <em class="bi bi-box-arrow-in-right"></em>
+                        <span>Login</span>
+                    </a>
+                </li>
+
+                <li *ngIf="!token" class="nav-item">
+                    <a routerLink="/register" routerLinkActive="active">
+                        <em class="bi bi-person-fill-add"></em>
+                        <span>Register</span>
                     </a>
                 </li>
             </ul>

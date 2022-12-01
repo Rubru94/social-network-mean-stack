@@ -18,7 +18,15 @@ export class UserService {
         return this.http.post<User>(`${this.api}/register`, user);
     }
 
-    login(user: User, token: boolean = false): Observable<{ token: string }> {
-        return this.http.post<{ token: string }>(`${this.api}/login`, user, { params: { token } });
+    login(user: User, token: boolean = false): Observable<User | { token: string }> {
+        return this.http.post<User | { token: string }>(`${this.api}/login`, user, { params: { token } });
+    }
+
+    get identity(): User {
+        return new User(JSON.parse((localStorage.getItem('identity') as string) ?? null));
+    }
+
+    get token(): string {
+        return localStorage.getItem('token') as string;
     }
 }

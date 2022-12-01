@@ -7,7 +7,15 @@ nav {
             padding: 0 0.25rem;
         }
         a {
+            color: inherit;
+            text-decoration: none;
             padding: 0 0.5rem;
+            :hover {
+                background-color: none;
+            }
+        }
+        &:hover {
+            background-color: rgba(255, 166, 0, 0.199);
         }
     }
 }

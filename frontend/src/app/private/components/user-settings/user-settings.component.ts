@@ -58,7 +58,16 @@ export class UserSettingsComponent {
     }
 
     onSubmit(form: FormGroup) {
-        this.user = new User(form.value);
-        console.log(this.user);
+        this.user = { ...this.user, ...form.value };
+        this.userHttpService.update(this.user).subscribe({
+            next: (res: User) => {
+                this.status = FormStatus.Valid;
+                localStorage.setItem('identity', JSON.stringify(res));
+            },
+            error: (err: Error) => {
+                this.status = FormStatus.Invalid;
+                this.errMsg = err.message;
+            }
+        });
     }
 }

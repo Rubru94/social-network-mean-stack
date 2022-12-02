@@ -1,6 +1,47 @@
 <div class="form-container col-lg-12">
     <h1 class="h1-strong">{{ title }}</h1>
-    <div>
-        {{ user | json }}
-    </div>
+    <form [formGroup]="userSettingsForm" (ngSubmit)="onSubmit(userSettingsForm)">
+        <div>
+            <div>
+                <label>
+                    Name:
+                    <input type="text" formControlName="name" placeholder="" [class.invalid]="isInvalidControl('name')" />
+                </label>
+                <div>
+                    <small *ngIf="isInvalidControl('name')">Please provide a name.</small>
+                </div>
+            </div>
+            <div>
+                <label>
+                    Surname:
+                    <input type="text" formControlName="surname" placeholder="" [class.invalid]="isInvalidControl('surname')" />
+                </label>
+                <div>
+                    <small *ngIf="isInvalidControl('surname')">Please provide a surname.</small>
+                </div>
+            </div>
+            <div>
+                <label>
+                    Nick:
+                    <input type="text" formControlName="nick" placeholder="" [class.invalid]="isInvalidControl('nick')" />
+                </label>
+                <div>
+                    <small *ngIf="isInvalidControl('nick')">Please provide a nick.</small>
+                </div>
+            </div>
+            <div>
+                <label>
+                    Email:
+                    <input type="email" formControlName="email" placeholder="" [class.invalid]="isInvalidControl('email')" />
+                </label>
+                <div>
+                    <small *ngIf="isInvalidControl('email')">Please provide a valid email.</small>
+                </div>
+            </div>
+
+            <div class="button">
+                <button type="submit" class="btn btn-warning" [disabled]="userSettingsForm.invalid">Update data</button>
+            </div>
+        </div>
+    </form>
 </div>

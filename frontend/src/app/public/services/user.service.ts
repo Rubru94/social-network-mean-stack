@@ -22,6 +22,10 @@ export class UserService {
         return this.http.post<User | { token: string }>(`${this.api}/login`, user, { params: { token } });
     }
 
+    logout() {
+        localStorage.clear();
+    }
+
     get identity(): User {
         return new User(JSON.parse((localStorage.getItem('identity') as string) ?? null));
     }

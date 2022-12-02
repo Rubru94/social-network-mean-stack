@@ -79,8 +79,8 @@ async function register(req, res, next) {
         const user = new User(req.body);
         if (user.validateSync()) throw new error.BadRequestError(user.validateSync().message);
 
-        const userExistent = await User.findOne({ email: user.email });
-        if (userExistent) throw new error.BadRequestError('Email already used');
+        const userExistent = await User.findOne({ $or: [{ email: user.email }, { nick: user.nick }] });
+        if (userExistent) throw new error.BadRequestError('Email or nick already used');
 
         user.password = await bcryptService.hashPromise(user.password);
 
@@ -115,6 +115,11 @@ async function update(req, res, next) {
         if (userId !== currentUserId) throw new error.UnauthorizedError('You do not have permissions to update user data');
 
         let updatedUser = new PublicUser(req.body);
+
+        const userExistent = await User.findOne({
+            $and: [{ _id: { $ne: userId } }, { $or: [{ email: updatedUser.email }, { nick: updatedUser.nick }] }]
+        });
+        if (userExistent) throw new error.BadRequestError('Email or nick already used');
         /**
          * @info { new: true } --> It returns updated object. By default it returns object to update (old object).
          */

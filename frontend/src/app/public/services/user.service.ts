@@ -5,15 +5,19 @@ import { User } from '../models/user.model';
     providedIn: 'root'
 })
 export class UserService {
-    logout() {
-        localStorage.clear();
-    }
-
     get identity(): User {
         return new User(JSON.parse((localStorage.getItem('identity') as string) ?? null));
     }
 
     get token(): string {
         return localStorage.getItem('token') as string;
+    }
+
+    get stats(): any {
+        return JSON.parse((localStorage.getItem('stats') as string) ?? null);
+    }
+
+    logout() {
+        localStorage.clear();
     }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserHttpService } from '../../http/user.http.service';
+import { CounterSet } from '../../models/counter-set.model';
 import { FormStatus } from '../../models/form-status.model';
 import { User } from '../../models/user.model';
 
@@ -24,7 +25,7 @@ export class LoginComponent implements OnInit {
         this.loginForm = this.fb.group({});
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.loginForm = this.fb.group({
             email: new FormControl('', [Validators.required, Validators.email]),
             password: new FormControl('', [Validators.required, Validators.minLength(4)])
@@ -35,15 +36,15 @@ export class LoginComponent implements OnInit {
         return this.loginForm.controls;
     }
 
-    get FormStatus() {
+    get FormStatus(): typeof FormStatus {
         return FormStatus;
     }
 
-    isInvalidControl(field: string) {
+    isInvalidControl(field: string): boolean {
         return this.loginFormControl[field].invalid && (this.loginFormControl[field].dirty || this.loginFormControl[field].touched);
     }
 
-    onSubmit(form: FormGroup) {
+    onSubmit(form: FormGroup): void {
         this.user = new User(form.value);
         this.userHttpService.login(this.user).subscribe({
             next: (res: User | { token: string }) => {
@@ -59,14 +60,26 @@ export class LoginComponent implements OnInit {
         });
     }
 
-    requestToken() {
+    requestToken(): void {
         this.userHttpService.login(this.user, true).subscribe({
             next: (res: User | { token: string }) => {
                 localStorage.setItem('token', (res as { token: string })?.token);
-                this.router.navigateByUrl('/');
+                this.counterSet();
             },
             error: (err: Error) => {
                 this.status = FormStatus.Invalid;
+                this.errMsg = err.message;
+            }
+        });
+    }
+
+    counterSet(): void {
+        this.userHttpService.counters().subscribe({
+            next: (res: CounterSet) => {
+                localStorage.setItem('counterSet', JSON.stringify(res));
+                this.router.navigateByUrl('/');
+            },
+            error: (err: Error) => {
                 this.errMsg = err.message;
             }
         });

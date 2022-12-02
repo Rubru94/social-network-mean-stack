@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UserHttpService } from '../../http/user.http.service';
 import { FormStatus } from '../../models/form-status.model';
 import { User } from '../../models/user.model';
-import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-register',
@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
     errMsg?: string;
     registerForm: FormGroup;
 
-    constructor(private fb: FormBuilder, private userService: UserService) {
+    constructor(private fb: FormBuilder, private userHttpService: UserHttpService) {
         this.title = 'Register';
         this.user = new User();
         this.status = FormStatus.None;
@@ -49,7 +49,7 @@ export class RegisterComponent implements OnInit {
 
     onSubmit(form: FormGroup) {
         this.user = new User(form.value);
-        this.userService.register(this.user).subscribe({
+        this.userHttpService.register(this.user).subscribe({
             next: (res: User) => {
                 this.status = FormStatus.Valid;
                 form.reset();

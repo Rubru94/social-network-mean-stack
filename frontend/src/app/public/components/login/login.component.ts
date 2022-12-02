@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { UserHttpService } from '../../http/user.http.service';
 import { FormStatus } from '../../models/form-status.model';
 import { User } from '../../models/user.model';
-import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-login',
@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
     errMsg?: string;
     loginForm: FormGroup;
 
-    constructor(private fb: FormBuilder, private router: Router, private userService: UserService) {
+    constructor(private fb: FormBuilder, private router: Router, private userHttpService: UserHttpService) {
         this.title = 'Login';
         this.user = new User();
         this.status = FormStatus.None;
@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
 
     onSubmit(form: FormGroup) {
         this.user = new User(form.value);
-        this.userService.login(this.user).subscribe({
+        this.userHttpService.login(this.user).subscribe({
             next: (res: User | { token: string }) => {
                 localStorage.setItem('identity', JSON.stringify(res));
                 this.requestToken();
@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
     }
 
     requestToken() {
-        this.userService.login(this.user, true).subscribe({
+        this.userHttpService.login(this.user, true).subscribe({
             next: (res: User | { token: string }) => {
                 localStorage.setItem('token', (res as { token: string })?.token);
                 this.router.navigateByUrl('/');

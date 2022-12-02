@@ -49,6 +49,12 @@
                     <small *ngIf="isInvalidControl('email')">Please provide a valid email.</small>
                 </div>
             </div>
+            <div>
+                <label>
+                    Avatar:
+                    <input type="file" formControlName="image" title="Upload avatar image" placeholder="Upload avatar image" />
+                </label>
+            </div>
 
             <div class="button">
                 <button type="submit" class="btn btn-warning" [disabled]="userSettingsForm.invalid">Update data</button>

@@ -37,7 +37,8 @@ export class UserSettingsComponent {
             name: new FormControl(this.user.name, [Validators.required]),
             surname: new FormControl(this.user.surname, [Validators.required]),
             nick: new FormControl(this.user.nick, [Validators.required]),
-            email: new FormControl(this.user.email, [Validators.required, Validators.email])
+            email: new FormControl(this.user.email, [Validators.required, Validators.email]),
+            image: new FormControl()
             // password: new FormControl('', [Validators.required, Validators.minLength(4)])
         });
     }

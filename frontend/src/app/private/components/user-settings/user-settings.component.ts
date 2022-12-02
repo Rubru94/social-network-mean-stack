@@ -19,6 +19,8 @@ export class UserSettingsComponent {
     errMsg?: string;
     userSettingsForm: FormGroup;
 
+    fileInput?: File | null;
+
     constructor(
         private router: Router,
         private fb: FormBuilder,
@@ -30,6 +32,7 @@ export class UserSettingsComponent {
         this.user = this.userService.identity;
         this.status = FormStatus.None;
         this.userSettingsForm = this.fb.group({});
+        this.fileInput = null;
     }
 
     ngOnInit() {
@@ -64,11 +67,27 @@ export class UserSettingsComponent {
             next: (res: User) => {
                 this.status = FormStatus.Valid;
                 localStorage.setItem('identity', JSON.stringify(res));
+                if (this.fileInput) {
+                    this.userHttpService.uploadImage(this.user, this.fileInput).subscribe({
+                        next: (res: User) => {
+                            localStorage.setItem('identity', JSON.stringify(res));
+                        },
+                        error: (err: Error) => {
+                            this.status = FormStatus.Invalid;
+                            this.errMsg = err.message;
+                        }
+                    });
+                }
             },
             error: (err: Error) => {
                 this.status = FormStatus.Invalid;
                 this.errMsg = err.message;
             }
         });
+    }
+
+    onFileSelected(event: Event) {
+        const element = event.currentTarget as HTMLInputElement;
+        this.fileInput = element.files?.[0];
     }
 }

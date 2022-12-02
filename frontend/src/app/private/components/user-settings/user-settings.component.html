@@ -52,7 +52,7 @@
             <div>
                 <label>
                     Avatar:
-                    <input type="file" formControlName="image" title="Upload avatar image" placeholder="Upload avatar image" />
+                    <input type="file" formControlName="image" (change)="onFileSelected($event)" />
                 </label>
             </div>
 

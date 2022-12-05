@@ -153,8 +153,14 @@ async function uploadImage(req, res, next) {
             await fsService.unlinkPromise(filePath);
             throw new error.BadRequestError('Invalid image format/extension');
         }
+
+        const user = await User.findById(userId);
+        if (!user) throw new error.NotFoundError('User not found');
+
         const updatedUser = await User.findByIdAndUpdate(userId, new ImageUser(fileName), { new: true });
         if (!updatedUser) throw new error.NotFoundError('Failed to update image user');
+        const file = await fsService.existsPromise(`./src/user/uploads/${user.image}`);
+        if (file) await fsService.unlinkPromise(`./src/user/uploads/${user.image}`);
 
         return res.status(200).send(updatedUser);
     } catch (err) {

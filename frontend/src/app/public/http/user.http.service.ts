@@ -40,4 +40,17 @@ export class UserHttpService {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
         return this.http.post<User>(`${this.api}/upload-image/${user._id}`, formData, { headers });
     }
+
+    getUsers(page: number = 1, itemsPerPage = 0): Observable<{ users: User[]; total: number; pages: number }> {
+        const headers = new HttpHeaders().set('Authorization', this.userService.token);
+        return this.http.get<{ users: User[]; total: number; pages: number }>(`${this.api}/all/${page}`, {
+            headers,
+            params: { itemsPerPage }
+        });
+    }
+
+    getUser(id: string = ''): Observable<{ user: User }> {
+        const headers = new HttpHeaders().set('Authorization', this.userService.token);
+        return this.http.get<{ user: User }>(`${this.api}/${id}`, { headers });
+    }
 }

@@ -5,7 +5,8 @@ import { UserSettingsComponent } from './components/user-settings/user-settings.
 
 const routes: Routes = [
     { path: 'settings', component: UserSettingsComponent },
-    { path: 'people', component: PeopleComponent }
+    { path: 'people', redirectTo: 'people/1', pathMatch: 'full' },
+    { path: 'people/:page', component: PeopleComponent }
 ];
 
 @NgModule({

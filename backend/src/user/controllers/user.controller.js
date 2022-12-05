@@ -77,6 +77,7 @@ async function getCounters(req, res, next) {
 
 async function register(req, res, next) {
     try {
+        delete req.body._id;
         const user = new User(req.body);
         if (user.validateSync()) throw new error.BadRequestError(user.validateSync().message);
 

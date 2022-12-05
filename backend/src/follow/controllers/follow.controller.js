@@ -9,6 +9,7 @@ const utilService = require('@utils/services/util.service');
 
 async function create(req, res, next) {
     try {
+        delete req.body._id;
         let follow = new Follow(req.body);
         follow.user = follow.user ?? req.user.sub;
         if (follow.validateSync()) throw new error.BadRequestError(follow.validateSync().message);

@@ -32,12 +32,12 @@
                         </a>
                     </div>
                     <div class="panel-item user-name pull-right">
-                        <button *ngIf="isFollowing(user)" class="btn btn-success">
+                        <button *ngIf="!isUserLogged(user) && !isFollowing(user)" class="btn btn-success" (click)="createFollow(user._id)">
                             <span><em class="bi bi-plus-circle-fill"></em></span>
                             <span>Follow</span>
                         </button>
                         <button
-                            *ngIf="!isFollowing(user)"
+                            *ngIf="!isUserLogged(user) && isFollowing(user)"
                             class="btn"
                             [ngClass]="user._id === followUserOver ? 'btn-danger' : 'btn-primary'"
                             (mouseenter)="mouseEnter(user)"

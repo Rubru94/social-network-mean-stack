@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserHttpService } from 'src/app/public/http/user.http.service';
+import { Follow } from 'src/app/public/models/follow.model';
 import { FormStatus } from 'src/app/public/models/form-status.model';
 import { User } from 'src/app/public/models/user.model';
+import { UserService } from 'src/app/public/services/user.service';
 import { environment } from '../../../../../environments/env';
+import { FollowHttpService } from '../../services/follow.http.service';
 
 @Component({
     selector: 'app-people',
@@ -24,7 +27,13 @@ export class PeopleComponent implements OnInit {
 
     api: string;
 
-    constructor(private activatedRoute: ActivatedRoute, private router: Router, private userHttpService: UserHttpService) {
+    constructor(
+        private activatedRoute: ActivatedRoute,
+        private router: Router,
+        private userService: UserService,
+        private userHttpService: UserHttpService,
+        private followHttpService: FollowHttpService
+    ) {
         this.title = 'People';
         this.currentPage = 1;
         this.previousPage = 0;
@@ -36,9 +45,8 @@ export class PeopleComponent implements OnInit {
         this.api = `${environment.apiURL}/api`;
     }
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
         this.actualPage();
-        console.log(this.currentPage);
     }
 
     get FormStatus(): typeof FormStatus {
@@ -64,7 +72,6 @@ export class PeopleComponent implements OnInit {
     getUsers(page: number) {
         this.userHttpService.getUsers(page).subscribe({
             next: (res: { users: User[]; followings: string[]; followers: string[]; total: number; pages: number }) => {
-                console.log(res);
                 this.users = res.users;
                 this.totalPages = res.pages;
                 this.follows = res.followings;
@@ -80,6 +87,10 @@ export class PeopleComponent implements OnInit {
         });
     }
 
+    isUserLogged(user: User): boolean {
+        return user._id === this.userService.identity._id;
+    }
+
     isFollowing(user: User): boolean {
         return this.follows.includes(user._id);
     }
@@ -90,5 +101,18 @@ export class PeopleComponent implements OnInit {
 
     mouseLeave() {
         this.followUserOver = undefined;
+    }
+
+    createFollow(followedId: string) {
+        const follow = new Follow({ user: this.userService.identity._id, followed: followedId });
+        this.followHttpService.create(follow).subscribe({
+            next: (res: Follow) => {
+                this.follows.push(res.followed as string);
+            },
+            error: (err: Error) => {
+                this.status = FormStatus.Invalid;
+                this.errMsg = err.message;
+            }
+        });
     }
 }

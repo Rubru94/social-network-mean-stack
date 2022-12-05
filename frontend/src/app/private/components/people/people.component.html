@@ -7,9 +7,42 @@
         </div>
     </div>
 
-    <div>
+    <div class="people">
         <div *ngFor="let user of users">
-            {{ user | json }}
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="panel-item user-image pull-left">
+                        <a href="#">
+                            <div *ngIf="user?.image">
+                                <img alt="" src="{{ api + '/user/image/' + user.image }}" />
+                            </div>
+                            <div *ngIf="!user?.image">
+                                <img alt="" src="assets/img/default-avatar.png" />
+                            </div>
+                        </a>
+                    </div>
+                    <div class="panel-item user-name pull-left">
+                        <a href="#">
+                            <div class="name">
+                                <span>{{ user.name }} {{ user.surname }}</span>
+                            </div>
+                            <div class="nick">
+                                <small> {{ user.nick }}</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <ul class="pagination pull-right">
+            <li *ngIf="currentPage > 1">
+                <a [routerLink]="['/private/people', previousPage]">Previous</a>
+            </li>
+
+            <li *ngIf="totalPages && totalPages !== currentPage">
+                <a [routerLink]="['/private/people', nextPage]">Next</a>
+            </li>
+        </ul>
     </div>
 </div>

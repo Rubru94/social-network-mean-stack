@@ -54,10 +54,6 @@ export class UserSettingsComponent {
         return FormStatus;
     }
 
-    get URL() {
-        return this.userHttpService.api;
-    }
-
     isInvalidControl(field: string) {
         return (
             this.userSettingsFormControl[field].invalid &&

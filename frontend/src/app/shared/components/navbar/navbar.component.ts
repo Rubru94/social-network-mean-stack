@@ -2,6 +2,7 @@ import { Component, DoCheck, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from 'src/app/public/models/user.model';
 import { UserService } from 'src/app/public/services/user.service';
+import { environment } from '../../../../../environments/env';
 
 @Component({
     selector: 'app-navbar',
@@ -12,9 +13,15 @@ export class NavbarComponent implements OnInit, DoCheck {
     title: string;
     token?: string;
     identity?: User;
+    api: string;
 
     constructor(private router: Router, private userService: UserService) {
         this.title = 'Social Network';
+        this.api = `${environment.apiURL}/api`;
+    }
+
+    get identityImageSource(): string {
+        return `${this.api}/user/image/${this.identity?.image}`;
     }
 
     ngOnInit() {

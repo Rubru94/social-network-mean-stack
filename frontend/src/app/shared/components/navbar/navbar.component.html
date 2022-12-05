@@ -47,8 +47,12 @@
                 </li>
             </ul>
 
-            <ul *ngIf="token" class="nav navbar-nav navbar-right">
-                <li class="avatar"></li>
+            <ul *ngIf="token" class="nav navbar-nav navbar-right profile">
+                <li class="avatar">
+                    <div *ngIf="identity?.image">
+                        <img alt="" src="{{ identityImageSource }}" />
+                    </div>
+                </li>
                 <li class="dropdown">
                     <a class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar">
                         {{ identity?.name }} {{ identity?.surname }} <em class="bi bi-caret-down-fill"></em>

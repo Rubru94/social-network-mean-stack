@@ -42,6 +42,7 @@
                             [ngClass]="user._id === followUserOver ? 'btn-danger' : 'btn-primary'"
                             (mouseenter)="mouseEnter(user)"
                             (mouseleave)="mouseLeave()"
+                            (click)="removeFollow(user._id)"
                         >
                             <div *ngIf="user._id === followUserOver; else following">
                                 <span><em class="bi bi-dash-circle-fill"></em></span>

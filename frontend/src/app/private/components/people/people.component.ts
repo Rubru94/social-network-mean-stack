@@ -115,4 +115,16 @@ export class PeopleComponent implements OnInit {
             }
         });
     }
+
+    removeFollow(followedId: string) {
+        this.followHttpService.remove(followedId).subscribe({
+            next: (res: Follow[]) => {
+                this.follows = this.follows.filter((follow: string) => !res.map((f: Follow) => f.followed).includes(follow));
+            },
+            error: (err: Error) => {
+                this.status = FormStatus.Invalid;
+                this.errMsg = err.message;
+            }
+        });
+    }
 }

@@ -17,8 +17,10 @@ export class PeopleComponent implements OnInit {
     nextPage: number;
     totalPages: number;
     users: User[];
+    follows: string[];
     status: FormStatus;
     errMsg?: string;
+    followUserOver?: string;
 
     api: string;
 
@@ -29,6 +31,7 @@ export class PeopleComponent implements OnInit {
         this.nextPage = 0;
         this.totalPages = 1;
         this.users = [];
+        this.follows = [];
         this.status = FormStatus.None;
         this.api = `${environment.apiURL}/api`;
     }
@@ -60,10 +63,11 @@ export class PeopleComponent implements OnInit {
 
     getUsers(page: number) {
         this.userHttpService.getUsers(page).subscribe({
-            next: (res: { users: User[]; total: number; pages: number }) => {
+            next: (res: { users: User[]; followings: string[]; followers: string[]; total: number; pages: number }) => {
                 console.log(res);
                 this.users = res.users;
                 this.totalPages = res.pages;
+                this.follows = res.followings;
                 if (res.pages && page > res.pages) {
                     this.router.navigateByUrl('/private/people');
                     this.ngOnInit();
@@ -74,5 +78,17 @@ export class PeopleComponent implements OnInit {
                 this.errMsg = err.message;
             }
         });
+    }
+
+    isFollowing(user: User): boolean {
+        return this.follows.includes(user._id);
+    }
+
+    mouseEnter(user: User) {
+        this.followUserOver = user._id;
+    }
+
+    mouseLeave() {
+        this.followUserOver = undefined;
     }
 }

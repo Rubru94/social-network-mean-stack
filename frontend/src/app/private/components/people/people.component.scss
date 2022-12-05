@@ -7,6 +7,10 @@
     width: 50%;
 }
 
+button span {
+    margin: 0 0.25em;
+}
+
 .panel-body {
     display: flex;
     align-items: center;
@@ -23,7 +27,7 @@
         color: inherit;
     }
     .user-image {
-        width: 3.5rem;
+        width: 6.5rem;
         height: 3rem;
         border-radius: 2em;
         margin: 0 1rem;

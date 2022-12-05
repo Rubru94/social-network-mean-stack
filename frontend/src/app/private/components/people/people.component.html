@@ -31,6 +31,28 @@
                             </div>
                         </a>
                     </div>
+                    <div class="panel-item user-name pull-right">
+                        <button *ngIf="isFollowing(user)" class="btn btn-success">
+                            <span><em class="bi bi-plus-circle-fill"></em></span>
+                            <span>Follow</span>
+                        </button>
+                        <button
+                            *ngIf="!isFollowing(user)"
+                            class="btn"
+                            [ngClass]="user._id === followUserOver ? 'btn-danger' : 'btn-primary'"
+                            (mouseenter)="mouseEnter(user)"
+                            (mouseleave)="mouseLeave()"
+                        >
+                            <div *ngIf="user._id === followUserOver; else following">
+                                <span><em class="bi bi-dash-circle-fill"></em></span>
+                                <span>Unfollow</span>
+                            </div>
+                            <ng-template #following>
+                                <span><em class="bi bi-check-circle-fill"></em></span>
+                                <span>Following</span>
+                            </ng-template>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

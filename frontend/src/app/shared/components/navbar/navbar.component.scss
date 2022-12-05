@@ -8,7 +8,6 @@ nav {
         }
         a {
             color: inherit;
-            border: none;
             cursor: pointer;
             text-decoration: none;
             padding: 0 0.5rem;
@@ -26,6 +25,9 @@ nav {
     display: flex;
     flex-direction: row;
     align-items: center;
+    a {
+        border: none;
+    }
     .avatar {
         width: 3.5rem;
         height: 3.5rem;

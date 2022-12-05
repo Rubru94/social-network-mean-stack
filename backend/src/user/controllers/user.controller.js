@@ -93,6 +93,7 @@ async function register(req, res, next) {
 
 async function login(req, res, next) {
     try {
+        delete req.body._id;
         const user = new User(req.body);
         if (user.validateSync()) throw new error.BadRequestError(user.validateSync().message);
 

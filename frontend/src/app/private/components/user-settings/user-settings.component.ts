@@ -54,6 +54,10 @@ export class UserSettingsComponent {
         return FormStatus;
     }
 
+    get URL() {
+        return this.userHttpService.api;
+    }
+
     isInvalidControl(field: string) {
         return (
             this.userSettingsFormControl[field].invalid &&
@@ -62,15 +66,18 @@ export class UserSettingsComponent {
     }
 
     onSubmit(form: FormGroup) {
-        this.user = { ...this.user, ...form.value };
+        this.user.setSettingsFormData(form.value);
         this.userHttpService.update(this.user).subscribe({
             next: (res: User) => {
                 this.status = FormStatus.Valid;
                 localStorage.setItem('identity', JSON.stringify(res));
+                this.user = new User(res);
                 if (this.fileInput) {
                     this.userHttpService.uploadImage(this.user, this.fileInput).subscribe({
                         next: (res: User) => {
                             localStorage.setItem('identity', JSON.stringify(res));
+                            this.user = new User(res);
+                            form.controls['image'].reset();
                         },
                         error: (err: Error) => {
                             this.status = FormStatus.Invalid;

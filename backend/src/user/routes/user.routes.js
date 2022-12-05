@@ -4,8 +4,9 @@ const express = require('express');
 const userController = require('@user/controllers/user.controller');
 const api = express.Router();
 const authMiddleware = require('@core/middlewares/auth.middleware');
+const userUploads = require('@user/models/uploads.model');
 const multipart = require('connect-multiparty');
-const uploadMiddleware = multipart({ uploadDir: './src/user/uploads' });
+const uploadMiddleware = multipart({ uploadDir: userUploads.path });
 
 api.get('/all/:page?', authMiddleware, userController.getAll);
 api.get('/counters', authMiddleware, userController.getCounters);

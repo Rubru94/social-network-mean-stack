@@ -13,6 +13,7 @@ const path = require('path');
 const Publication = require('@publication/models/publication.model');
 const PublicUser = require('@user/models/public-user.model');
 const User = require('@user/models/user.model');
+const userUploads = require('@user/models/uploads.model');
 const utilService = require('@utils/services/util.service');
 
 function hello(req, res) {
@@ -159,8 +160,8 @@ async function uploadImage(req, res, next) {
 
         const updatedUser = await User.findByIdAndUpdate(userId, new ImageUser(fileName), { new: true });
         if (!updatedUser) throw new error.NotFoundError('Failed to update image user');
-        const file = await fsService.existsPromise(`./src/user/uploads/${user.image}`);
-        if (file) await fsService.unlinkPromise(`./src/user/uploads/${user.image}`);
+        const file = await fsService.existsPromise(`${userUploads.path}/${user.image}`);
+        if (file) await fsService.unlinkPromise(`${userUploads.path}/${user.image}`);
 
         return res.status(200).send(updatedUser);
     } catch (err) {
@@ -171,7 +172,7 @@ async function uploadImage(req, res, next) {
 async function getImageFile(req, res, next) {
     try {
         if (!req.params?.imageFile) throw new error.BadRequestError('No param imageFile');
-        const filePath = `./src/user/uploads/${req.params.imageFile}`;
+        const filePath = `${userUploads.path}/${req.params.imageFile}`;
 
         const file = await fsService.existsPromise(filePath);
         if (!file) throw new error.NotFoundError('Image does not exist');

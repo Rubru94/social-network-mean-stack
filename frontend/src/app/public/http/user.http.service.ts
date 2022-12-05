@@ -31,13 +31,13 @@ export class UserHttpService {
 
     update(user: User): Observable<User> {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.put<User>(`${this.api}/update/${user.id}`, user, { headers });
+        return this.http.put<User>(`${this.api}/update/${user._id}`, user, { headers });
     }
 
     uploadImage(user: User, file: File): Observable<User> {
         const formData: FormData = new FormData();
         formData.append('image', file, file.name);
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.post<User>(`${this.api}/upload-image/${user.id}`, formData, { headers });
+        return this.http.post<User>(`${this.api}/upload-image/${user._id}`, formData, { headers });
     }
 }

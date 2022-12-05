@@ -50,6 +50,9 @@
                 </div>
             </div>
             <div>
+                <div *ngIf="user.image">
+                    <img style="width: 10em" alt="" src="{{ URL + '/image/' + user.image }}" />
+                </div>
                 <label>
                     Avatar:
                     <input type="file" formControlName="image" (change)="onFileSelected($event)" />

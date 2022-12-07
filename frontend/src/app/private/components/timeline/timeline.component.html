@@ -25,6 +25,10 @@
                         <div>
                             <h4>{{ userFromPublication(publication).name }} {{ userFromPublication(publication).surname }}</h4>
                         </div>
+                        |
+                        <div class="date">
+                            <small>{{ publication.createdAt | amLocale : 'en' | amTimeAgo }}</small>
+                        </div>
                     </div>
                     <div class="publication-text pull-left">
                         {{ publication.text }}
@@ -35,6 +39,6 @@
     </div>
 
     <div>
-        <button *ngIf="itemsPerPage !== 0 && show" class="btn btn-success" (click)="showMore()">Show more</button>
+        <button *ngIf="show" class="btn btn-success" (click)="showMore()">Show more</button>
     </div>
 </div>

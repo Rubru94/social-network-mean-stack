@@ -61,6 +61,8 @@ export class TimelineComponent implements OnInit {
                 this.totalPages = res.pages;
                 this.itemsPerPage = res.itemsPerPage;
 
+                if (this.publications.length === this.totalItems) this.show = false;
+
                 /**
                  * @info Scroll animation using jQuery
                  */
@@ -79,7 +81,6 @@ export class TimelineComponent implements OnInit {
     }
 
     showMore(): void {
-        if (this.publications.length === this.totalItems - this.itemsPerPage) this.show = false;
         this.loadPublications(++this.currentPage);
     }
 }

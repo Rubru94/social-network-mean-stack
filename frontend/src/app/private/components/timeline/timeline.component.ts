@@ -60,6 +60,12 @@ export class TimelineComponent implements OnInit {
                 this.totalItems = res.total;
                 this.totalPages = res.pages;
                 this.itemsPerPage = res.itemsPerPage;
+
+                /**
+                 * @info Scroll animation using jQuery
+                 */
+                $('html, body').animate({ scrollTop: $('body').prop('scrollHeight') }, 500);
+
                 if (res.pages && page > res.pages) {
                     this.router.navigateByUrl('/private/timeline');
                     this.ngOnInit();

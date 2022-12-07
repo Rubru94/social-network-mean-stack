@@ -19,6 +19,7 @@ async function getAllFromFollowing(req, res, next) {
 
         let follows = await Follow.find({ user: req.user.sub }).sort('_id').populate({ path: 'followed' });
         follows = follows.map((follow) => follow.followed);
+        follows.push(req.user.sub);
 
         Publication.find({ user: { $in: follows } })
             .sort({ createdAt: -1 })

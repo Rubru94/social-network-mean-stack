@@ -14,4 +14,21 @@
     -webkit-box-shadow: 5px 5px 10px 0px rgba(196, 196, 196, 1);
     -moz-box-shadow: 5px 5px 10px 0px rgba(196, 196, 196, 1);
     box-shadow: 5px 5px 10px 0px rgba(196, 196, 196, 1);
+    .publication-image {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 2em;
+        overflow: hidden;
+        position: relative;
+        img {
+            display: block;
+            height: 100%;
+            position: absolute;
+            margin: auto;
+            top: -100%;
+            right: -100%;
+            bottom: -100%;
+            left: -100%;
+        }
+    }
 }

@@ -11,7 +11,19 @@
         <div *ngFor="let publication of publications" class="item-publication">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <h4>{{ userFromPublication(publication).name }} {{ userFromPublication(publication).surname }}</h4>
+                    <div class="panel-item publication-image pull-left">
+                        <a href="#">
+                            <div *ngIf="userFromPublication(publication).image">
+                                <img alt="" src="{{ api + '/user/image/' + userFromPublication(publication).image }}" />
+                            </div>
+                            <div *ngIf="!userFromPublication(publication).image">
+                                <img alt="" src="assets/img/default-avatar.png" />
+                            </div>
+                        </a>
+                    </div>
+                    <div>
+                        <h4>{{ userFromPublication(publication).name }} {{ userFromPublication(publication).surname }}</h4>
+                    </div>
                     <div class="publication-text pull-left">
                         {{ publication.text }}
                     </div>

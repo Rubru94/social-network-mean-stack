@@ -19,6 +19,7 @@ export class PeopleComponent implements OnInit {
     previousPage: number;
     nextPage: number;
     totalPages: number;
+    itemsPerPage: number;
     users: User[];
     follows: string[];
     status: FormStatus;
@@ -39,6 +40,7 @@ export class PeopleComponent implements OnInit {
         this.previousPage = 0;
         this.nextPage = 0;
         this.totalPages = 1;
+        this.itemsPerPage = 4;
         this.users = [];
         this.follows = [];
         this.status = FormStatus.None;
@@ -70,7 +72,7 @@ export class PeopleComponent implements OnInit {
     }
 
     getUsers(page: number) {
-        this.userHttpService.getUsers(page).subscribe({
+        this.userHttpService.getUsers(page, this.itemsPerPage).subscribe({
             next: (res: { users: User[]; followings: string[]; followers: string[]; total: number; pages: number }) => {
                 this.users = res.users;
                 this.totalPages = res.pages;

@@ -7,6 +7,7 @@ import { Publication } from 'src/app/public/models/publication.model';
 import { User } from 'src/app/public/models/user.model';
 import { UserService } from 'src/app/public/services/user.service';
 import { environment } from '../../../../../environments/env';
+import { PublicationHttpService } from '../../services/publication.http.service';
 
 @Component({
     selector: 'app-user-sidebar',
@@ -26,7 +27,12 @@ export class UserSidebarComponent implements OnInit, DoCheck {
     publicationForm: FormGroup;
     fileInput?: File | null;
 
-    constructor(private fb: FormBuilder, private router: Router, private userService: UserService) {
+    constructor(
+        private fb: FormBuilder,
+        private router: Router,
+        private userService: UserService,
+        private publicationHttpService: PublicationHttpService
+    ) {
         this.title = 'User data';
         this.publication = new Publication();
         this.api = `${environment.apiURL}/api`;
@@ -73,19 +79,31 @@ export class UserSidebarComponent implements OnInit, DoCheck {
     onSubmit(form: FormGroup): void {
         this.publication = new Publication({ ...form.value, ...{ user: this.identity?._id } });
         console.log(this.publication);
-        /*
-      this.userHttpService.login(this.user).subscribe({
-          next: (res: User | { token: string }) => {
-              localStorage.setItem('identity', JSON.stringify(res));
-              this.requestToken();
-              this.status = FormStatus.Valid;
-              form.reset();
-          },
-          error: (err: Error) => {
-              this.status = FormStatus.Invalid;
-              this.errMsg = err.message;
-          }
-      }); */
+
+        this.publicationHttpService.create(this.publication).subscribe({
+            next: (res: Publication) => {
+                this.status = FormStatus.Valid;
+                form.reset();
+                this.publication = new Publication(res);
+                if (this.fileInput) {
+                    this.publicationHttpService.uploadImage(this.publication, this.fileInput).subscribe({
+                        next: (res: Publication) => {
+                            console.log(res);
+                            this.publication = new Publication(res);
+                            form.controls['file'].reset();
+                        },
+                        error: (err: Error) => {
+                            this.status = FormStatus.Invalid;
+                            this.errMsg = err.message;
+                        }
+                    });
+                }
+            },
+            error: (err: Error) => {
+                this.status = FormStatus.Invalid;
+                this.errMsg = err.message;
+            }
+        });
     }
 
     onFileSelected(event: Event) {

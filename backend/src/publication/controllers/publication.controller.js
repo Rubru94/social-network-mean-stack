@@ -10,6 +10,7 @@ const mongooseService = require('@utils/services/mongoose.service');
 const path = require('path');
 const Publication = require('@publication/models/publication.model');
 const utilService = require('@utils/services/util.service');
+const publicationUploads = require('@publication/models/uploads.model');
 
 async function getAllFromFollowing(req, res, next) {
     try {
@@ -48,6 +49,7 @@ async function findById(req, res, next) {
 
 async function create(req, res, next) {
     try {
+        delete req.body._id;
         let publication = new Publication(req.body);
         publication.user ??= req.user.sub;
         if (publication.validateSync()) throw new error.BadRequestError(publication.validateSync().message);
@@ -117,8 +119,11 @@ async function uploadImage(req, res, next) {
             await fsService.unlinkPromise(filePath);
             throw new error.BadRequestError('Invalid image format/extension');
         }
+
         const updatedPublication = await Publication.findByIdAndUpdate(publicationId, new FilePublication(fileName), { new: true });
         if (!updatedPublication) throw new error.NotFoundError('Failed to update file publication');
+        const file = await fsService.existsPromise(`${publicationUploads.path}/${publication.file}`);
+        if (file) await fsService.unlinkPromise(`${publicationUploads.path}/${publication.file}`);
 
         return res.status(200).send(updatedPublication);
     } catch (err) {

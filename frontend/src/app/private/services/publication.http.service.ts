@@ -26,4 +26,17 @@ export class PublicationHttpService {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
         return this.http.post<Publication>(`${this.api}/upload-image/${publication._id}`, formData, { headers });
     }
+
+    remove(id: string = ''): Observable<Publication[]> {
+        const headers = new HttpHeaders().set('Authorization', this.userService.token);
+        return this.http.delete<Publication[]>(`${this.api}/${id}`, { headers });
+    }
+
+    getPublications(page: number = 1, itemsPerPage = 0): Observable<{ publications: Publication[]; total: number; pages: number }> {
+        const headers = new HttpHeaders().set('Authorization', this.userService.token);
+        return this.http.get<{ publications: Publication[]; total: number; pages: number }>(`${this.api}/all-following/${page}`, {
+            headers,
+            params: { itemsPerPage }
+        });
+    }
 }

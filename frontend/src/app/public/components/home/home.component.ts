@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-home',
@@ -8,7 +9,11 @@ import { Component } from '@angular/core';
 export class HomeComponent {
     title: string;
 
-    constructor() {
+    constructor(private userService: UserService) {
         this.title = 'Welcome to Social Network!!';
+    }
+
+    get token() {
+        return this.userService.token;
     }
 }

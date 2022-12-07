@@ -6,4 +6,17 @@
             <span>Info: {{ errMsg }}</span>
         </div>
     </div>
+
+    <div class="timeline">
+        <div *ngFor="let publication of publications" class="item-publication">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4>{{ userFromPublication(publication).name }} {{ userFromPublication(publication).surname }}</h4>
+                    <div class="publication-text pull-left">
+                        {{ publication.text }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

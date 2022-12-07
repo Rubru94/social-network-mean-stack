@@ -2,7 +2,7 @@ import { User } from './user.model';
 
 export class Publication {
     _id: string;
-    user: string | User;
+    user: User | string;
     text: string;
     file: string;
     createdAt: Date;

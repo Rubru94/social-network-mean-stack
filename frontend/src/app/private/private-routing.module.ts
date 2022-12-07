@@ -8,7 +8,8 @@ const routes: Routes = [
     { path: 'settings', component: UserSettingsComponent },
     { path: 'people', redirectTo: 'people/1', pathMatch: 'full' },
     { path: 'people/:page', component: PeopleComponent },
-    { path: 'timeline', component: TimelineComponent }
+    { path: 'timeline', redirectTo: 'timeline/1', pathMatch: 'full' },
+    { path: 'timeline/:page', component: TimelineComponent }
 ];
 
 @NgModule({

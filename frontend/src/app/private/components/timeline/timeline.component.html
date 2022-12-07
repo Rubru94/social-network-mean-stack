@@ -1,0 +1,9 @@
+<div class="form-container col-lg-12">
+    <h1 class="h1-strong">{{ title }}</h1>
+
+    <div *ngIf="status === FormStatus.Invalid" class="alert alert-danger">
+        <div>
+            <span>Info: {{ errMsg }}</span>
+        </div>
+    </div>
+</div>

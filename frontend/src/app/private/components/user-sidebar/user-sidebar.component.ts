@@ -12,6 +12,7 @@ import { environment } from '../../../../../environments/env';
     styleUrls: ['./user-sidebar.component.scss']
 })
 export class UserSidebarComponent implements OnInit, DoCheck {
+    title: string;
     counterSet?: CounterSet;
     token?: string;
     identity?: User;
@@ -20,6 +21,7 @@ export class UserSidebarComponent implements OnInit, DoCheck {
     errMsg?: string;
 
     constructor(private router: Router, private userService: UserService) {
+        this.title = 'User data';
         this.api = `${environment.apiURL}/api`;
         this.status = FormStatus.None;
     }

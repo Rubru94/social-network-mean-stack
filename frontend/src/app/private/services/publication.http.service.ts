@@ -32,11 +32,17 @@ export class PublicationHttpService {
         return this.http.delete<Publication[]>(`${this.api}/${id}`, { headers });
     }
 
-    getPublications(page: number = 1, itemsPerPage = 0): Observable<{ publications: Publication[]; total: number; pages: number }> {
+    getPublications(
+        page: number = 1,
+        itemsPerPage = 0
+    ): Observable<{ publications: Publication[]; itemsPerPage: number; total: number; pages: number }> {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.get<{ publications: Publication[]; total: number; pages: number }>(`${this.api}/all-following/${page}`, {
-            headers,
-            params: { itemsPerPage }
-        });
+        return this.http.get<{ publications: Publication[]; itemsPerPage: number; total: number; pages: number }>(
+            `${this.api}/all-following/${page}`,
+            {
+                headers,
+                params: { itemsPerPage }
+            }
+        );
     }
 }

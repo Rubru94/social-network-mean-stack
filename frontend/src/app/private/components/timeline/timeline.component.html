@@ -31,4 +31,8 @@
             </div>
         </div>
     </div>
+
+    <div>
+        <button *ngIf="itemsPerPage !== 0 && show" class="btn btn-success" (click)="showMore()">Show more</button>
+    </div>
 </div>

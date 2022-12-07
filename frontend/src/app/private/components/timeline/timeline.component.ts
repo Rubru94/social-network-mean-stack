@@ -15,37 +15,51 @@ import { PublicationHttpService } from '../../services/publication.http.service'
 export class TimelineComponent implements OnInit {
     title: string;
     publications: Publication[];
+    currentPage: number;
+    totalItems: number;
     totalPages: number;
+    itemsPerPage: number;
     token?: string;
     identity?: User;
     api: string;
     status: FormStatus;
     errMsg?: string;
 
+    show: boolean;
+
     constructor(private router: Router, private userService: UserService, private publicationHttpService: PublicationHttpService) {
         this.title = 'Timeline';
         this.publications = [];
+        this.currentPage = 1;
+        this.totalItems = 0;
         this.totalPages = 1;
+        this.itemsPerPage = 3;
         this.api = `${environment.apiURL}/api`;
         this.status = FormStatus.None;
+        this.show = true;
     }
 
     ngOnInit(): void {
         this.token = this.userService.token;
         this.identity = this.userService.identity;
-        this.getUsers(1);
+        this.loadPublications(this.currentPage);
     }
 
     get FormStatus(): typeof FormStatus {
         return FormStatus;
     }
 
-    getUsers(page: number) {
-        this.publicationHttpService.getPublications(page).subscribe({
-            next: (res: { publications: Publication[]; total: number; pages: number }) => {
-                this.publications = res.publications.map((p: Publication) => new Publication(p));
+    userFromPublication(publication: Publication): User {
+        return new User(publication.user as User);
+    }
+
+    loadPublications(page: number) {
+        this.publicationHttpService.getPublications(page, this.itemsPerPage).subscribe({
+            next: (res: { publications: Publication[]; itemsPerPage: number; total: number; pages: number }) => {
+                this.publications = this.publications.concat(res.publications.map((p: Publication) => new Publication(p)));
+                this.totalItems = res.total;
                 this.totalPages = res.pages;
-                console.log(res);
+                this.itemsPerPage = res.itemsPerPage;
                 if (res.pages && page > res.pages) {
                     this.router.navigateByUrl('/private/timeline');
                     this.ngOnInit();
@@ -58,7 +72,8 @@ export class TimelineComponent implements OnInit {
         });
     }
 
-    userFromPublication(publication: Publication): User {
-        return new User(publication.user as User);
+    showMore(): void {
+        if (this.publications.length === this.totalItems - this.itemsPerPage) this.show = false;
+        this.loadPublications(++this.currentPage);
     }
 }

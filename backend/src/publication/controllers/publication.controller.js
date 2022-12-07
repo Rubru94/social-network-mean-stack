@@ -15,7 +15,7 @@ const publicationUploads = require('@publication/models/uploads.model');
 async function getAllFromFollowing(req, res, next) {
     try {
         const page = req.params.page ?? 1;
-        const itemsPerPage = req.query?.itemsPerPage ?? 5;
+        const itemsPerPage = +req.query?.itemsPerPage ?? 5;
 
         let follows = await Follow.find({ user: req.user.sub }).sort('_id').populate({ path: 'followed' });
         follows = follows.map((follow) => follow.followed);
@@ -27,7 +27,7 @@ async function getAllFromFollowing(req, res, next) {
                 if (err) return next(err);
                 if (!publications) throw new error.NotFoundError('Publications from following users not found');
 
-                return res.status(200).send({ publications, total, pages: Math.ceil(total / itemsPerPage) });
+                return res.status(200).send({ publications, itemsPerPage, total, pages: Math.ceil(total / itemsPerPage) });
             });
     } catch (err) {
         next(err);

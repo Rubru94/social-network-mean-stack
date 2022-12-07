@@ -1,0 +1,12 @@
+.flex-container {
+    display: flex;
+}
+.main {
+    flex: 3;
+}
+.sidebar {
+    flex: 1;
+    background-color: cornsilk;
+    border-left: 1px solid;
+}
+/* flex 3 and 1 is eqivalent to width 75% / 25% */

@@ -1,0 +1,45 @@
+<div id="user-card" class="container col-lg-4 panel-default pull-left">
+    <div *ngIf="status === FormStatus.Invalid" class="alert alert-danger">
+        <div>
+            <span>Info: {{ errMsg }}</span>
+        </div>
+    </div>
+    <div class="avatar">
+        <div *ngIf="identity?.image">
+            <img alt="" src="{{ identityImageSource }}" />
+        </div>
+        <div *ngIf="!identity?.image">
+            <img alt="" src="assets/img/default-avatar.png" />
+        </div>
+    </div>
+    <div class="name-surname">
+        <a href="#"> {{ identity?.name }} {{ identity?.surname }} </a>
+        <div class="nickname">
+            <span>{{ identity?.nick }}</span>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="clearfix"></div>
+    <div *ngIf="counterSet" class="stats">
+        <div class="followers-data">
+            <a href="#">
+                <span class="label-stats"> Followers </span>
+                <span class="number-stats"> {{ counterSet.followerCount }} </span>
+            </a>
+        </div>
+        <div class="following-data">
+            <a href="#">
+                <span class="label-stats"> Following </span>
+                <span class="number-stats"> {{ counterSet.followingCount }} </span>
+            </a>
+        </div>
+        <div class="publications-data">
+            <a href="#">
+                <span class="label-stats"> Publications </span>
+                <span class="number-stats"> {{ counterSet.publications }} </span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="publications-form"></div>

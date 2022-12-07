@@ -1,0 +1,10 @@
+img {
+    width: 5em;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: -webkit-fill-available;
+    padding: 1em 0;
+}

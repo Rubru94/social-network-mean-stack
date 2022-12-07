@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CounterSet } from '../models/counter-set.model';
 import { User } from '../models/user.model';
 
 @Injectable({
@@ -13,8 +14,8 @@ export class UserService {
         return localStorage.getItem('token') as string;
     }
 
-    get stats(): any {
-        return JSON.parse((localStorage.getItem('stats') as string) ?? null);
+    get counterSet(): CounterSet {
+        return new CounterSet(JSON.parse((localStorage.getItem('counterSet') as string) ?? null));
     }
 
     logout() {

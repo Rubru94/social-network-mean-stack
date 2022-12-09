@@ -6,4 +6,19 @@
             <span>Info: {{ errMsg }}</span>
         </div>
     </div>
+
+    <div class="data-profile">
+        <div class="avatar">
+            <div *ngIf="user.image">
+                <img alt="" src="{{ userImageSource }}" />
+            </div>
+            <div *ngIf="!user.image">
+                <img alt="" src="assets/img/default-avatar.png" />
+            </div>
+        </div>
+        <div class="user-name">
+            <p class="name">{{ user.name }} {{ user.surname }}</p>
+            <p class="nick">{{ user.nick }}</p>
+        </div>
+    </div>
 </div>

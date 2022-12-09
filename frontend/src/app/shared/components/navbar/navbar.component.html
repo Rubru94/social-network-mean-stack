@@ -52,6 +52,9 @@
                     <div *ngIf="identity?.image">
                         <img alt="" src="{{ identityImageSource }}" />
                     </div>
+                    <div *ngIf="!identity?.image">
+                        <img alt="" src="assets/img/default-avatar.png" />
+                    </div>
                 </li>
                 <li class="dropdown">
                     <a class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar">

@@ -1,0 +1,40 @@
+.data-profile {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin-top: 2rem;
+    & > div {
+        margin: 0 2rem;
+    }
+    .avatar {
+        width: 16rem;
+        height: 13rem;
+        border-radius: 2em;
+        margin: 0 0.25rem;
+        overflow: hidden;
+        position: relative;
+        img {
+            display: block;
+            height: 100%;
+            position: absolute;
+            margin: auto;
+            top: -100%;
+            right: -100%;
+            bottom: -100%;
+            left: -100%;
+        }
+    }
+    .user-name {
+        font-size: 2rem;
+        p {
+            margin: 0;
+        }
+        .name {
+            font-weight: bold;
+        }
+        .nick {
+            font-style: italic;
+            color: grey;
+        }
+    }
+}

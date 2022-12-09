@@ -5,6 +5,7 @@ import { CounterSet } from 'src/app/public/models/counter-set.model';
 import { FormStatus } from 'src/app/public/models/form-status.model';
 import { User } from 'src/app/public/models/user.model';
 import { UserService } from 'src/app/public/services/user.service';
+import { environment } from '../../../../../environments/env';
 
 @Component({
     selector: 'app-user-profile',
@@ -14,11 +15,12 @@ import { UserService } from 'src/app/public/services/user.service';
 export class UserProfileComponent implements OnInit {
     title: string;
     token?: string;
-    user?: User;
+    user: User;
     identity?: User;
     stats?: CounterSet;
     status: FormStatus;
     errMsg?: string;
+    api: string;
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -28,6 +30,8 @@ export class UserProfileComponent implements OnInit {
     ) {
         this.title = 'Profile';
         this.status = FormStatus.None;
+        this.user = new User();
+        this.api = `${environment.apiURL}/api`;
     }
 
     ngOnInit(): void {
@@ -38,6 +42,10 @@ export class UserProfileComponent implements OnInit {
 
     get FormStatus(): typeof FormStatus {
         return FormStatus;
+    }
+
+    get userImageSource(): string {
+        return `${this.api}/user/image/${this.user.image}`;
     }
 
     loadPage(): void {

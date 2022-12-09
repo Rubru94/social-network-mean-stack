@@ -45,4 +45,22 @@ button span {
             color: grey;
         }
     }
+    .stats {
+        margin: 1em 0;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(1, 1fr);
+        justify-items: center;
+        grid-column-gap: 0.25rem;
+        & > div {
+            display: flex;
+            text-align: center;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .label-stats {
+            font-weight: 500;
+        }
+    }
 }

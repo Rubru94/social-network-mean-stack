@@ -21,7 +21,7 @@ export class UserProfileComponent implements OnInit {
     hasFollowing: boolean;
     hasFollower: boolean;
     identity?: User;
-    stats?: CounterSet;
+    counterSet?: CounterSet;
     status: FormStatus;
     errMsg?: string;
     api: string;
@@ -102,7 +102,7 @@ export class UserProfileComponent implements OnInit {
 
     counters(id: string): void {
         this.userHttpService.counters(id).subscribe({
-            next: (res: CounterSet) => (this.stats = res),
+            next: (res: CounterSet) => (this.counterSet = res),
             error: (err: Error) => {
                 this.status = FormStatus.Invalid;
                 this.errMsg = err.message;

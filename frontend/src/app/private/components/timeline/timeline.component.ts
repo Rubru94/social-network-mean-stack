@@ -6,6 +6,7 @@ import { User } from 'src/app/public/models/user.model';
 import { UserService } from 'src/app/public/services/user.service';
 import { environment } from '../../../../../environments/env';
 import { PublicationHttpService } from '../../services/publication.http.service';
+import { PublicationService } from '../../services/publication.service';
 
 @Component({
     selector: 'app-timeline',
@@ -27,7 +28,12 @@ export class TimelineComponent implements OnInit {
 
     show: boolean;
 
-    constructor(private router: Router, private userService: UserService, private publicationHttpService: PublicationHttpService) {
+    constructor(
+        private router: Router,
+        private userService: UserService,
+        private publicationService: PublicationService,
+        private publicationHttpService: PublicationHttpService
+    ) {
         this.title = 'Timeline';
         this.publications = [];
         this.currentPage = 1;
@@ -43,6 +49,11 @@ export class TimelineComponent implements OnInit {
         this.token = this.userService.token;
         this.identity = this.userService.identity;
         this.loadPublications(this.currentPage);
+        this.publicationService.hasNewPublication().subscribe(() => {
+            this.publications = [];
+            this.currentPage = 1;
+            this.loadPublications(this.currentPage);
+        });
     }
 
     get FormStatus(): typeof FormStatus {

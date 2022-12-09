@@ -8,6 +8,7 @@ import { User } from 'src/app/public/models/user.model';
 import { UserService } from 'src/app/public/services/user.service';
 import { environment } from '../../../../../environments/env';
 import { PublicationHttpService } from '../../services/publication.http.service';
+import { PublicationService } from '../../services/publication.service';
 
 @Component({
     selector: 'app-user-sidebar',
@@ -31,6 +32,7 @@ export class UserSidebarComponent implements OnInit, DoCheck {
         private fb: FormBuilder,
         private router: Router,
         private userService: UserService,
+        private publicationService: PublicationService,
         private publicationHttpService: PublicationHttpService
     ) {
         this.title = 'User data';
@@ -78,17 +80,17 @@ export class UserSidebarComponent implements OnInit, DoCheck {
 
     onSubmit(form: FormGroup): void {
         this.publication = new Publication({ ...form.value, ...{ user: this.identity?._id } });
-        console.log(this.publication);
 
         this.publicationHttpService.create(this.publication).subscribe({
             next: (res: Publication) => {
                 this.status = FormStatus.Valid;
                 form.reset();
+                this.router.navigateByUrl('/private/timeline');
+                this.publicationService.newPublicationEvent();
                 this.publication = new Publication(res);
                 if (this.fileInput) {
                     this.publicationHttpService.uploadImage(this.publication, this.fileInput).subscribe({
                         next: (res: Publication) => {
-                            console.log(res);
                             this.publication = new Publication(res);
                             form.controls['file'].reset();
                         },

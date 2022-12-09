@@ -34,15 +34,14 @@ export class PublicationHttpService {
 
     getPublications(
         page: number = 1,
-        itemsPerPage = 0
+        itemsPerPage: number = 0,
+        user: string = ''
     ): Observable<{ publications: Publication[]; itemsPerPage: number; total: number; pages: number }> {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.get<{ publications: Publication[]; itemsPerPage: number; total: number; pages: number }>(
-            `${this.api}/all-following/${page}`,
-            {
-                headers,
-                params: { itemsPerPage }
-            }
-        );
+        const endpoint = `${this.api}/all-${user !== '' ? 'user' : 'following'}/${page}`;
+        return this.http.get<{ publications: Publication[]; itemsPerPage: number; total: number; pages: number }>(endpoint, {
+            headers,
+            params: { itemsPerPage, user }
+        });
     }
 }

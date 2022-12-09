@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormStatus } from 'src/app/public/models/form-status.model';
 import { Publication } from 'src/app/public/models/publication.model';
@@ -25,8 +25,10 @@ export class TimelineComponent implements OnInit {
     api: string;
     status: FormStatus;
     errMsg?: string;
-
     show: boolean;
+
+    @Input()
+    userId?: string;
 
     constructor(
         private router: Router,
@@ -61,7 +63,7 @@ export class TimelineComponent implements OnInit {
     }
 
     loadPublications(page: number): void {
-        this.publicationHttpService.getPublications(page, this.itemsPerPage).subscribe({
+        this.publicationHttpService.getPublications(page, this.itemsPerPage, this.userId).subscribe({
             next: (res: { publications: Publication[]; itemsPerPage: number; total: number; pages: number }) => {
                 this.publications = this.publications.concat(res.publications.map((p: Publication) => new Publication(p)));
                 this.totalItems = res.total;

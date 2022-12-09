@@ -35,6 +35,26 @@ async function getAllFromFollowing(req, res, next) {
     }
 }
 
+async function getAllFromUser(req, res, next) {
+    try {
+        const page = req.params.page ?? 1;
+        const itemsPerPage = +req.query?.itemsPerPage ?? 5;
+        const user = req.query?.user && !!(req.query?.user).trim() ? req.query.user : req.user.sub;
+
+        Publication.find({ user })
+            .sort({ createdAt: -1 })
+            .populate('user')
+            .paginate(page, itemsPerPage, async (err, publications, total) => {
+                if (err) return next(err);
+                if (!publications) throw new error.NotFoundError('Publications from following users not found');
+
+                return res.status(200).send({ publications, itemsPerPage, total, pages: Math.ceil(total / itemsPerPage) });
+            });
+    } catch (err) {
+        next(err);
+    }
+}
+
 async function findById(req, res, next) {
     try {
         const id = req.params?.id;
@@ -134,6 +154,7 @@ async function uploadImage(req, res, next) {
 
 module.exports = {
     getAllFromFollowing,
+    getAllFromUser,
     findById,
     create,
     remove,

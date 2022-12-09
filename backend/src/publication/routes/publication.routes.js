@@ -9,6 +9,7 @@ const multipart = require('connect-multiparty');
 const uploadMiddleware = multipart({ uploadDir: publicationUploads.path });
 
 api.get('/all-following/:page?', authMiddleware, publicationController.getAllFromFollowing);
+api.get('/all-user/:page?', authMiddleware, publicationController.getAllFromUser);
 api.get('/:id', authMiddleware, publicationController.findById);
 api.get('/image/:imageFile', publicationController.getImageFile);
 api.post('/', authMiddleware, publicationController.create);

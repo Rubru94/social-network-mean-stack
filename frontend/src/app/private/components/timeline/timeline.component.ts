@@ -49,11 +49,7 @@ export class TimelineComponent implements OnInit {
         this.token = this.userService.token;
         this.identity = this.userService.identity;
         this.loadPublications(this.currentPage);
-        this.publicationService.hasNewPublication().subscribe(() => {
-            this.publications = [];
-            this.currentPage = 1;
-            this.loadPublications(this.currentPage);
-        });
+        this.publicationService.hasNewPublication().subscribe(() => this.reloadPublications());
     }
 
     get FormStatus(): typeof FormStatus {
@@ -64,7 +60,7 @@ export class TimelineComponent implements OnInit {
         return new User(publication.user as User);
     }
 
-    loadPublications(page: number) {
+    loadPublications(page: number): void {
         this.publicationHttpService.getPublications(page, this.itemsPerPage).subscribe({
             next: (res: { publications: Publication[]; itemsPerPage: number; total: number; pages: number }) => {
                 this.publications = this.publications.concat(res.publications.map((p: Publication) => new Publication(p)));
@@ -89,6 +85,13 @@ export class TimelineComponent implements OnInit {
                 this.errMsg = err.message;
             }
         });
+    }
+
+    reloadPublications(): void {
+        this.publications = [];
+        this.currentPage = 1;
+        this.show = true;
+        this.loadPublications(this.currentPage);
     }
 
     showMore(): void {

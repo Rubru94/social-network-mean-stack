@@ -29,9 +29,22 @@
                     <span><em class="bi bi-plus-circle-fill"></em></span>
                     <span>Follow</span>
                 </button>
-                <button *ngIf="hasFollowing" class="btn btn-danger" (click)="removeFollow(user._id)">
-                    <span><em class="bi bi-dash-circle-fill"></em></span>
-                    <span>Unfollow</span>
+                <button
+                    *ngIf="hasFollowing"
+                    class="btn"
+                    [ngClass]="user._id === followUserOver ? 'btn-danger' : 'btn-primary'"
+                    (mouseenter)="mouseEnter(user)"
+                    (mouseleave)="mouseLeave()"
+                    (click)="removeFollow(user._id)"
+                >
+                    <div *ngIf="user._id === followUserOver; else following">
+                        <span><em class="bi bi-dash-circle-fill"></em></span>
+                        <span>Unfollow</span>
+                    </div>
+                    <ng-template #following>
+                        <span><em class="bi bi-check-circle-fill"></em></span>
+                        <span>Following</span>
+                    </ng-template>
                 </button>
             </div>
         </div>

@@ -25,6 +25,7 @@ export class UserProfileComponent implements OnInit {
     status: FormStatus;
     errMsg?: string;
     api: string;
+    followUserOver?: string;
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -74,6 +75,14 @@ export class UserProfileComponent implements OnInit {
 
     isUserLogged(user: User): boolean {
         return user._id === this.identity?._id;
+    }
+
+    mouseEnter(user: User) {
+        this.followUserOver = user._id;
+    }
+
+    mouseLeave() {
+        this.followUserOver = undefined;
     }
 
     loadUser(id: string): void {

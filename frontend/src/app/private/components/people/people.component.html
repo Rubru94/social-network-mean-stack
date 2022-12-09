@@ -22,7 +22,7 @@
                         </a>
                     </div>
                     <div class="panel-item user-name pull-left">
-                        <a href="#">
+                        <a [routerLink]="['/private/profile', user._id]">
                             <div class="name">
                                 <span>{{ user.name }} {{ user.surname }}</span>
                             </div>

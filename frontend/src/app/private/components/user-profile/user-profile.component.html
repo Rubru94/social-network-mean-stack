@@ -16,9 +16,24 @@
                 <img alt="" src="assets/img/default-avatar.png" />
             </div>
         </div>
-        <div class="user-name">
-            <p class="name">{{ user.name }} {{ user.surname }}</p>
-            <p class="nick">{{ user.nick }}</p>
+        <div>
+            <div class="follow-badge">
+                <div *ngIf="hasFollower"><span class="badge rounded-pill bg-primary">Follow you</span></div>
+            </div>
+            <div class="user-name">
+                <p class="name">{{ user.name }} {{ user.surname }}</p>
+                <p class="nick">{{ user.nick }}</p>
+            </div>
+            <div class="follow-buttons">
+                <button *ngIf="!isUserLogged(user) && !hasFollowing" class="btn btn-success" (click)="createFollow(user._id)">
+                    <span><em class="bi bi-plus-circle-fill"></em></span>
+                    <span>Follow</span>
+                </button>
+                <button *ngIf="hasFollowing" class="btn btn-danger" (click)="removeFollow(user._id)">
+                    <span><em class="bi bi-dash-circle-fill"></em></span>
+                    <span>Unfollow</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>

@@ -25,6 +25,11 @@ button span {
     a {
         text-decoration: none;
         color: inherit;
+        transition: 200ms;
+        &:hover {
+            font-size: large;
+            transition: 200ms;
+        }
     }
     .user-image {
         width: 6.5rem;

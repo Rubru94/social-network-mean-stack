@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/env';
 import { CounterSet } from '../models/counter-set.model';
+import { Follow } from '../models/follow.model';
 import { User } from '../models/user.model';
 import { UserService } from '../services/user.service';
 
@@ -55,8 +56,8 @@ export class UserHttpService {
         );
     }
 
-    getUser(id: string = ''): Observable<{ user: User }> {
+    getUser(id: string = ''): Observable<{ user: User; following: Follow; follower: Follow }> {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.get<{ user: User }>(`${this.api}/${id}`, { headers });
+        return this.http.get<{ user: User; following: Follow; follower: Follow }>(`${this.api}/${id}`, { headers });
     }
 }

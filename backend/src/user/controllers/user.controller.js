@@ -62,7 +62,7 @@ async function findById(req, res, next) {
 
 async function getCounters(req, res, next) {
     try {
-        const user = req.query?.user ?? req.user.sub;
+        const user = req.query?.user && !!(req.query?.user).trim() ? req.query.user : req.user.sub;
         if (!mongooseService.isValidObjectId(user)) throw new error.BadRequestError('Invalid id');
 
         const followingCount = await Follow.count({ user });

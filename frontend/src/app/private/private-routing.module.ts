@@ -10,7 +10,8 @@ const routes: Routes = [
     { path: 'people', redirectTo: 'people/1', pathMatch: 'full' },
     { path: 'people/:page', component: PeopleComponent },
     { path: 'timeline', component: TimelineComponent },
-    { path: 'profile', component: UserProfileComponent }
+    { path: 'profile', redirectTo: 'profile/', pathMatch: 'full' },
+    { path: 'profile/:id', component: UserProfileComponent }
 ];
 
 @NgModule({

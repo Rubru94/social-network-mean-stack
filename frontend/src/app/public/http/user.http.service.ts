@@ -26,7 +26,7 @@ export class UserHttpService {
 
     counters(id: string = ''): Observable<CounterSet> {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.get<CounterSet>(`${this.api}/counters/${id}`, { headers });
+        return this.http.get<CounterSet>(`${this.api}/counters`, { headers, params: { user: id } });
     }
 
     update(user: User): Observable<User> {

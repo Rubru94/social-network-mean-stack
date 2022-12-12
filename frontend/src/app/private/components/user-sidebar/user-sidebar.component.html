@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="name-surname">
-                <a href="#"> {{ identity?.name }} {{ identity?.surname }} </a>
+                <a [routerLink]="['/private/profile', identity?._id]"> {{ identity?.name }} {{ identity?.surname }} </a>
                 <div class="nickname">
                     <span>{{ identity?.nick }}</span>
                 </div>

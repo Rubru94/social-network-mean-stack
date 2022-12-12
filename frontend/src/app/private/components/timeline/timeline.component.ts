@@ -58,6 +58,10 @@ export class TimelineComponent implements OnInit {
         return FormStatus;
     }
 
+    get isProfileView(): boolean {
+        return this.publicationService.isProfileView;
+    }
+
     userFromPublication(publication: Publication): User {
         return new User(publication.user as User);
     }

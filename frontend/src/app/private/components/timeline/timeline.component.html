@@ -24,7 +24,16 @@
                             </a>
                         </div>
                         <div>
-                            <h4>{{ userFromPublication(publication).name }} {{ userFromPublication(publication).surname }}</h4>
+                            <h4>
+                                <a *ngIf="!isProfileView" [routerLink]="['/private/profile', userFromPublication(publication)._id]">
+                                    <span>
+                                        {{ userFromPublication(publication).name }} {{ userFromPublication(publication).surname }}
+                                    </span>
+                                </a>
+                                <span *ngIf="isProfileView">
+                                    {{ userFromPublication(publication).name }} {{ userFromPublication(publication).surname }}
+                                </span>
+                            </h4>
                         </div>
                         |
                         <div class="date">

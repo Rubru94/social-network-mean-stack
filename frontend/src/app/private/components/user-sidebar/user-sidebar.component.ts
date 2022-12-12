@@ -86,12 +86,12 @@ export class UserSidebarComponent implements OnInit, DoCheck {
                 this.status = FormStatus.Valid;
                 form.reset();
                 this.router.navigateByUrl('/private/timeline');
-                this.publicationService.newPublicationEvent();
                 this.publication = new Publication(res);
                 if (this.fileInput) {
                     this.publicationHttpService.uploadImage(this.publication, this.fileInput).subscribe({
                         next: (res: Publication) => {
                             this.publication = new Publication(res);
+                            this.publicationService.newPublicationEvent();
                             form.controls['file'].reset();
                         },
                         error: (err: Error) => {
@@ -99,7 +99,7 @@ export class UserSidebarComponent implements OnInit, DoCheck {
                             this.errMsg = err.message;
                         }
                     });
-                }
+                } else this.publicationService.newPublicationEvent();
             },
             error: (err: Error) => {
                 this.status = FormStatus.Invalid;

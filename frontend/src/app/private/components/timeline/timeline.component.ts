@@ -111,4 +111,16 @@ export class TimelineComponent implements OnInit {
     showImage(id: string, index: number): void {
         this.publicationImagesToShow[index] = this.publicationImagesToShow[index] !== id ? id : null;
     }
+
+    removePublication(id: string): void {
+        this.publicationHttpService.remove(id).subscribe({
+            next: (res: Publication[]) => {
+                this.reloadPublications();
+            },
+            error: (err: Error) => {
+                this.status = FormStatus.Invalid;
+                this.errMsg = err.message;
+            }
+        });
+    }
 }

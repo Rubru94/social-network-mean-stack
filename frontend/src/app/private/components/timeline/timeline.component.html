@@ -44,16 +44,61 @@
                         {{ publication.text }}
                     </div>
 
-                    <div *ngIf="publication.file" class="img-container">
+                    <div class="btn-img-container">
                         <div class="btn-container">
                             <button
-                                class="btn btn-warning"
+                                *ngIf="publication.file"
+                                class="btn btn-sm btn-warning"
                                 [class.btn-dark]="publicationImagesToShow[index] === publication._id"
                                 (click)="showImage(publication._id, index)"
                             >
                                 <em *ngIf="publicationImagesToShow[index] !== publication._id" class="bi bi-card-image"></em>
                                 <em *ngIf="publicationImagesToShow[index] === publication._id" class="bi bi-x-circle-fill"></em>
                             </button>
+
+                            <!-- Button trigger modal -->
+                            <button
+                                *ngIf="userFromPublication(publication)._id === identity?._id"
+                                class="btn btn-sm btn-danger"
+                                data-bs-toggle="modal"
+                                [attr.data-bs-target]="'#removePublicationModal' + publication._id"
+                            >
+                                <em class="bi bi-trash-fill"></em>
+                            </button>
+
+                            <!-- Modal -->
+                            <div
+                                class="modal fade"
+                                id="removePublicationModal{{ publication._id }}"
+                                tabindex="-1"
+                                aria-labelledby="removePublicationModalLabel"
+                                aria-hidden="true"
+                            >
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="removePublicationModalLabel">
+                                                Are you sure to delete this publication?
+                                            </h5>
+                                            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>You will not be able to recover a publication once deleted.</p>
+                                            <p>{{ publication.text }}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button
+                                                (click)="removePublication(publication._id)"
+                                                data-bs-dismiss="modal"
+                                                class="btn btn-danger"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div *ngIf="publicationImagesToShow[index] === publication._id" class="publication-image">
                             <img alt="" src="{{ api + '/publication/image/' + publication.file }}" />

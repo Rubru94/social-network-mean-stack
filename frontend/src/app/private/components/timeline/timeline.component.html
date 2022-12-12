@@ -9,11 +9,11 @@
     </div>
 
     <div class="timeline">
-        <div *ngFor="let publication of publications" class="item-publication">
+        <div *ngFor="let publication of publications; let index = index" class="item-publication">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="publication-header">
-                        <div class="panel-item publication-image pull-left">
+                        <div class="panel-item publication-user-image pull-left">
                             <a href="#">
                                 <div *ngIf="userFromPublication(publication).image">
                                     <img alt="" src="{{ api + '/user/image/' + userFromPublication(publication).image }}" />
@@ -43,12 +43,28 @@
                     <div class="publication-text pull-left">
                         {{ publication.text }}
                     </div>
+
+                    <div *ngIf="publication.file" class="img-container">
+                        <div class="btn-container">
+                            <button
+                                class="btn btn-warning"
+                                [class.btn-dark]="publicationImagesToShow[index] === publication._id"
+                                (click)="showImage(publication._id, index)"
+                            >
+                                <em *ngIf="publicationImagesToShow[index] !== publication._id" class="bi bi-card-image"></em>
+                                <em *ngIf="publicationImagesToShow[index] === publication._id" class="bi bi-x-circle-fill"></em>
+                            </button>
+                        </div>
+                        <div *ngIf="publicationImagesToShow[index] === publication._id" class="publication-image">
+                            <img alt="" src="{{ api + '/publication/image/' + publication.file }}" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div>
-        <button *ngIf="show" class="btn btn-success" (click)="showMore()">Show more</button>
+        <button *ngIf="showMorePublications" class="btn btn-success" (click)="showMore()">Show more</button>
     </div>
 </div>

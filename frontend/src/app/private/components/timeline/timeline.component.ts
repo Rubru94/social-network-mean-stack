@@ -25,7 +25,8 @@ export class TimelineComponent implements OnInit {
     api: string;
     status: FormStatus;
     errMsg?: string;
-    show: boolean;
+    showMorePublications: boolean;
+    publicationImagesToShow: (string | null)[];
 
     @Input()
     userId?: string;
@@ -44,7 +45,8 @@ export class TimelineComponent implements OnInit {
         this.itemsPerPage = 3;
         this.api = `${environment.apiURL}/api`;
         this.status = FormStatus.None;
-        this.show = true;
+        this.showMorePublications = true;
+        this.publicationImagesToShow = [];
     }
 
     ngOnInit(): void {
@@ -70,11 +72,12 @@ export class TimelineComponent implements OnInit {
         this.publicationHttpService.getPublications(page, this.itemsPerPage, this.userId).subscribe({
             next: (res: { publications: Publication[]; itemsPerPage: number; total: number; pages: number }) => {
                 this.publications = this.publications.concat(res.publications.map((p: Publication) => new Publication(p)));
+                this.publicationImagesToShow = Array(this.publications.length).fill(null);
                 this.totalItems = res.total;
                 this.totalPages = res.pages;
                 this.itemsPerPage = res.itemsPerPage;
 
-                if (this.publications.length === this.totalItems) this.show = false;
+                if (this.publications.length === this.totalItems) this.showMorePublications = false;
 
                 /**
                  * @info Scroll animation using jQuery
@@ -95,12 +98,17 @@ export class TimelineComponent implements OnInit {
 
     reloadPublications(): void {
         this.publications = [];
+        this.publicationImagesToShow = [];
         this.currentPage = 1;
-        this.show = true;
+        this.showMorePublications = true;
         this.loadPublications(this.currentPage);
     }
 
     showMore(): void {
         this.loadPublications(++this.currentPage);
+    }
+
+    showImage(id: string, index: number): void {
+        this.publicationImagesToShow[index] = this.publicationImagesToShow[index] !== id ? id : null;
     }
 }

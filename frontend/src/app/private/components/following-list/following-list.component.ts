@@ -27,6 +27,7 @@ export class FollowingListComponent {
     errMsg?: string;
     followUserOver?: string;
     userPageId?: string;
+    user?: User;
 
     api: string;
 
@@ -34,6 +35,7 @@ export class FollowingListComponent {
         private activatedRoute: ActivatedRoute,
         private router: Router,
         private userService: UserService,
+        private userHttpService: UserHttpService,
         private followHttpService: FollowHttpService
     ) {
         this.title = 'Following';
@@ -69,8 +71,19 @@ export class FollowingListComponent {
                 this.currentPage = page;
                 this.nextPage = page + 1;
                 this.previousPage = page - 1 > 0 ? page - 1 : 1;
+                this.loadUserPage(userId);
                 this.getFollowing(this.currentPage, userId);
             },
+            error: (err: Error) => {
+                this.status = FormStatus.Invalid;
+                this.errMsg = err.message;
+            }
+        });
+    }
+
+    loadUserPage(id: string): void {
+        this.userHttpService.getUser(id).subscribe({
+            next: (res: { user: User; following: Follow; follower: Follow }) => (this.user = new User(res.user)),
             error: (err: Error) => {
                 this.status = FormStatus.Invalid;
                 this.errMsg = err.message;

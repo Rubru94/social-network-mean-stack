@@ -1,0 +1,58 @@
+.pagination {
+    display: flex;
+    justify-content: space-around;
+}
+
+.people {
+    width: 75%;
+}
+
+button span {
+    margin: 0 0.25em;
+}
+
+.panel-body {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    border: 1px solid rgb(168, 168, 168);
+    border-radius: 1em;
+    margin: 1em 0;
+    padding: 1em;
+    -webkit-box-shadow: 5px 5px 10px 0px rgba(196, 196, 196, 1);
+    -moz-box-shadow: 5px 5px 10px 0px rgba(196, 196, 196, 1);
+    box-shadow: 5px 5px 10px 0px rgba(196, 196, 196, 1);
+    a {
+        text-decoration: none;
+        color: inherit;
+        transition: 200ms;
+        &:hover {
+            font-size: large;
+            transition: 200ms;
+        }
+    }
+    .user-image {
+        width: 6.5rem;
+        height: 3rem;
+        border-radius: 2em;
+        margin: 0 1rem;
+        overflow: hidden;
+        position: relative;
+        img {
+            display: block;
+            height: 100%;
+            position: absolute;
+            margin: auto;
+            top: -100%;
+            right: -100%;
+            bottom: -100%;
+            left: -100%;
+        }
+    }
+    .user-name {
+        width: -webkit-fill-available;
+        .name {
+            font-weight: bold;
+        }
+    }
+}

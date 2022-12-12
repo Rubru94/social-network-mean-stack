@@ -30,11 +30,13 @@
                     <span class="number-stats"> {{ counterSet.followerCount }} </span>
                 </div>
                 <div class="following-data">
-                    <a href="#"> <span class="label-stats"> Following </span> </a>
+                    <a [routerLink]="['/private/following-list']" [queryParams]="{ user: user._id }">
+                        <span class="label-stats"> Following </span>
+                    </a>
                     <span class="number-stats"> {{ counterSet.followingCount }} </span>
                 </div>
                 <div class="publications-data">
-                    <a href="#"> <span class="label-stats"> Publications </span> </a>
+                    <a [routerLink]="['/private/profile', user._id]"> <span class="label-stats"> Publications </span> </a>
                     <span class="number-stats"> {{ counterSet.publications }} </span>
                 </div>
             </div>

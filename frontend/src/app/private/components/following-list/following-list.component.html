@@ -1,0 +1,75 @@
+<div class="form-container col-lg-12">
+    <h1 class="h1-strong">{{ title }}</h1>
+
+    <div *ngIf="status === FormStatus.Invalid" class="alert alert-danger">
+        <div>
+            <span>Info: {{ errMsg }}</span>
+        </div>
+    </div>
+
+    <div *ngIf="followings" class="people">
+        <div *ngFor="let follow of followings">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="panel-item user-image pull-left">
+                        <a href="#">
+                            <div *ngIf="followedFromFollow(follow)?.image">
+                                <img alt="" src="{{ api + '/user/image/' + followedFromFollow(follow).image }}" />
+                            </div>
+                            <div *ngIf="!followedFromFollow(follow)?.image">
+                                <img alt="" src="assets/img/default-avatar.png" />
+                            </div>
+                        </a>
+                    </div>
+                    <div class="panel-item user-name pull-left">
+                        <a [routerLink]="['/private/profile', followedFromFollow(follow)._id]">
+                            <div class="name">
+                                <span>{{ followedFromFollow(follow).name }} {{ followedFromFollow(follow).surname }}</span>
+                            </div>
+                            <div class="nick">
+                                <small> {{ followedFromFollow(follow).nick }}</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="panel-item user-name pull-right">
+                        <button
+                            *ngIf="!isUserLogged(followedFromFollow(follow)) && !isFollowing(followedFromFollow(follow))"
+                            class="btn btn-success"
+                            (click)="createFollow(followedFromFollow(follow)._id)"
+                        >
+                            <span><em class="bi bi-plus-circle-fill"></em></span>
+                            <span>Follow</span>
+                        </button>
+                        <button
+                            *ngIf="!isUserLogged(followedFromFollow(follow)) && isFollowing(followedFromFollow(follow))"
+                            class="btn"
+                            [ngClass]="followedFromFollow(follow)._id === followUserOver ? 'btn-danger' : 'btn-primary'"
+                            (mouseenter)="mouseEnter(followedFromFollow(follow))"
+                            (mouseleave)="mouseLeave()"
+                            (click)="removeFollow(followedFromFollow(follow)._id)"
+                        >
+                            <div *ngIf="followedFromFollow(follow)._id === followUserOver; else following">
+                                <span><em class="bi bi-dash-circle-fill"></em></span>
+                                <span>Unfollow</span>
+                            </div>
+                            <ng-template #following>
+                                <span><em class="bi bi-check-circle-fill"></em></span>
+                                <span>Following</span>
+                            </ng-template>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="pagination pull-right">
+            <li *ngIf="currentPage > 1">
+                <a [routerLink]="['/private/following-list', previousPage]" [queryParams]="{ user: userPageId }">Previous</a>
+            </li>
+
+            <li *ngIf="totalPages && totalPages !== currentPage">
+                <a [routerLink]="['/private/following-list', nextPage]" [queryParams]="{ user: userPageId }">Next</a>
+            </li>
+        </ul>
+    </div>
+</div>

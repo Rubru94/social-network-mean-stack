@@ -10,9 +10,10 @@ import { UserSidebarComponent } from './components/user-sidebar/user-sidebar.com
 import { TimelineComponent } from './components/timeline/timeline.component';
 import { MomentModule } from 'ngx-moment';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { FollowingListComponent } from './components/following-list/following-list.component';
 
 @NgModule({
-    declarations: [PrivateComponent, UserSettingsComponent, PeopleComponent, UserSidebarComponent, TimelineComponent, UserProfileComponent],
+    declarations: [PrivateComponent, UserSettingsComponent, PeopleComponent, UserSidebarComponent, TimelineComponent, UserProfileComponent, FollowingListComponent],
     imports: [
         CommonModule,
         PrivateRoutingModule,

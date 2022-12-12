@@ -53,15 +53,20 @@ async function getFollowingUsers(req, res, next) {
         Follow.find({ user })
             .sort('_id')
             .populate({ path: 'followed' })
-            .paginate(page, itemsPerPage, (err, follows, total) => {
+            .paginate(page, itemsPerPage, async (err, follows, total) => {
                 if (err) return next(err);
                 if (!follows) throw new error.NotFoundError('Follows not found');
+
+                const followings = (await Follow.find({ user: req.user.sub })).map((following) => following.followed);
+                const followers = (await Follow.find({ followed: req.user.sub })).map((follower) => follower.user);
 
                 return res.status(200).send({
                     follows: follows.map((follow) => {
                         follow.followed = new PublicUser(follow.followed);
                         return follow;
                     }),
+                    followings,
+                    followers,
                     total,
                     pages: Math.ceil(total / itemsPerPage)
                 });

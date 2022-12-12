@@ -6,7 +6,7 @@ import { FormStatus } from 'src/app/public/models/form-status.model';
 import { Publication } from 'src/app/public/models/publication.model';
 import { User } from 'src/app/public/models/user.model';
 import { UserService } from 'src/app/public/services/user.service';
-import { environment } from '../../../../../environments/env';
+import { environment } from 'environments/env';
 import { PublicationHttpService } from '../../services/publication.http.service';
 import { PublicationService } from '../../services/publication.service';
 

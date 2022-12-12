@@ -2,7 +2,7 @@ import { Component, DoCheck, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from 'src/app/public/models/user.model';
 import { UserService } from 'src/app/public/services/user.service';
-import { environment } from '../../../../../environments/env';
+import { environment } from 'environments/env';
 
 @Component({
     selector: 'app-navbar',

@@ -7,48 +7,48 @@
         </div>
     </div>
 
-    <div *ngIf="followings" class="people">
-        <div *ngFor="let follow of followings">
+    <div class="people">
+        <div *ngFor="let follow of follows">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="panel-item user-image pull-left">
                         <a href="#">
-                            <div *ngIf="followedFromFollow(follow)?.image">
-                                <img alt="" src="{{ api + '/user/image/' + followedFromFollow(follow).image }}" />
+                            <div *ngIf="userFromFollow(follow)?.image">
+                                <img alt="" src="{{ api + '/user/image/' + userFromFollow(follow).image }}" />
                             </div>
-                            <div *ngIf="!followedFromFollow(follow)?.image">
+                            <div *ngIf="!userFromFollow(follow)?.image">
                                 <img alt="" src="assets/img/default-avatar.png" />
                             </div>
                         </a>
                     </div>
                     <div class="panel-item user-name pull-left">
-                        <a [routerLink]="['/private/profile', followedFromFollow(follow)._id]">
+                        <a [routerLink]="['/private/profile', userFromFollow(follow)._id]">
                             <div class="name">
-                                <span>{{ followedFromFollow(follow).name }} {{ followedFromFollow(follow).surname }}</span>
+                                <span>{{ userFromFollow(follow).name }} {{ userFromFollow(follow).surname }}</span>
                             </div>
                             <div class="nick">
-                                <small> {{ followedFromFollow(follow).nick }}</small>
+                                <small> {{ userFromFollow(follow).nick }}</small>
                             </div>
                         </a>
                     </div>
                     <div class="panel-item user-name pull-right">
                         <button
-                            *ngIf="!isUserLogged(followedFromFollow(follow)) && !isFollowing(followedFromFollow(follow))"
+                            *ngIf="!isUserLogged(userFromFollow(follow)) && !isFollowing(userFromFollow(follow))"
                             class="btn btn-success"
-                            (click)="createFollow(followedFromFollow(follow)._id)"
+                            (click)="createFollow(userFromFollow(follow)._id)"
                         >
                             <span><em class="bi bi-plus-circle-fill"></em></span>
                             <span>Follow</span>
                         </button>
                         <button
-                            *ngIf="!isUserLogged(followedFromFollow(follow)) && isFollowing(followedFromFollow(follow))"
+                            *ngIf="!isUserLogged(userFromFollow(follow)) && isFollowing(userFromFollow(follow))"
                             class="btn"
-                            [ngClass]="followedFromFollow(follow)._id === followUserOver ? 'btn-danger' : 'btn-primary'"
-                            (mouseenter)="mouseEnter(followedFromFollow(follow))"
+                            [ngClass]="userFromFollow(follow)._id === followUserOver ? 'btn-danger' : 'btn-primary'"
+                            (mouseenter)="mouseEnter(userFromFollow(follow))"
                             (mouseleave)="mouseLeave()"
-                            (click)="removeFollow(followedFromFollow(follow)._id)"
+                            (click)="removeFollow(userFromFollow(follow)._id)"
                         >
-                            <div *ngIf="followedFromFollow(follow)._id === followUserOver; else following">
+                            <div *ngIf="userFromFollow(follow)._id === followUserOver; else following">
                                 <span><em class="bi bi-dash-circle-fill"></em></span>
                                 <span>Unfollow</span>
                             </div>
@@ -64,11 +64,11 @@
 
         <ul class="pagination pull-right">
             <li *ngIf="currentPage > 1">
-                <a [routerLink]="['/private/following-list', previousPage]" [queryParams]="{ user: userPageId }">Previous</a>
+                <a [routerLink]="[navigationURL, previousPage]" [queryParams]="{ user: userPageId }">Previous</a>
             </li>
 
             <li *ngIf="totalPages && totalPages !== currentPage">
-                <a [routerLink]="['/private/following-list', nextPage]" [queryParams]="{ user: userPageId }">Next</a>
+                <a [routerLink]="[navigationURL, nextPage]" [queryParams]="{ user: userPageId }">Next</a>
             </li>
         </ul>
     </div>

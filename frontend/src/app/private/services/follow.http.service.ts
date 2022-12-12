@@ -39,4 +39,19 @@ export class FollowHttpService {
             }
         );
     }
+
+    getFollowers(
+        page: number = 1,
+        itemsPerPage = 0,
+        user: string = ''
+    ): Observable<{ follows: Follow[]; followings: string[]; followers: string[]; total: number; pages: number }> {
+        const headers = new HttpHeaders().set('Authorization', this.userService.token);
+        return this.http.get<{ follows: Follow[]; followings: string[]; followers: string[]; total: number; pages: number }>(
+            `${this.api}/follower/${page}`,
+            {
+                headers,
+                params: { itemsPerPage, user }
+            }
+        );
+    }
 }

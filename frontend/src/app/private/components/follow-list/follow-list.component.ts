@@ -8,21 +8,22 @@ import { FormStatus } from 'src/app/public/models/form-status.model';
 import { User } from 'src/app/public/models/user.model';
 import { UserService } from 'src/app/public/services/user.service';
 import { FollowHttpService } from '../../services/follow.http.service';
+import { FollowService } from '../../services/follow.service';
 
 @Component({
-    selector: 'app-following-list',
-    templateUrl: './following-list.component.html',
-    styleUrls: ['./following-list.component.scss']
+    selector: 'app-follow-list',
+    templateUrl: './follow-list.component.html',
+    styleUrls: ['./follow-list.component.scss']
 })
-export class FollowingListComponent {
+export class FollowListComponent {
     title: string;
     currentPage: number;
     previousPage: number;
     nextPage: number;
     totalPages: number;
     itemsPerPage: number;
-    followings: Follow[];
-    follows: string[];
+    follows: Follow[];
+    followIds: string[];
     status: FormStatus;
     errMsg?: string;
     followUserOver?: string;
@@ -36,16 +37,17 @@ export class FollowingListComponent {
         private router: Router,
         private userService: UserService,
         private userHttpService: UserHttpService,
-        private followHttpService: FollowHttpService
+        private followHttpService: FollowHttpService,
+        private followService: FollowService
     ) {
-        this.title = 'Following';
+        this.title = this.followService.isFollowingView ? 'Following to' : this.followService.isFollowerView ? 'Followers of' : '';
         this.currentPage = 1;
         this.previousPage = 0;
         this.nextPage = 0;
         this.totalPages = 1;
         this.itemsPerPage = 2;
-        this.followings = [];
         this.follows = [];
+        this.followIds = [];
         this.status = FormStatus.None;
         this.api = `${environment.apiURL}/api`;
     }
@@ -58,8 +60,15 @@ export class FollowingListComponent {
         return FormStatus;
     }
 
-    followedFromFollow(follow: Follow): User {
-        return new User(follow.followed as User);
+    get navigationURL(): string {
+        return `/private/${
+            this.followService.isFollowingView ? 'following-list' : this.followService.isFollowerView ? 'follower-list' : ''
+        }`;
+    }
+
+    userFromFollow(follow: Follow): User {
+        const user = this.followService.isFollowingView ? follow.followed : this.followService.isFollowerView ? follow.user : null;
+        return new User(user as User);
     }
 
     actualPage(): void {
@@ -72,7 +81,7 @@ export class FollowingListComponent {
                 this.nextPage = page + 1;
                 this.previousPage = page - 1 > 0 ? page - 1 : 1;
                 this.loadUserPage(userId);
-                this.getFollowing(this.currentPage, userId);
+                this.getFollows(this.currentPage, userId);
             },
             error: (err: Error) => {
                 this.status = FormStatus.Invalid;
@@ -81,8 +90,8 @@ export class FollowingListComponent {
         });
     }
 
-    loadUserPage(id: string): void {
-        this.userHttpService.getUser(id).subscribe({
+    loadUserPage(id?: string): void {
+        this.userHttpService.getUser(id ?? this.userService.identity._id).subscribe({
             next: (res: { user: User; following: Follow; follower: Follow }) => (this.user = new User(res.user)),
             error: (err: Error) => {
                 this.status = FormStatus.Invalid;
@@ -91,23 +100,30 @@ export class FollowingListComponent {
         });
     }
 
-    getFollowing(page: number, userId: string) {
-        this.followHttpService.getFollowing(page, this.itemsPerPage, userId).subscribe({
-            next: (res: { follows: Follow[]; followings: string[]; followers: string[]; total: number; pages: number }) => {
-                this.followings = res.follows;
-                this.totalPages = res.pages;
-                this.follows = res.followings;
-                if (res.pages && page > res.pages) {
-                    this.router.navigateByUrl('private/following-list');
-                    this.ngOnInit();
+    getFollows(page: number, userId: string) {
+        const followFunction = this.followService.isFollowingView
+            ? this.followHttpService.getFollowing(page, this.itemsPerPage, userId)
+            : this.followService.isFollowerView
+            ? this.followHttpService.getFollowers(page, this.itemsPerPage, userId)
+            : null;
+
+        if (followFunction)
+            followFunction.subscribe({
+                next: (res: { follows: Follow[]; followings: string[]; followers: string[]; total: number; pages: number }) => {
+                    this.follows = res.follows;
+                    this.totalPages = res.pages;
+                    this.followIds = res.followings;
+                    if (res.pages && page > res.pages) {
+                        this.router.navigateByUrl(this.navigationURL);
+                        this.ngOnInit();
+                    }
+                },
+                error: (err: Error) => {
+                    this.status = FormStatus.Invalid;
+                    this.errMsg = err.message;
+                    this.router.navigateByUrl(this.navigationURL);
                 }
-            },
-            error: (err: Error) => {
-                this.status = FormStatus.Invalid;
-                this.errMsg = err.message;
-                this.router.navigateByUrl('private/following-list');
-            }
-        });
+            });
     }
 
     isUserLogged(user: User): boolean {
@@ -115,7 +131,7 @@ export class FollowingListComponent {
     }
 
     isFollowing(user: User): boolean {
-        return this.follows.includes(user._id);
+        return this.followIds.includes(user._id);
     }
 
     mouseEnter(user: User) {
@@ -130,7 +146,7 @@ export class FollowingListComponent {
         const follow = new Follow({ user: this.userService.identity._id, followed: followedId });
         this.followHttpService.create(follow).subscribe({
             next: (res: Follow) => {
-                this.follows.push(res.followed as string);
+                this.followIds.push(res.followed as string);
             },
             error: (err: Error) => {
                 this.status = FormStatus.Invalid;
@@ -142,7 +158,7 @@ export class FollowingListComponent {
     removeFollow(followedId: string) {
         this.followHttpService.remove(followedId).subscribe({
             next: (res: Follow[]) => {
-                this.follows = this.follows.filter((follow: string) => !res.map((f: Follow) => f.followed).includes(follow));
+                this.followIds = this.followIds.filter((follow: string) => !res.map((f: Follow) => f.followed).includes(follow));
             },
             error: (err: Error) => {
                 this.status = FormStatus.Invalid;

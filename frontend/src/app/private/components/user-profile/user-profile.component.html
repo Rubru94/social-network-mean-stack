@@ -26,7 +26,9 @@
             </div>
             <div *ngIf="counterSet" class="stats">
                 <div class="followers-data">
-                    <a href="#"> <span class="label-stats"> Followers </span> </a>
+                    <a [routerLink]="['/private/follower-list']" [queryParams]="{ user: user._id }">
+                        <span class="label-stats"> Followers </span>
+                    </a>
                     <span class="number-stats"> {{ counterSet.followerCount }} </span>
                 </div>
                 <div class="following-data">

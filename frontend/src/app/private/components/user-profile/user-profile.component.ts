@@ -7,7 +7,7 @@ import { FormStatus } from 'src/app/public/models/form-status.model';
 import { User } from 'src/app/public/models/user.model';
 import { UserService } from 'src/app/public/services/user.service';
 import { environment } from 'environments/env';
-import { FollowHttpService } from '../../services/follow.http.service';
+import { FollowHttpService } from '../../http/follow.http.service';
 
 @Component({
     selector: 'app-user-profile',

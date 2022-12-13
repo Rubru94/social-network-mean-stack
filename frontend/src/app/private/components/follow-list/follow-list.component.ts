@@ -7,7 +7,7 @@ import { Follow } from 'src/app/public/models/follow.model';
 import { FormStatus } from 'src/app/public/models/form-status.model';
 import { User } from 'src/app/public/models/user.model';
 import { UserService } from 'src/app/public/services/user.service';
-import { FollowHttpService } from '../../services/follow.http.service';
+import { FollowHttpService } from '../../http/follow.http.service';
 import { FollowService } from '../../services/follow.service';
 
 @Component({

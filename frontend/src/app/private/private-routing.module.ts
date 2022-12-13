@@ -22,7 +22,8 @@ const routes: Routes = [
         path: 'messaging',
         component: MessagingComponent,
         loadChildren: () => import('./messaging/messaging.module').then((m) => m.MessagingModule)
-    }
+    },
+    { path: '**', redirectTo: 'profile/' }
 ];
 
 @NgModule({

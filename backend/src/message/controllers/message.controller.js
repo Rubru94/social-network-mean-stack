@@ -83,6 +83,7 @@ async function getSentMessages(req, res, next) {
 
 async function create(req, res, next) {
     try {
+        delete req.body._id;
         let message = new Message(req.body);
         message.emitter = req.user.sub;
         if (message.validateSync()) throw new error.BadRequestError(message.validateSync().message);

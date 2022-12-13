@@ -10,11 +10,9 @@ import { UserService } from 'src/app/public/services/user.service';
 })
 export class MessageHttpService {
     api: string;
-    message: Message;
 
     constructor(private http: HttpClient, private userService: UserService) {
         this.api = `${environment.apiURL}/api/message`;
-        this.message = new Message();
     }
 
     create(message: Partial<Message>): Observable<Message> {

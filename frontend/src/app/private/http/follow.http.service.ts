@@ -54,4 +54,12 @@ export class FollowHttpService {
             }
         );
     }
+
+    getFollows(followed: boolean = false): Observable<Follow[]> {
+        const headers = new HttpHeaders().set('Authorization', this.userService.token);
+        return this.http.get<Follow[]>(`${this.api}`, {
+            headers,
+            params: { followed }
+        });
+    }
 }

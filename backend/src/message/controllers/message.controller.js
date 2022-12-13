@@ -32,6 +32,7 @@ async function getReceivedMessages(req, res, next) {
                         message.emitter = new PublicUser(message.emitter);
                         return message;
                     }),
+                    itemsPerPage,
                     total,
                     pages: Math.ceil(total / itemsPerPage)
                 });
@@ -70,6 +71,7 @@ async function getSentMessages(req, res, next) {
                         message.receiver = new PublicUser(message.receiver);
                         return message;
                     }),
+                    itemsPerPage,
                     total,
                     pages: Math.ceil(total / itemsPerPage)
                 });

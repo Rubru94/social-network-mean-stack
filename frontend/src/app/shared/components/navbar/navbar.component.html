@@ -32,6 +32,13 @@
                     </a>
                 </li>
 
+                <li *ngIf="token" class="nav-item">
+                    <a routerLink="/private/messaging" routerLinkActive="active">
+                        <em class="bi bi-chat-square-dots-fill"></em>
+                        <span>Messages</span>
+                    </a>
+                </li>
+
                 <li *ngIf="!token" class="nav-item">
                     <a routerLink="/login" routerLinkActive="active">
                         <em class="bi bi-box-arrow-in-right"></em>

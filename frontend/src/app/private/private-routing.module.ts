@@ -5,6 +5,7 @@ import { PeopleComponent } from './components/people/people.component';
 import { TimelineComponent } from './components/timeline/timeline.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { UserSettingsComponent } from './components/user-settings/user-settings.component';
+import { MessagingComponent } from './messaging/messaging.component';
 
 const routes: Routes = [
     { path: 'settings', component: UserSettingsComponent },
@@ -16,7 +17,12 @@ const routes: Routes = [
     { path: 'follower-list/:page', component: FollowListComponent },
     { path: 'timeline', component: TimelineComponent },
     { path: 'profile', redirectTo: 'profile/', pathMatch: 'full' },
-    { path: 'profile/:id', component: UserProfileComponent }
+    { path: 'profile/:id', component: UserProfileComponent },
+    {
+        path: 'messaging',
+        component: MessagingComponent,
+        loadChildren: () => import('./messaging/messaging.module').then((m) => m.MessagingModule)
+    }
 ];
 
 @NgModule({

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'environments/env';
 import { combineLatest } from 'rxjs';
@@ -15,7 +15,7 @@ import { FollowService } from '../../services/follow.service';
     templateUrl: './follow-list.component.html',
     styleUrls: ['./follow-list.component.scss']
 })
-export class FollowListComponent {
+export class FollowListComponent implements OnInit {
     title: string;
     currentPage: number;
     previousPage: number;

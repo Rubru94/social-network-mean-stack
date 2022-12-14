@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'environments/env';
-import { Observable } from 'rxjs';
 import { FollowHttpService } from 'src/app/private/http/follow.http.service';
 import { Follow } from 'src/app/public/models/follow.model';
 import { FormStatus } from 'src/app/public/models/form-status.model';
@@ -28,8 +27,6 @@ export class SendingComponent implements OnInit {
     sendingForm: FormGroup;
 
     constructor(
-        private activatedRoute: ActivatedRoute,
-        private router: Router,
         private userService: UserService,
         private followHttpService: FollowHttpService,
         private messageHttpService: MessageHttpService,

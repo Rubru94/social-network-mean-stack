@@ -60,8 +60,8 @@ async function getSentMessages(req, res, next) {
         const itemsPerPage = req.query?.itemsPerPage ?? 5;
 
         Message.find({ emitter: user })
-            .sort('_id')
-            .populate('receiver')
+            .sort({ createdAt: -1 })
+            .populate('emitter receiver')
             .paginate(page, itemsPerPage, async (err, messages, total) => {
                 if (err) return next(err);
                 if (!messages) throw new error.NotFoundError('Emitter messages not found');
@@ -69,6 +69,7 @@ async function getSentMessages(req, res, next) {
                 return res.status(200).send({
                     messages: messages.map((message) => {
                         message.receiver = new PublicUser(message.receiver);
+                        message.emitter = new PublicUser(message.emitter);
                         return message;
                     }),
                     itemsPerPage,

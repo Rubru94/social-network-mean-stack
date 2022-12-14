@@ -8,7 +8,8 @@ const routes: Routes = [
     { path: '', redirectTo: 'received', pathMatch: 'full' },
     { path: 'sending', component: SendingComponent },
     { path: 'received', component: ReceivedMessagesComponent },
-    { path: 'sent', component: SentMessagesComponent }
+    { path: 'sent', redirectTo: 'sent/1', pathMatch: 'full' },
+    { path: 'sent/:page', component: SentMessagesComponent }
 ];
 
 @NgModule({

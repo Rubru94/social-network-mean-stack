@@ -1,3 +1,60 @@
 <div class="form-container col-lg-12">
     <h3 class="h1-strong">{{ title }}</h3>
+
+    <div *ngIf="status === FormStatus.Invalid" class="alert alert-danger">
+        <div>
+            <span>Info: {{ errMsg }}</span>
+        </div>
+    </div>
+
+    <div class="people">
+        <div *ngFor="let message of messages">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="panel-item user-image pull-left">
+                        <a href="#">
+                            <div *ngIf="emitterFromMessage(message)?.image">
+                                <img alt="" src="{{ api + '/user/image/' + emitterFromMessage(message).image }}" />
+                            </div>
+                            <div *ngIf="!emitterFromMessage(message)?.image">
+                                <img alt="" src="assets/img/default-avatar.png" />
+                            </div>
+                        </a>
+                    </div>
+                    <div class="panel-item user-name pull-left">
+                        <a [routerLink]="['/private/profile', emitterFromMessage(message)._id]">
+                            <div class="name">
+                                <span>{{ emitterFromMessage(message).name }} {{ emitterFromMessage(message).surname }}</span>
+                                |
+                                <small class="date">{{ message.createdAt | amLocale : 'en' | amTimeAgo }}</small>
+                            </div>
+                            <div class="nick">
+                                <small> {{ emitterFromMessage(message).nick }}</small>
+                            </div>
+                        </a>
+                        <div class="receiver">
+                            To: &nbsp;
+                            <span>
+                                {{ receiverFromMessage(message).name }} {{ receiverFromMessage(message).surname }} |
+                                {{ receiverFromMessage(message).nick }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="text">
+                        {{ message.text }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="pagination pull-right">
+            <li *ngIf="currentPage > 1">
+                <a [routerLink]="['/private/messaging/sent', previousPage]">Previous</a>
+            </li>
+
+            <li *ngIf="totalPages && totalPages !== currentPage">
+                <a [routerLink]="['/private/messaging/sent', nextPage]">Next</a>
+            </li>
+        </ul>
+    </div>
 </div>

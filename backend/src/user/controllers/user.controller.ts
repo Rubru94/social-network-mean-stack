@@ -1,6 +1,10 @@
-'use strict';
+import { CustomError, NotFoundError } from '@core/models/error.model';
+import { GET, Path, PathParam, QueryParam } from 'typescript-rest';
+import Service from '@user/services/user.service';
+import { IUser } from '@user/models/user.model';
+import { PaginateResult } from 'mongoose';
 
-const bcryptService = require('@utils/services/bcrypt.service');
+/* const bcryptService = require('@utils/services/bcrypt.service');
 const error = require('@core/models/error.model');
 const Follow = require('@follow/models/follow.model');
 const fsService = require('@utils/services/fs.service');
@@ -14,20 +18,35 @@ const Publication = require('@publication/models/publication.model');
 const PublicUser = require('@user/models/public-user.model');
 const User = require('@user/models/user.model');
 const userUploads = require('@user/models/uploads.model');
-const utilService = require('@utils/services/util.service');
+const utilService = require('@utils/services/util.service'); */
 
-function hello(req, res) {
-    res.status(200).send({ msg: 'hello world !' });
+@Path('api/user')
+export class UserController {
+    /**
+     * @returns all users using pagination
+     */
+    @Path('/all/:page?')
+    @GET
+    async getAll(
+        @PathParam('page') page?: string,
+        @QueryParam('itemsPerPage') itemsPerPage?: string
+    ): Promise<{ users: IUser[]; followings: string[]; followers: string[]; total: number; pages: number }> {
+        try {
+            const users = await Service.getAll(+page, +itemsPerPage);
+            if (!users) throw new NotFoundError('Users not found');
+            return users;
+        } catch (error) {
+            throw new CustomError(error);
+        }
+    }
 }
 
-async function getAll(req, res, next) {
+/**
+ * async function getAll(req, res, next) {
     try {
         const page = req.params.page ?? 1;
         const itemsPerPage = req.query?.itemsPerPage ?? 5;
 
-        /**
-         * @info using callback()
-         */
         User.find()
             .sort('_id')
             .paginate(page, itemsPerPage, async (err, users, total) => {
@@ -43,24 +62,9 @@ async function getAll(req, res, next) {
         next(err);
     }
 }
+ */
 
-async function findById(req, res, next) {
-    try {
-        const id = req.params?.id;
-        if (!mongooseService.isValidObjectId(id)) throw new error.BadRequestError('Invalid id');
-        const user = await User.findById(id);
-        if (!user) throw new error.NotFoundError('User not found');
-
-        const following = await Follow.findOne({ user: req.user.sub, followed: id });
-        const follower = await Follow.findOne({ user: id, followed: req.user.sub });
-
-        res.status(200).send({ user: new PublicUser(user), following, follower });
-    } catch (err) {
-        next(err);
-    }
-}
-
-async function getCounters(req, res, next) {
+/* async function getCounters(req, res, next) {
     try {
         const user = req.query?.user && !!(req.query?.user).trim() ? req.query.user : req.user.sub;
         if (!mongooseService.isValidObjectId(user)) throw new error.BadRequestError('Invalid id');
@@ -73,8 +77,9 @@ async function getCounters(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
+/* 
 async function register(req, res, next) {
     try {
         delete req.body._id;
@@ -90,9 +95,9 @@ async function register(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function login(req, res, next) {
+/* async function login(req, res, next) {
     try {
         delete req.body._id;
         const user = new User(req.body);
@@ -109,9 +114,9 @@ async function login(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function update(req, res, next) {
+/* async function update(req, res, next) {
     try {
         const userId = req.params.id;
         const currentUserId = req.user.sub;
@@ -123,9 +128,9 @@ async function update(req, res, next) {
             $and: [{ _id: { $ne: userId } }, { $or: [{ email: updatedUser.email }, { nick: updatedUser.nick }] }]
         });
         if (userExistent) throw new error.BadRequestError('Email or nick already used');
-        /**
-         * @info { new: true } --> It returns updated object. By default it returns object to update (old object).
-         */
+        
+        // @info { new: true } --> It returns updated object. By default it returns object to update (old object).
+        
         updatedUser = await User.findByIdAndUpdate(userId, updatedUser, { new: true });
         if (!updatedUser) throw new error.NotFoundError('Failed to update user');
 
@@ -133,9 +138,9 @@ async function update(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function uploadImage(req, res, next) {
+/* async function uploadImage(req, res, next) {
     try {
         const userId = req.params?.userId;
         if (!mongooseService.isValidObjectId(userId)) throw new error.BadRequestError('Invalid id');
@@ -162,19 +167,19 @@ async function uploadImage(req, res, next) {
 
         const updatedUser = await User.findByIdAndUpdate(userId, new ImageUser(fileName), { new: true });
         if (!updatedUser) throw new error.NotFoundError('Failed to update image user');
-        const file = await fsService.existsPromise(`${userUploads.path}/${user.image}`);
-        if (file) await fsService.unlinkPromise(`${userUploads.path}/${user.image}`);
+        const file = await fsService.existsPromise(`${uploadsPath}/${user.image}`);
+        if (file) await fsService.unlinkPromise(`${uploadsPath}/${user.image}`);
 
         return res.status(200).send(updatedUser);
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function getImageFile(req, res, next) {
+/* async function getImageFile(req, res, next) {
     try {
         if (!req.params?.imageFile) throw new error.BadRequestError('No param imageFile');
-        const filePath = `${userUploads.path}/${req.params.imageFile}`;
+        const filePath = `${uploadsPath}/${req.params.imageFile}`;
 
         const file = await fsService.existsPromise(filePath);
         if (!file) throw new error.NotFoundError('Image does not exist');
@@ -183,16 +188,4 @@ async function getImageFile(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
-
-module.exports = {
-    hello,
-    getAll,
-    findById,
-    getCounters,
-    register,
-    login,
-    update,
-    uploadImage,
-    getImageFile
-};
+} */

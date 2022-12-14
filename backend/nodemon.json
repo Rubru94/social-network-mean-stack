@@ -1,0 +1,10 @@
+{
+    "restartable": "rs",
+    "ignore": ["test", "src/static/*"],
+    "watch": ["src"],
+    "exec": "npm run launch",
+    "ext": "ts",
+    "inspect": true,
+    "verbose": true,
+    "start": "cls || clear"
+}

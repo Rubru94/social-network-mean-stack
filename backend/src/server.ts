@@ -1,12 +1,10 @@
-'use strict';
+import { config } from 'dotenv-flow';
+import http from 'http';
+import { connect } from 'mongoose';
+import { addAliases } from 'module-alias';
 
-const dotenvFlow = require('dotenv-flow');
-const http = require('http');
-const mongoose = require('mongoose');
-const moduleAlias = require('module-alias');
-
-dotenvFlow.config({ path: 'environments' });
-moduleAlias.addAliases({
+config({ path: 'environments' });
+addAliases({
     '@core': `${__dirname}/core`,
     '@utils': `${__dirname}/utils`,
     '@follow': `${__dirname}/follow`,
@@ -16,14 +14,13 @@ moduleAlias.addAliases({
     '@root': __dirname
 });
 
-const app = require('@core/app');
+import App from '@core/app';
 const host = process.env.APP_HOST;
 const port = process.env.APP_PORT;
 
-mongoose.Promise = global.Promise;
-mongoose
-    .connect('mongodb://localhost:27017/social_network_mean', { useNewUrlParser: true, useUnifiedTopology: true })
+connect('mongodb://localhost:27017/social_network_mean')
     .then(async (db) => {
+        const app = await App.start();
         const server = http.createServer(app);
         server.listen(port, +host, () => {
             console.info(`Server listening on host: ${host} and port ${port}`);

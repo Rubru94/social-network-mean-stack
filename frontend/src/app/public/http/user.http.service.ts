@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '@environments/env';
 import { Observable } from 'rxjs';
-import { environment } from 'environments/env';
 import { CounterSet } from '../models/counter-set.model';
 import { Follow } from '../models/follow.model';
 import { User } from '../models/user.model';

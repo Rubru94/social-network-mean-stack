@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormStatus } from 'src/app/public/models/form-status.model';
-import { Message } from 'src/app/public/models/message.model';
-import { User } from 'src/app/public/models/user.model';
-import { environment } from 'environments/env';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from 'src/app/public/services/user.service';
-import { MessageHttpService } from '../../http/message.http.service';
+import { environment } from '@environments/env';
+import { MessageHttpService } from '@private/messaging/http/message.http.service';
+import { FormStatus } from '@public/models/form-status.model';
+import { Message } from '@public/models/message.model';
+import { User } from '@public/models/user.model';
+import { UserService } from '@public/services/user.service';
 
 @Component({
     selector: 'app-received-messages',

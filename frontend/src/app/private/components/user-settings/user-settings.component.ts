@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserHttpService } from 'src/app/public/http/user.http.service';
-import { FormStatus } from 'src/app/public/models/form-status.model';
-import { User } from 'src/app/public/models/user.model';
-import { UserService } from 'src/app/public/services/user.service';
+import { UserHttpService } from '@public/http/user.http.service';
+import { FormStatus } from '@public/models/form-status.model';
+import { User } from '@public/models/user.model';
+import { UserService } from '@public/services/user.service';
 
 @Component({
     selector: 'app-user-settings',

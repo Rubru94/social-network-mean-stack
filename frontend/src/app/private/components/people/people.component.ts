@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserHttpService } from 'src/app/public/http/user.http.service';
-import { Follow } from 'src/app/public/models/follow.model';
-import { FormStatus } from 'src/app/public/models/form-status.model';
-import { User } from 'src/app/public/models/user.model';
-import { UserService } from 'src/app/public/services/user.service';
-import { environment } from 'environments/env';
-import { FollowHttpService } from '../../http/follow.http.service';
+import { environment } from '@environments/env';
+import { FollowHttpService } from '@private/http/follow.http.service';
+import { UserHttpService } from '@public/http/user.http.service';
+import { Follow } from '@public/models/follow.model';
+import { FormStatus } from '@public/models/form-status.model';
+import { User } from '@public/models/user.model';
+import { UserService } from '@public/services/user.service';
 
 @Component({
     selector: 'app-people',

@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '@environments/env';
+import { Follow } from '@public/models/follow.model';
+import { UserService } from '@public/services/user.service';
 import { Observable } from 'rxjs';
-import { Follow } from 'src/app/public/models/follow.model';
-import { UserService } from 'src/app/public/services/user.service';
-import { environment } from 'environments/env';
 
 @Injectable({
     providedIn: 'root'

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { SharedModule } from '../shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { FollowListComponent } from './components/follow-list/follow-list.component';
 import { PeopleComponent } from './components/people/people.component';
 import { TimelineComponent } from './components/timeline/timeline.component';

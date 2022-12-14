@@ -1,14 +1,14 @@
 import { Component, DoCheck, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { environment } from 'environments/env';
-import { CounterSet } from 'src/app/public/models/counter-set.model';
-import { FormStatus } from 'src/app/public/models/form-status.model';
-import { Publication } from 'src/app/public/models/publication.model';
-import { User } from 'src/app/public/models/user.model';
-import { UserService } from 'src/app/public/services/user.service';
-import { PublicationHttpService } from '../../http/publication.http.service';
-import { PublicationService } from '../../services/publication.service';
+import { environment } from '@environments/env';
+import { PublicationHttpService } from '@private/http/publication.http.service';
+import { PublicationService } from '@private/services/publication.service';
+import { CounterSet } from '@public/models/counter-set.model';
+import { FormStatus } from '@public/models/form-status.model';
+import { Publication } from '@public/models/publication.model';
+import { User } from '@public/models/user.model';
+import { UserService } from '@public/services/user.service';
 
 @Component({
     selector: 'app-user-sidebar',

@@ -5,9 +5,10 @@ import { SendingComponent } from './components/sending/sending.component';
 import { SentMessagesComponent } from './components/sent-messages/sent-messages.component';
 
 const routes: Routes = [
-    { path: '', redirectTo: 'received', pathMatch: 'full' },
+    { path: '', redirectTo: 'received/1', pathMatch: 'full' },
     { path: 'sending', component: SendingComponent },
-    { path: 'received', component: ReceivedMessagesComponent },
+    { path: 'received', redirectTo: 'received/1', pathMatch: 'full' },
+    { path: 'received/:page', component: ReceivedMessagesComponent },
     { path: 'sent', redirectTo: 'sent/1', pathMatch: 'full' },
     { path: 'sent/:page', component: SentMessagesComponent }
 ];

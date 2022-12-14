@@ -21,8 +21,8 @@ async function getReceivedMessages(req, res, next) {
         const itemsPerPage = req.query?.itemsPerPage ?? 5;
 
         Message.find(utilService.strToBoolean(req.query?.unviewed) ? { receiver: user, viewed: false } : { receiver: user })
-            .sort('_id')
-            .populate('emitter')
+            .sort({ createdAt: -1 })
+            .populate('emitter receiver')
             .paginate(page, itemsPerPage, async (err, messages, total) => {
                 if (err) return next(err);
                 if (!messages) throw new error.NotFoundError('Received messages not found');
@@ -30,6 +30,7 @@ async function getReceivedMessages(req, res, next) {
                 return res.status(200).send({
                     messages: messages.map((message) => {
                         message.emitter = new PublicUser(message.emitter);
+                        message.receiver = new PublicUser(message.receiver);
                         return message;
                     }),
                     itemsPerPage,

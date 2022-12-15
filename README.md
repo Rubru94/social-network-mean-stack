@@ -13,3 +13,4 @@
   - [How To Update Angular CLI To Latest Version](https://www.angularjswiki.com/angular/update-angular-cli-version-ng-update-to-latest-6-7-versions/)
   - [How to subscribe service func in Angular](https://stackblitz.com/edit/angular-4izpx5?file=src%2Fapp%2Fsecond%2Fsecond.component.ts)
   - [@Input & @Output](https://angular.io/guide/inputs-outputs)
+  - [express-http-context](https://www.npmjs.com/package/express-http-context)

@@ -1,8 +1,10 @@
 import { CustomError, NotFoundError } from '@core/models/error.model';
-import { GET, Path, PathParam, QueryParam } from 'typescript-rest';
-import Service from '@user/services/user.service';
 import { IUser } from '@user/models/user.model';
-import { PaginateResult } from 'mongoose';
+import Service from '@user/services/user.service';
+import { Payload } from '@utils/services/jwt.service';
+import httpContext from 'express-http-context';
+import { ObjectId } from 'mongodb';
+import { GET, Path, PathParam, QueryParam } from 'typescript-rest';
 
 /* const bcryptService = require('@utils/services/bcrypt.service');
 const error = require('@core/models/error.model');
@@ -30,11 +32,12 @@ export class UserController {
     async getAll(
         @PathParam('page') page?: string,
         @QueryParam('itemsPerPage') itemsPerPage?: string
-    ): Promise<{ users: IUser[]; followings: string[]; followers: string[]; total: number; pages: number }> {
+    ): Promise<{ users: IUser[]; followings: ObjectId[]; followers: ObjectId[]; total: number; pages: number }> {
         try {
-            const users = await Service.getAll(+page, +itemsPerPage);
-            if (!users) throw new NotFoundError('Users not found');
-            return users;
+            const payload: Payload = httpContext.get('user');
+            const res = await Service.getAll(payload, +page, +itemsPerPage);
+            if (!res) throw new NotFoundError('Users not found');
+            return res;
         } catch (error) {
             throw new CustomError(error);
         }

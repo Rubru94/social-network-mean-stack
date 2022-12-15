@@ -1,4 +1,4 @@
-import { Schema, model, Document, PaginateModel } from 'mongoose';
+import { Document, model, PaginateModel, Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 export const uploadsPath = './src/user/uploads';

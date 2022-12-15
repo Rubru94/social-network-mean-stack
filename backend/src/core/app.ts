@@ -1,3 +1,4 @@
+import { UserPublicController } from '@user/controllers/user-public.controller';
 import { UserController } from '@user/controllers/user.controller';
 import { json, text, urlencoded } from 'body-parser';
 import compression from 'compression';
@@ -48,7 +49,11 @@ class App {
 
             next();
         });
-        this.app.use(ensureAuth);
+
+        /**
+         * @info all routes that contains '/user/', '/follow/' has middleware 'ensureAuth'
+         */
+        this.app.use(/^.*((\/user\/)|(\/follow\/)).*$/, ensureAuth);
     }
 
     private build() {
@@ -63,7 +68,7 @@ class App {
          * All 'this.app.use' before 'Server.buildServices' because 'this.app' it pass as first param
          * Except handling errors that should run after.
          */
-        Server.buildServices(this.app, UserController);
+        Server.buildServices(this.app, UserPublicController, UserController);
         Server.ignoreNextMiddlewares(true);
     }
 

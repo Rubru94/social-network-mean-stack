@@ -25,7 +25,7 @@ const utilService = require('@utils/services/util.service'); */
 @Path('api/user')
 export class UserController {
     /**
-     * @returns all users using pagination
+     * @returns { users: IUser[]; followings: ObjectId[]; followers: ObjectId[]; total: number; pages: number }
      */
     @Path('/all/:page?')
     @GET

@@ -18,4 +18,17 @@ export class UserPublicController {
             throw new CustomError(err);
         }
     }
+
+    /**
+     * @returns IUser
+     */
+    @Path('/register')
+    @POST
+    async register(user: IUser): Promise<IUser> {
+        try {
+            return await Service.register(user);
+        } catch (err) {
+            throw new CustomError(err);
+        }
+    }
 }

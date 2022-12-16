@@ -42,6 +42,17 @@ class UserService {
         if (UtilService.strToBoolean(token)) return { token: await jwtService.createToken(userExistent) };
         return new PublicUser(userExistent);
     }
+
+    async register(user: IUser): Promise<IUser> {
+        user = new User(user);
+        if (user.validateSync()) throw new BadRequestError(user.validateSync().message);
+
+        const userExistent = await User.findOne({ $or: [{ email: user.email }, { nick: user.nick }] });
+        if (userExistent) throw new BadRequestError('Email or nick already used');
+
+        user.password = await bcryptService.hashPromise(user.password);
+        return await user.save();
+    }
 }
 
 export default new UserService();

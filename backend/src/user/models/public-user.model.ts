@@ -1,7 +1,8 @@
+import { Types } from 'mongoose';
 import { IUser } from './user.model';
 
 export class PublicUser {
-    _id: string;
+    _id: Types.ObjectId;
     name: IUser['name'];
     surname: IUser['surname'];
     nick: IUser['nick'];

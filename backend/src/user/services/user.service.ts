@@ -1,10 +1,12 @@
 import { Sort } from '@core/enums/mongo-sort.enum';
 import { BadRequestError, NotFoundError } from '@core/models/error.model';
 import { Follow } from '@follow/models/follow.model';
+import { Publication } from '@publication/models/publication.model';
 import { PublicUser } from '@user/models/public-user.model';
 import { IUser, User } from '@user/models/user.model';
 import bcryptService from '@utils/services/bcrypt.service';
 import jwtService, { Payload } from '@utils/services/jwt.service';
+import mongooseService from '@utils/services/mongoose.service';
 import { UtilService } from '@utils/services/util.service';
 import { ObjectId } from 'mongodb';
 import { PaginateResult } from 'mongoose';
@@ -52,6 +54,17 @@ class UserService {
 
         user.password = await bcryptService.hashPromise(user.password);
         return await user.save();
+    }
+
+    async getCounters(payload: Payload, userId?: string): Promise<{ followingCount: number; followerCount: number; publications: number }> {
+        const user = userId && !!userId.trim() ? userId : payload.sub;
+        if (!mongooseService.isValidObjectId(user)) throw new BadRequestError('Invalid id');
+
+        const followingCount = await Follow.count({ user });
+        const followerCount = await Follow.count({ followed: user });
+        const publications = await Publication.count({ user });
+
+        return { followingCount, followerCount, publications };
     }
 }
 

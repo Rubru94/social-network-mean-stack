@@ -42,6 +42,19 @@ export class UserController {
             throw new CustomError(error);
         }
     }
+
+    @Path('/counters')
+    @GET
+    async getCounters(@QueryParam('user') user?: string): Promise<{ followingCount: number; followerCount: number; publications: number }> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            const res = await Service.getCounters(payload, user);
+            if (!res) throw new NotFoundError('User not found');
+            return res;
+        } catch (error) {
+            throw new CustomError(error);
+        }
+    }
 }
 
 /**

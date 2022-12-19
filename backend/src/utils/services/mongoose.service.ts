@@ -1,9 +1,9 @@
 import { Types } from 'mongoose';
 
-class Mongoose {
+class MongooseService {
     isValidObjectId(id: Types.ObjectId | string) {
         return Types.ObjectId.isValid(id);
     }
 }
 
-export default new Mongoose();
+export default new MongooseService();

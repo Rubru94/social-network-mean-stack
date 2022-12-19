@@ -3,12 +3,15 @@ import { BadRequestError, NotFoundError, UnauthorizedError } from '@core/models/
 import { Follow } from '@follow/models/follow.model';
 import { Publication } from '@publication/models/publication.model';
 import { PublicUser } from '@user/models/public-user.model';
-import { IUser, User } from '@user/models/user.model';
+import { IUser, uploadsPath, User } from '@user/models/user.model';
 import bcryptService from '@utils/services/bcrypt.service';
 import jwtService, { Payload } from '@utils/services/jwt.service';
 import mongooseService from '@utils/services/mongoose.service';
 import { UtilService } from '@utils/services/util.service';
 import { PaginateResult, Types } from 'mongoose';
+import fsService from '@utils/services/fs.service';
+import isImage from 'is-image';
+import { ImageUser } from '@user/models/image-user.model';
 
 const defaultPage: number = 1;
 const defaultItemsPerPage: number = 5;
@@ -70,6 +73,7 @@ class UserService {
     }
 
     async update(payload: Payload, userId: Types.ObjectId | string, updateUser: IUser): Promise<PublicUser> {
+        if (!mongooseService.isValidObjectId(userId)) throw new BadRequestError('Invalid id');
         if (userId !== payload.sub) throw new UnauthorizedError('You do not have permissions to update user data');
 
         const userExistent = await User.findOne({
@@ -82,6 +86,36 @@ class UserService {
          */
         const update = await User.findByIdAndUpdate(userId, updateUser, { new: true });
         if (!update) throw new NotFoundError('Failed to update user');
+
+        return new PublicUser(update);
+    }
+
+    async uploadImage(payload: Payload, userId: Types.ObjectId | string, file: Express.Multer.File): Promise<any> {
+        if (!mongooseService.isValidObjectId(userId)) throw new BadRequestError('Invalid id');
+        if (userId !== payload.sub) throw new UnauthorizedError('You do not have permissions to update user image');
+
+        if (!file) throw new BadRequestError('There is no attached image');
+        const isValidParam = !!file;
+        const filePath = file.path;
+        const fileName = filePath.split('\\').pop();
+
+        if (!isValidParam) {
+            await fsService.unlinkPromise(filePath);
+            throw new BadRequestError('Invalid image param');
+        }
+
+        if (!isImage(fileName)) {
+            await fsService.unlinkPromise(filePath);
+            throw new BadRequestError('Invalid image format/extension');
+        }
+
+        const user = await User.findById(userId);
+        if (!user) throw new NotFoundError('User not found');
+
+        const update = await User.findByIdAndUpdate(userId, new ImageUser(fileName), { new: true });
+        if (!update) throw new NotFoundError('Failed to update image user');
+        const existingFile = await fsService.existsPromise(`${uploadsPath}/${user.image}`);
+        if (existingFile) await fsService.unlinkPromise(`${uploadsPath}/${user.image}`);
 
         return new PublicUser(update);
     }

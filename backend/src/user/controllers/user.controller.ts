@@ -5,7 +5,7 @@ import Service from '@user/services/user.service';
 import { Payload } from '@utils/services/jwt.service';
 import httpContext from 'express-http-context';
 import { Types } from 'mongoose';
-import { GET, Path, PathParam, PUT, QueryParam } from 'typescript-rest';
+import { GET, Path, PathParam, POST, PUT, QueryParam } from 'typescript-rest';
 
 /* const bcryptService = require('@utils/services/bcrypt.service');
 const error = require('@core/models/error.model');
@@ -60,6 +60,18 @@ export class UserController {
         try {
             const payload: Payload = httpContext.get('user');
             return await Service.update(payload, id, updateUser);
+        } catch (err) {
+            throw new CustomError(err);
+        }
+    }
+
+    @Path('/upload-image/:userId')
+    @POST
+    async uploadImage(@PathParam('userId') userId: string): Promise<PublicUser> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            const req = httpContext.get('request');
+            return await Service.uploadImage(payload, userId, req?.files?.image);
         } catch (err) {
             throw new CustomError(err);
         }

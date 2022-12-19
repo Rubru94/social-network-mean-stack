@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt-nodejs';
 
-class Bcrypt {
+class BcryptService {
     async hashPromise(data): Promise<string> {
         return new Promise((resolve, reject) => {
             bcrypt.hash(data, null, null, (err, res) => {
@@ -20,4 +20,4 @@ class Bcrypt {
     }
 }
 
-export default new Bcrypt();
+export default new BcryptService();

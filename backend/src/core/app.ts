@@ -1,7 +1,10 @@
+import { uploadsPath as publicationUploadsPath } from '@publication/models/publication.model';
 import { UserPublicController } from '@user/controllers/user-public.controller';
 import { UserController } from '@user/controllers/user.controller';
+import { uploadsPath as userUploadsPath } from '@user/models/user.model';
 import { json, text, urlencoded } from 'body-parser';
 import compression from 'compression';
+import multipart from 'connect-multiparty';
 import cors from 'cors';
 import express, { Application, NextFunction, Request, Response, static as expressStatic } from 'express';
 import httpContext from 'express-http-context';
@@ -56,6 +59,9 @@ class App {
          * @info all routes that contains '/user/', '/follow/' has middleware 'ensureAuth'
          */
         this.app.use(/^.*((\/user\/)|(\/follow\/)).*$/, ensureAuth);
+
+        this.app.use(/^.*\/user\/upload-image\/.*$/, multipart({ uploadDir: userUploadsPath }));
+        this.app.use(/^.*\/publication\/upload-image\/.*$/, multipart({ uploadDir: publicationUploadsPath }));
     }
 
     private build() {

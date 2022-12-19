@@ -1,5 +1,5 @@
 import { Sort } from '@core/enums/mongo-sort.enum';
-import { BadRequestError, NotFoundError } from '@core/models/error.model';
+import { BadRequestError, NotFoundError, UnauthorizedError } from '@core/models/error.model';
 import { Follow } from '@follow/models/follow.model';
 import { Publication } from '@publication/models/publication.model';
 import { PublicUser } from '@user/models/public-user.model';
@@ -8,8 +8,7 @@ import bcryptService from '@utils/services/bcrypt.service';
 import jwtService, { Payload } from '@utils/services/jwt.service';
 import mongooseService from '@utils/services/mongoose.service';
 import { UtilService } from '@utils/services/util.service';
-import { ObjectId } from 'mongodb';
-import { PaginateResult } from 'mongoose';
+import { PaginateResult, Types } from 'mongoose';
 
 const defaultPage: number = 1;
 const defaultItemsPerPage: number = 5;
@@ -19,7 +18,7 @@ class UserService {
         payload: Payload,
         page?: number,
         limit?: number
-    ): Promise<{ users: IUser[]; followings: ObjectId[]; followers: ObjectId[]; total: number; pages: number }> {
+    ): Promise<{ users: IUser[]; followings: Types.ObjectId[]; followers: Types.ObjectId[]; total: number; pages: number }> {
         if (!page) page = defaultPage;
         if (!limit) limit = defaultItemsPerPage;
 
@@ -56,8 +55,11 @@ class UserService {
         return await user.save();
     }
 
-    async getCounters(payload: Payload, userId?: string): Promise<{ followingCount: number; followerCount: number; publications: number }> {
-        const user = userId && !!userId.trim() ? userId : payload.sub;
+    async getCounters(
+        payload: Payload,
+        userId?: Types.ObjectId | string
+    ): Promise<{ followingCount: number; followerCount: number; publications: number }> {
+        const user = userId && !!(userId as string).trim() ? userId : payload.sub;
         if (!mongooseService.isValidObjectId(user)) throw new BadRequestError('Invalid id');
 
         const followingCount = await Follow.count({ user });
@@ -65,6 +67,23 @@ class UserService {
         const publications = await Publication.count({ user });
 
         return { followingCount, followerCount, publications };
+    }
+
+    async update(payload: Payload, userId: Types.ObjectId | string, updateUser: IUser): Promise<PublicUser> {
+        if (userId !== payload.sub) throw new UnauthorizedError('You do not have permissions to update user data');
+
+        const userExistent = await User.findOne({
+            $and: [{ _id: { $ne: userId } }, { $or: [{ email: updateUser.email }, { nick: updateUser.nick }] }]
+        });
+        if (userExistent) throw new BadRequestError('Email or nick already used');
+
+        /**
+         * @info { new: true } --> It returns updated object. By default it returns object to update (old object).
+         */
+        const update = await User.findByIdAndUpdate(userId, updateUser, { new: true });
+        if (!update) throw new NotFoundError('Failed to update user');
+
+        return new PublicUser(update);
     }
 }
 

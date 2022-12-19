@@ -1,10 +1,11 @@
 import { CustomError, NotFoundError } from '@core/models/error.model';
+import { PublicUser } from '@user/models/public-user.model';
 import { IUser } from '@user/models/user.model';
 import Service from '@user/services/user.service';
 import { Payload } from '@utils/services/jwt.service';
 import httpContext from 'express-http-context';
-import { ObjectId } from 'mongodb';
-import { GET, Path, PathParam, QueryParam } from 'typescript-rest';
+import { Types } from 'mongoose';
+import { GET, Path, PathParam, PUT, QueryParam } from 'typescript-rest';
 
 /* const bcryptService = require('@utils/services/bcrypt.service');
 const error = require('@core/models/error.model');
@@ -24,15 +25,12 @@ const utilService = require('@utils/services/util.service'); */
 
 @Path('api/user')
 export class UserController {
-    /**
-     * @returns { users: IUser[]; followings: ObjectId[]; followers: ObjectId[]; total: number; pages: number }
-     */
     @Path('/all/:page?')
     @GET
     async getAll(
         @PathParam('page') page?: string,
         @QueryParam('itemsPerPage') itemsPerPage?: string
-    ): Promise<{ users: IUser[]; followings: ObjectId[]; followers: ObjectId[]; total: number; pages: number }> {
+    ): Promise<{ users: IUser[]; followings: Types.ObjectId[]; followers: Types.ObjectId[]; total: number; pages: number }> {
         try {
             const payload: Payload = httpContext.get('user');
             const res = await Service.getAll(payload, +page, +itemsPerPage);
@@ -53,6 +51,17 @@ export class UserController {
             return res;
         } catch (error) {
             throw new CustomError(error);
+        }
+    }
+
+    @Path('/update/:id')
+    @PUT
+    async update(@PathParam('id') id: string, updateUser: IUser): Promise<PublicUser> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            return await Service.update(payload, id, updateUser);
+        } catch (err) {
+            throw new CustomError(err);
         }
     }
 }

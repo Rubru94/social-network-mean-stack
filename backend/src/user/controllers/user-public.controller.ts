@@ -6,9 +6,6 @@ import { Path, POST, QueryParam } from 'typescript-rest';
 
 @Path('api')
 export class UserPublicController {
-    /**
-     * @returns { token: string } | PublicUser
-     */
     @Path('/login')
     @POST
     async login(user: IUser, @QueryParam('token') token?: string): Promise<{ token: string } | PublicUser> {
@@ -19,9 +16,6 @@ export class UserPublicController {
         }
     }
 
-    /**
-     * @returns IUser
-     */
     @Path('/register')
     @POST
     async register(user: IUser): Promise<IUser> {

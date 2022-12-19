@@ -7,6 +7,7 @@ import express, { Application, NextFunction, Request, Response, static as expres
 import httpContext from 'express-http-context';
 import helmet from 'helmet';
 import { Server } from 'typescript-rest';
+import DB from './database';
 import ensureAuth from './middlewares/auth.middleware';
 import handleError from './middlewares/error-handler.middleware';
 
@@ -19,6 +20,7 @@ class App {
         this.capture();
         this.build();
         this.handling();
+        DB.connect();
         return this.app;
     }
 
@@ -57,11 +59,6 @@ class App {
     }
 
     private build() {
-        /* this.app.use('/api/user', userRoutes);
-        this.app.use('/api/follow', followRoutes);
-        this.app.use('/api/publication', publicationRoutes);
-        this.app.use('/api/message', messageRoutes); */
-
         /**
          * @info
          *

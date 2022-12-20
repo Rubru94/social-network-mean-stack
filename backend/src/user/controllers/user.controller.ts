@@ -1,4 +1,5 @@
 import { CustomError, NotFoundError } from '@core/models/error.model';
+import { IFollow } from '@follow/models/follow.model';
 import { PublicUser } from '@user/models/public-user.model';
 import { IUser } from '@user/models/user.model';
 import Service from '@user/services/user.service';
@@ -19,6 +20,19 @@ export class UserController {
             const payload: Payload = httpContext.get('user');
             const res = await Service.getAll(payload, +page, +itemsPerPage);
             if (!res) throw new NotFoundError('Users not found');
+            return res;
+        } catch (error) {
+            throw new CustomError(error);
+        }
+    }
+
+    @Path('/:id')
+    @GET
+    async findById(@PathParam('id') id?: string): Promise<{ user: PublicUser; following: IFollow; follower: IFollow }> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            const res = await Service.findById(payload, id);
+            if (!res) throw new NotFoundError('User not found');
             return res;
         } catch (error) {
             throw new CustomError(error);

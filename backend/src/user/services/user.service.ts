@@ -1,6 +1,6 @@
 import { Sort } from '@core/enums/mongo-sort.enum';
 import { BadRequestError, NotFoundError, UnauthorizedError } from '@core/models/error.model';
-import { Follow } from '@follow/models/follow.model';
+import { Follow, IFollow } from '@follow/models/follow.model';
 import { Publication } from '@publication/models/publication.model';
 import { PublicUser } from '@user/models/public-user.model';
 import { IUser, uploadsPath, User } from '@user/models/user.model';
@@ -32,6 +32,20 @@ class UserService {
         const followers = (await Follow.find({ followed: payload.sub })).map((follower) => follower.user);
 
         return { users: result.docs, followings, followers, total: result.totalDocs, pages: result.totalPages };
+    }
+
+    async findById(
+        payload: Payload,
+        userId: Types.ObjectId | string
+    ): Promise<{ user: PublicUser; following: IFollow; follower: IFollow }> {
+        if (!mongooseService.isValidObjectId(userId)) throw new BadRequestError('Invalid id');
+        const user = await User.findById(userId);
+        if (!user) throw new NotFoundError('User not found');
+
+        const following = await Follow.findOne({ user: payload.sub, followed: userId });
+        const follower = await Follow.findOne({ user: userId, followed: payload.sub });
+
+        return { user: new PublicUser(user), following, follower };
     }
 
     async login(user: IUser, token: string): Promise<{ token: string } | PublicUser> {

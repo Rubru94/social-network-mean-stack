@@ -28,7 +28,7 @@ export class UserController {
 
     @Path('/:id')
     @GET
-    async findById(@PathParam('id') id?: string): Promise<{ user: PublicUser; following: IFollow; follower: IFollow }> {
+    async findById(@PathParam('id') id: string): Promise<{ user: PublicUser; following: IFollow; follower: IFollow }> {
         try {
             const payload: Payload = httpContext.get('user');
             const res = await Service.findById(payload, id);

@@ -3,7 +3,7 @@ import { IFollow } from '@follow/models/follow.model';
 import Service from '@follow/services/follow.service';
 import { Payload } from '@utils/services/jwt.service';
 import httpContext from 'express-http-context';
-import { Path, POST } from 'typescript-rest';
+import { DELETE, Path, PathParam, POST } from 'typescript-rest';
 
 @Path('api/follow')
 export class FollowController {
@@ -14,6 +14,17 @@ export class FollowController {
             return await Service.create(payload, follow);
         } catch (err) {
             throw new CustomError(err);
+        }
+    }
+
+    @Path('/:id')
+    @DELETE
+    async remove(@PathParam('id') id: string): Promise<IFollow[]> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            return await Service.remove(payload, id);
+        } catch (error) {
+            throw new CustomError(error);
         }
     }
 }

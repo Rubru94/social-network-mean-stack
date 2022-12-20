@@ -1,6 +1,8 @@
 import { BadRequestError } from '@core/models/error.model';
 import { Follow, IFollow } from '@follow/models/follow.model';
 import { Payload } from '@utils/services/jwt.service';
+import mongooseService from '@utils/services/mongoose.service';
+import { Types } from 'mongoose';
 
 const defaultPage: number = 1;
 const defaultItemsPerPage: number = 5;
@@ -18,6 +20,15 @@ class FollowService {
 
         follow = await follow.save();
         if (!follow) throw new BadRequestError('Follow not saved');
+
+        return follow;
+    }
+
+    async remove(payload: Payload, followed: Types.ObjectId | string): Promise<IFollow[]> {
+        if (!mongooseService.isValidObjectId(followed)) throw new BadRequestError('Invalid id');
+
+        const follow = await Follow.find({ user: payload.sub, followed });
+        await Follow.find({ user: payload.sub, followed }).deleteMany();
 
         return follow;
     }

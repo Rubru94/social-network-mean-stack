@@ -1,3 +1,4 @@
+import { FollowController } from '@follow/controllers/follow.controller';
 import { uploadsPath as publicationUploadsPath } from '@publication/models/publication.model';
 import { UserPublicController } from '@user/controllers/user-public.controller';
 import { UserController } from '@user/controllers/user.controller';
@@ -56,12 +57,12 @@ class App {
         });
 
         /**
-         * @info all routes that contains '/user/', '/follow/' has middleware 'ensureAuth'
+         * @info all routes that contains 'api/user', 'api/follow' has middleware 'ensureAuth'
          */
-        this.app.use(/^.*((\/user\/)|(\/follow\/)).*$/, ensureAuth);
+        this.app.use(/^.*((api\/user)|(api\/follow)).*$/, ensureAuth);
 
-        this.app.use(/^.*\/user\/upload-image\/.*$/, multipart({ uploadDir: userUploadsPath }));
-        this.app.use(/^.*\/publication\/upload-image\/.*$/, multipart({ uploadDir: publicationUploadsPath }));
+        this.app.use(/^.*\/user\/upload-image.*$/, multipart({ uploadDir: userUploadsPath }));
+        this.app.use(/^.*\/publication\/upload-image.*$/, multipart({ uploadDir: publicationUploadsPath }));
     }
 
     private build() {
@@ -71,7 +72,7 @@ class App {
          * All 'this.app.use' before 'Server.buildServices' because 'this.app' it pass as first param
          * Except handling errors that should run after.
          */
-        Server.buildServices(this.app, UserPublicController, UserController);
+        Server.buildServices(this.app, UserPublicController, UserController, FollowController);
         Server.ignoreNextMiddlewares(true);
     }
 

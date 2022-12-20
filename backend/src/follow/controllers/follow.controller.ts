@@ -1,22 +1,40 @@
-'use strict';
+import { CustomError } from '@core/models/error.model';
+import { IFollow } from '@follow/models/follow.model';
+import Service from '@follow/services/follow.service';
+import { Payload } from '@utils/services/jwt.service';
+import httpContext from 'express-http-context';
+import { Path, POST } from 'typescript-rest';
 
-const error = require('@core/models/error.model');
+@Path('api/follow')
+export class FollowController {
+    @POST
+    async create(follow: IFollow): Promise<IFollow> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            return await Service.create(payload, follow);
+        } catch (err) {
+            throw new CustomError(err);
+        }
+    }
+}
+
+/* const error = require('@core/models/error.model');
 const Follow = require('@follow/models/follow.model');
 const mongoosePagination = require('mongoose-pagination');
 const mongooseService = require('@utils/services/mongoose.service');
 const PublicUser = require('@user/models/public-user.model');
-const utilService = require('@utils/services/util.service');
+const utilService = require('@utils/services/util.service'); */
 
-async function create(req, res, next) {
+/* async function create(req, res, next) {
     try {
         delete req.body._id;
         let follow = new Follow(req.body);
         follow.user = follow.user ?? req.user.sub;
         if (follow.validateSync()) throw new error.BadRequestError(follow.validateSync().message);
 
-        /**
-         * @info Every ObjectId instance supports the "equals" method allowing you to provide your comparison value
-         */
+        
+        // @info Every ObjectId instance supports the "equals" method allowing you to provide your comparison value
+         
         if (follow.user.equals(follow.followed)) throw new error.BadRequestError('User & followed cannot be the same user');
 
         follow = await follow.save();
@@ -26,9 +44,9 @@ async function create(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function remove(req, res, next) {
+/* async function remove(req, res, next) {
     try {
         const user = req.user.sub;
         const followed = req.params.id;
@@ -41,9 +59,9 @@ async function remove(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function getFollowingUsers(req, res, next) {
+/* async function getFollowingUsers(req, res, next) {
     try {
         const page = req.params.page ?? 1;
         const user = req.query?.user ? req.query.user : req.user.sub;
@@ -74,9 +92,9 @@ async function getFollowingUsers(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function getFollowers(req, res, next) {
+/* async function getFollowers(req, res, next) {
     try {
         const page = req.params.page ?? 1;
         const user = req.query?.user ? req.query.user : req.user.sub;
@@ -107,9 +125,9 @@ async function getFollowers(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function getFollows(req, res, next) {
+/* async function getFollows(req, res, next) {
     try {
         const user = req.user.sub;
         if (!mongooseService.isValidObjectId(user)) throw new error.BadRequestError('Invalid user id');
@@ -122,12 +140,4 @@ async function getFollows(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
-
-module.exports = {
-    create,
-    remove,
-    getFollowingUsers,
-    getFollowers,
-    getFollows
-};
+} */

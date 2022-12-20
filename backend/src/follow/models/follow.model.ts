@@ -1,4 +1,4 @@
-import { model, PaginateModel, Schema, Types } from 'mongoose';
+import { Document, model, PaginateModel, Schema, Types } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 export interface IFollow extends Document {

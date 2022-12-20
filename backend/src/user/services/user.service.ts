@@ -12,6 +12,7 @@ import { PaginateResult, Types } from 'mongoose';
 import fsService from '@utils/services/fs.service';
 import isImage from 'is-image';
 import { ImageUser } from '@user/models/image-user.model';
+import path from 'path';
 
 const defaultPage: number = 1;
 const defaultItemsPerPage: number = 5;
@@ -118,6 +119,16 @@ class UserService {
         if (existingFile) await fsService.unlinkPromise(`${uploadsPath}/${user.image}`);
 
         return new PublicUser(update);
+    }
+
+    async getImageFile(payload: Payload, imageFile: string): Promise<string> {
+        if (!imageFile) throw new BadRequestError('No param imageFile');
+        const filePath = `${uploadsPath}/${imageFile}`;
+
+        const file = await fsService.existsPromise(filePath);
+        if (!file) throw new NotFoundError('Image does not exist');
+
+        return path.resolve(filePath);
     }
 }
 

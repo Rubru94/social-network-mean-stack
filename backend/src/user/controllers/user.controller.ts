@@ -76,6 +76,17 @@ export class UserController {
             throw new CustomError(err);
         }
     }
+
+    @Path('/image/:imageFile')
+    @GET
+    async getImageFile(@PathParam('imageFile') imageFile: string): Promise<string> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            return await Service.getImageFile(payload, imageFile);
+        } catch (error) {
+            throw new CustomError(error);
+        }
+    }
 }
 
 /**

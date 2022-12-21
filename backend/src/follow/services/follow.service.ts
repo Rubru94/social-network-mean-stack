@@ -19,7 +19,8 @@ class FollowService {
         /**
          * @info Every ObjectId instance supports the "equals" method allowing you to provide your comparison value
          */
-        if (follow.user.equals(follow.followed as Types.ObjectId)) throw new BadRequestError('User & followed cannot be the same user');
+        if ((follow.user as Types.ObjectId).equals(follow.followed as Types.ObjectId))
+            throw new BadRequestError('User & followed cannot be the same user');
 
         follow = await follow.save();
         if (!follow) throw new BadRequestError('Follow not saved');
@@ -54,11 +55,43 @@ class FollowService {
         if (!result) return null;
 
         const followings = (await Follow.find({ user: payload.sub })).map((following) => following.followed as Types.ObjectId);
-        const followers = (await Follow.find({ followed: payload.sub })).map((follower) => follower.user);
+        const followers = (await Follow.find({ followed: payload.sub })).map((follower) => follower.user as Types.ObjectId);
 
         return {
             follows: result.docs.map((follow) => {
                 follow.followed = new PublicUser(follow.followed as IUser);
+                return follow;
+            }),
+            followings,
+            followers,
+            total: result.totalDocs,
+            pages: result.totalPages
+        };
+    }
+
+    async getFollowers(
+        payload: Payload,
+        page?: number,
+        limit?: number,
+        userId?: Types.ObjectId | string
+    ): Promise<{ follows: IFollow[]; followings: Types.ObjectId[]; followers: Types.ObjectId[]; total: number; pages: number }> {
+        if (!page) page = defaultPage;
+        if (!limit) limit = defaultItemsPerPage;
+        const user = userId ?? payload.sub;
+        if (!mongooseService.isValidObjectId(user)) throw new BadRequestError('Invalid user id');
+
+        const result: PaginateResult<IFollow> = await Follow.paginate(
+            { followed: user },
+            { sort: { _id: Sort.Ascending }, populate: { path: 'user' }, page, limit }
+        );
+        if (!result) return null;
+
+        const followings = (await Follow.find({ user: payload.sub })).map((following) => following.followed as Types.ObjectId);
+        const followers = (await Follow.find({ followed: payload.sub })).map((follower) => follower.user as Types.ObjectId);
+
+        return {
+            follows: result.docs.map((follow) => {
+                follow.user = new PublicUser(follow.user as IUser);
                 return follow;
             }),
             followings,

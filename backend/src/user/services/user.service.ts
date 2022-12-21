@@ -29,7 +29,7 @@ class UserService {
         const result: PaginateResult<IUser> = await User.paginate({}, { sort: { _id: Sort.Ascending }, page, limit });
 
         const followings = (await Follow.find({ user: payload.sub })).map((following) => following.followed as Types.ObjectId);
-        const followers = (await Follow.find({ followed: payload.sub })).map((follower) => follower.user);
+        const followers = (await Follow.find({ followed: payload.sub })).map((follower) => follower.user as Types.ObjectId);
 
         return { users: result.docs, followings, followers, total: result.totalDocs, pages: result.totalPages };
     }

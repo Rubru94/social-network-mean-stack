@@ -3,7 +3,7 @@ import { Document, model, PaginateModel, Schema, Types } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 export interface IFollow extends Document {
-    user: Types.ObjectId;
+    user: Types.ObjectId | PublicUser;
     followed: Types.ObjectId | PublicUser;
 }
 

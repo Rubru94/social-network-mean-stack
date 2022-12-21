@@ -45,6 +45,23 @@ export class FollowController {
             throw new CustomError(error);
         }
     }
+
+    @Path('/follower/:page?')
+    @GET
+    async getFollowers(
+        @PathParam('page') page?: string,
+        @QueryParam('itemsPerPage') itemsPerPage?: string,
+        @QueryParam('user') user?: string
+    ): Promise<{ follows: IFollow[]; followings: Types.ObjectId[]; followers: Types.ObjectId[]; total: number; pages: number }> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            const res = await Service.getFollowers(payload, +page, +itemsPerPage, user);
+            if (!res) throw new NotFoundError('Follows not found');
+            return res;
+        } catch (error) {
+            throw new CustomError(error);
+        }
+    }
 }
 
 /* const error = require('@core/models/error.model');

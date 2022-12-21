@@ -1,9 +1,10 @@
+import { PublicUser } from '@user/models/public-user.model';
 import { Document, model, PaginateModel, Schema, Types } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 export interface IFollow extends Document {
     user: Types.ObjectId;
-    followed: Types.ObjectId;
+    followed: Types.ObjectId | PublicUser;
 }
 
 const FollowSchema = new Schema<IFollow>({

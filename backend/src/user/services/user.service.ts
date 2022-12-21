@@ -28,7 +28,7 @@ class UserService {
 
         const result: PaginateResult<IUser> = await User.paginate({}, { sort: { _id: Sort.Ascending }, page, limit });
 
-        const followings = (await Follow.find({ user: payload.sub })).map((following) => following.followed);
+        const followings = (await Follow.find({ user: payload.sub })).map((following) => following.followed as Types.ObjectId);
         const followers = (await Follow.find({ followed: payload.sub })).map((follower) => follower.user);
 
         return { users: result.docs, followings, followers, total: result.totalDocs, pages: result.totalPages };
@@ -40,7 +40,7 @@ class UserService {
     ): Promise<{ user: PublicUser; following: IFollow; follower: IFollow }> {
         if (!mongooseService.isValidObjectId(userId)) throw new BadRequestError('Invalid id');
         const user = await User.findById(userId);
-        if (!user) throw new NotFoundError('User not found');
+        if (!user) return null;
 
         const following = await Follow.findOne({ user: payload.sub, followed: userId });
         const follower = await Follow.findOne({ user: userId, followed: payload.sub });

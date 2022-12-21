@@ -1,4 +1,4 @@
-import { model, PaginateModel, Schema, Types } from 'mongoose';
+import { Document, model, PaginateModel, Schema, Types } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 export const uploadsPath = './src/publication/uploads';
@@ -10,6 +10,9 @@ export interface IPublication extends Document {
     createdAt: Date;
 }
 
+/**
+ * @TODO separate all schemas to schemas directory into core/database
+ */
 const PublicationSchema = new Schema<IPublication>({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     text: { type: String, required: true },

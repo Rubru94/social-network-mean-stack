@@ -1,5 +1,24 @@
-'use strict';
+import { CustomError } from '@core/models/error.model';
+import { IPublication } from '@publication/models/publication.model';
+import Service from '@publication/services/publication.service';
+import { Payload } from '@utils/services/jwt.service';
+import httpContext from 'express-http-context';
+import { Path, POST } from 'typescript-rest';
 
+@Path('api/publication')
+export class PublicationController {
+    @POST
+    async create(follow: IPublication): Promise<IPublication> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            return await Service.create(payload, follow);
+        } catch (err) {
+            throw new CustomError(err);
+        }
+    }
+}
+
+/* 
 const error = require('@core/models/error.model');
 const FilePublication = require('@publication/models/file-publication.model');
 const Follow = require('@follow/models/follow.model');
@@ -10,9 +29,9 @@ const mongooseService = require('@utils/services/mongoose.service');
 const path = require('path');
 const Publication = require('@publication/models/publication.model');
 const utilService = require('@utils/services/util.service');
-const publicationUploads = require('@publication/models/uploads.model');
+const publicationUploads = require('@publication/models/uploads.model'); */
 
-async function getAllFromFollowing(req, res, next) {
+/* async function getAllFromFollowing(req, res, next) {
     try {
         const page = req.params.page ?? 1;
         const itemsPerPage = +req.query?.itemsPerPage ?? 5;
@@ -33,9 +52,9 @@ async function getAllFromFollowing(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function getAllFromUser(req, res, next) {
+/* async function getAllFromUser(req, res, next) {
     try {
         const page = req.params.page ?? 1;
         const itemsPerPage = +req.query?.itemsPerPage ?? 5;
@@ -53,9 +72,9 @@ async function getAllFromUser(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function findById(req, res, next) {
+/* async function findById(req, res, next) {
     try {
         const id = req.params?.id;
         if (!mongooseService.isValidObjectId(id)) throw new error.BadRequestError('Invalid id');
@@ -66,25 +85,9 @@ async function findById(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function create(req, res, next) {
-    try {
-        delete req.body._id;
-        let publication = new Publication(req.body);
-        publication.user ??= req.user.sub;
-        if (publication.validateSync()) throw new error.BadRequestError(publication.validateSync().message);
-
-        publication = await publication.save();
-        if (!publication) throw new error.BadRequestError('Publication not saved');
-
-        return res.status(200).send(publication);
-    } catch (err) {
-        next(err);
-    }
-}
-
-async function remove(req, res, next) {
+/* async function remove(req, res, next) {
     try {
         const user = req.user.sub;
         const id = req.params?.id;
@@ -100,9 +103,9 @@ async function remove(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function getImageFile(req, res, next) {
+/* async function getImageFile(req, res, next) {
     try {
         if (!req.params?.imageFile) throw new error.BadRequestError('No param imageFile');
         const filePath = `./src/publication/uploads/${req.params.imageFile}`;
@@ -114,9 +117,9 @@ async function getImageFile(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function uploadImage(req, res, next) {
+/* async function uploadImage(req, res, next) {
     try {
         const publicationId = req.params?.publicationId;
         if (!mongooseService.isValidObjectId(publicationId)) throw new error.BadRequestError('Invalid id');
@@ -152,14 +155,4 @@ async function uploadImage(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
-
-module.exports = {
-    getAllFromFollowing,
-    getAllFromUser,
-    findById,
-    create,
-    remove,
-    getImageFile,
-    uploadImage
-};
+} */

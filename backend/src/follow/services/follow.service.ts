@@ -100,6 +100,17 @@ class FollowService {
             pages: result.totalPages
         };
     }
+
+    async getFollows(payload: Payload, followed: boolean): Promise<IFollow[]> {
+        const user = payload.sub;
+        if (!mongooseService.isValidObjectId(user)) throw new BadRequestError('Invalid user id');
+
+        const find = Follow.find(followed ? { followed: user } : { user });
+
+        const follows = await find.sort({ _id: Sort.Ascending }).populate({ path: 'user followed' });
+        if (!follows) return null;
+        return follows;
+    }
 }
 
 export default new FollowService();

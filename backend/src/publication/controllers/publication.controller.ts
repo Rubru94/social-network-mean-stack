@@ -1,9 +1,9 @@
-import { CustomError } from '@core/models/error.model';
+import { CustomError, NotFoundError } from '@core/models/error.model';
 import { IPublication } from '@publication/models/publication.model';
 import Service from '@publication/services/publication.service';
 import { Payload } from '@utils/services/jwt.service';
 import httpContext from 'express-http-context';
-import { DELETE, Path, PathParam, POST } from 'typescript-rest';
+import { DELETE, GET, Path, PathParam, POST, QueryParam } from 'typescript-rest';
 
 @Path('api/publication')
 export class PublicationController {
@@ -27,6 +27,22 @@ export class PublicationController {
             throw new CustomError(error);
         }
     }
+
+    @Path('/all-following/:page?')
+    @GET
+    async getFollowingUsers(
+        @PathParam('page') page?: string,
+        @QueryParam('itemsPerPage') itemsPerPage?: string
+    ): Promise<{ publications: IPublication[]; itemsPerPage: number; total: number; pages: number }> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            const res = await Service.getAllFromFollowing(payload, +page, +itemsPerPage);
+            if (!res) throw new NotFoundError('Publications from following users not found');
+            return res;
+        } catch (error) {
+            throw new CustomError(error);
+        }
+    }
 }
 
 /* 
@@ -41,29 +57,6 @@ const path = require('path');
 const Publication = require('@publication/models/publication.model');
 const utilService = require('@utils/services/util.service');
 const publicationUploads = require('@publication/models/uploads.model'); */
-
-/* async function getAllFromFollowing(req, res, next) {
-    try {
-        const page = req.params.page ?? 1;
-        const itemsPerPage = +req.query?.itemsPerPage ?? 5;
-
-        let follows = await Follow.find({ user: req.user.sub }).sort('_id').populate({ path: 'followed' });
-        follows = follows.map((follow) => follow.followed);
-        follows.push(req.user.sub);
-
-        Publication.find({ user: { $in: follows } })
-            .sort({ createdAt: -1 })
-            .populate('user')
-            .paginate(page, itemsPerPage, async (err, publications, total) => {
-                if (err) return next(err);
-                if (!publications) throw new error.NotFoundError('Publications from following users not found');
-
-                return res.status(200).send({ publications, itemsPerPage, total, pages: Math.ceil(total / itemsPerPage) });
-            });
-    } catch (err) {
-        next(err);
-    }
-} */
 
 /* async function getAllFromUser(req, res, next) {
     try {

@@ -1,9 +1,11 @@
+import { Sort } from '@core/enums/mongo-sort.enum';
 import { BadRequestError, UnauthorizedError } from '@core/models/error.model';
+import { Follow } from '@follow/models/follow.model';
 import { IPublication, Publication, uploadsPath } from '@publication/models/publication.model';
 import fsService from '@utils/services/fs.service';
 import { Payload } from '@utils/services/jwt.service';
 import mongooseService from '@utils/services/mongoose.service';
-import { Types } from 'mongoose';
+import { PaginateResult, Types } from 'mongoose';
 
 const defaultPage: number = 1;
 const defaultItemsPerPage: number = 5;
@@ -31,6 +33,32 @@ class PublicationService {
         if (file) await fsService.unlinkPromise(`${uploadsPath}/${publication.file}`);
 
         return publication;
+    }
+
+    async getAllFromFollowing(
+        payload: Payload,
+        page?: number,
+        limit?: number
+    ): Promise<{ publications: IPublication[]; itemsPerPage: number; total: number; pages: number }> {
+        if (!page) page = defaultPage;
+        if (!limit) limit = defaultItemsPerPage;
+
+        let followSearch = await Follow.find({ user: payload.sub }).sort('_id').populate({ path: 'followed' });
+        let follows = followSearch.map((follow) => follow.followed);
+        follows.push(payload.sub);
+
+        const result: PaginateResult<IPublication> = await Publication.paginate(
+            { user: { $in: follows } },
+            { sort: { createdAt: Sort.Descending }, populate: { path: 'user' }, page, limit }
+        );
+        if (!result) return null;
+
+        return {
+            publications: result.docs,
+            itemsPerPage: limit,
+            total: result.totalDocs,
+            pages: result.totalPages
+        };
     }
 }
 

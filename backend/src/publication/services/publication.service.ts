@@ -60,6 +60,25 @@ class PublicationService {
             pages: result.totalPages
         };
     }
+
+    async getAllFromUser(payload: Payload, page?: number, limit?: number, userId?: Types.ObjectId | string) {
+        if (!page) page = defaultPage;
+        if (!limit) limit = defaultItemsPerPage;
+        const user = userId && !!(userId as string).trim() ? userId : payload.sub;
+
+        const result: PaginateResult<IPublication> = await Publication.paginate(
+            { user },
+            { sort: { createdAt: Sort.Descending }, populate: { path: 'user' }, page, limit }
+        );
+        if (!result) return null;
+
+        return {
+            publications: result.docs,
+            itemsPerPage: limit,
+            total: result.totalDocs,
+            pages: result.totalPages
+        };
+    }
 }
 
 export default new PublicationService();

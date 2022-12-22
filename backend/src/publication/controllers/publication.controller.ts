@@ -43,6 +43,23 @@ export class PublicationController {
             throw new CustomError(error);
         }
     }
+
+    @Path('/all-user/:page?')
+    @GET
+    async getAllFromUser(
+        @PathParam('page') page?: string,
+        @QueryParam('itemsPerPage') itemsPerPage?: string,
+        @QueryParam('user') user?: string
+    ): Promise<{ publications: IPublication[]; itemsPerPage: number; total: number; pages: number }> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            const res = await Service.getAllFromUser(payload, +page, +itemsPerPage, user);
+            if (!res) throw new NotFoundError('Publications from following users not found');
+            return res;
+        } catch (error) {
+            throw new CustomError(error);
+        }
+    }
 }
 
 /* 
@@ -57,26 +74,6 @@ const path = require('path');
 const Publication = require('@publication/models/publication.model');
 const utilService = require('@utils/services/util.service');
 const publicationUploads = require('@publication/models/uploads.model'); */
-
-/* async function getAllFromUser(req, res, next) {
-    try {
-        const page = req.params.page ?? 1;
-        const itemsPerPage = +req.query?.itemsPerPage ?? 5;
-        const user = req.query?.user && !!(req.query?.user).trim() ? req.query.user : req.user.sub;
-
-        Publication.find({ user })
-            .sort({ createdAt: -1 })
-            .populate('user')
-            .paginate(page, itemsPerPage, async (err, publications, total) => {
-                if (err) return next(err);
-                if (!publications) throw new error.NotFoundError('Publications from following users not found');
-
-                return res.status(200).send({ publications, itemsPerPage, total, pages: Math.ceil(total / itemsPerPage) });
-            });
-    } catch (err) {
-        next(err);
-    }
-} */
 
 /* async function findById(req, res, next) {
     try {

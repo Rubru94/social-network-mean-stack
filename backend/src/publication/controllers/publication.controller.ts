@@ -3,7 +3,7 @@ import { IPublication } from '@publication/models/publication.model';
 import Service from '@publication/services/publication.service';
 import { Payload } from '@utils/services/jwt.service';
 import httpContext from 'express-http-context';
-import { Path, POST } from 'typescript-rest';
+import { DELETE, Path, PathParam, POST } from 'typescript-rest';
 
 @Path('api/publication')
 export class PublicationController {
@@ -14,6 +14,17 @@ export class PublicationController {
             return await Service.create(payload, follow);
         } catch (err) {
             throw new CustomError(err);
+        }
+    }
+
+    @Path('/:id')
+    @DELETE
+    async remove(@PathParam('id') id: string): Promise<IPublication> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            return await Service.remove(payload, id);
+        } catch (error) {
+            throw new CustomError(error);
         }
     }
 }
@@ -82,24 +93,6 @@ const publicationUploads = require('@publication/models/uploads.model'); */
         if (!publication) throw new error.NotFoundError('Publication not found');
 
         res.status(200).send(publication);
-    } catch (err) {
-        next(err);
-    }
-} */
-
-/* async function remove(req, res, next) {
-    try {
-        const user = req.user.sub;
-        const id = req.params?.id;
-        if (!mongooseService.isValidObjectId(id)) throw new error.BadRequestError('Invalid id');
-
-        const publication = await Publication.findOne({ user, _id: id });
-        if (!publication) throw new error.UnauthorizedError('It is not possible to delete this publication');
-        await Publication.find({ user, _id: id }).deleteOne();
-        const file = await fsService.existsPromise(`${publicationUploads.path}/${publication.file}`);
-        if (file) await fsService.unlinkPromise(`${publicationUploads.path}/${publication.file}`);
-
-        return res.status(200).send(publication);
     } catch (err) {
         next(err);
     }

@@ -50,6 +50,17 @@ export class MessageController {
             throw new CustomError(error);
         }
     }
+
+    @Path('/unviewed')
+    @GET
+    async getUnviewedCount(): Promise<{ unviewedMessages: number }> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            return await Service.getUnviewedCount(payload);
+        } catch (error) {
+            throw new CustomError(error);
+        }
+    }
 }
 
 /* const error = require('@core/models/error.model');
@@ -65,17 +76,6 @@ const Publication = require('@publication/models/publication.model');
 const PublicUser = require('@user/models/public-user.model');
 const Follow = require('@follow/models/follow.model');
 const utilService = require('@utils/services/util.service'); */
-
-/* async function getUnviewedCount(req, res, next) {
-    try {
-        const user = req.user.sub;
-        const unviewedMessages = await Message.count({ receiver: user, viewed: false });
-
-        res.status(200).send({ unviewedMessages });
-    } catch (err) {
-        next(err);
-    }
-} */
 
 /* async function setViewed(req, res, next) {
     try {

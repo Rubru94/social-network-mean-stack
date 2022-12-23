@@ -51,7 +51,11 @@ class MessageService {
         };
     }
 
-    async getSentMessages(payload: Payload, page?: number, limit?: number) {
+    async getSentMessages(
+        payload: Payload,
+        page?: number,
+        limit?: number
+    ): Promise<{ messages: IMessage[]; itemsPerPage: number; total: number; pages: number }> {
         if (!page) page = defaultPage;
         if (!limit) limit = defaultItemsPerPage;
         const user = payload.sub;
@@ -77,6 +81,13 @@ class MessageService {
             total: result.totalDocs,
             pages: result.totalPages
         };
+    }
+
+    async getUnviewedCount(payload: Payload): Promise<{ unviewedMessages: number }> {
+        const user = payload.sub;
+        const unviewedMessages = await Message.count({ receiver: user, viewed: false });
+
+        return { unviewedMessages };
     }
 }
 

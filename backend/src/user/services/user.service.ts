@@ -105,7 +105,7 @@ class UserService {
         return new PublicUser(update);
     }
 
-    async uploadImage(payload: Payload, userId: Types.ObjectId | string, file: Express.Multer.File): Promise<any> {
+    async uploadImage(payload: Payload, userId: Types.ObjectId | string, file: Express.Multer.File): Promise<PublicUser> {
         if (!mongooseService.isValidObjectId(userId)) throw new BadRequestError('Invalid id');
         if (userId !== payload.sub) throw new UnauthorizedError('You do not have permissions to update user image');
 

@@ -73,6 +73,18 @@ export class PublicationController {
             throw new CustomError(error);
         }
     }
+
+    @Path('/upload-image/:publicationId')
+    @POST
+    async uploadImage(@PathParam('publicationId') publicationId: string): Promise<IPublication> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            const req = httpContext.get('request');
+            return await Service.uploadImage(payload, publicationId, req?.files?.image);
+        } catch (err) {
+            throw new CustomError(err);
+        }
+    }
 }
 
 /* 
@@ -97,44 +109,6 @@ const publicationUploads = require('@publication/models/uploads.model'); */
         if (!file) throw new error.NotFoundError('Image does not exist');
 
         res.status(200).sendFile(path.resolve(filePath));
-    } catch (err) {
-        next(err);
-    }
-} */
-
-/* async function uploadImage(req, res, next) {
-    try {
-        const publicationId = req.params?.publicationId;
-        if (!mongooseService.isValidObjectId(publicationId)) throw new error.BadRequestError('Invalid id');
-
-        const publication = await Publication.findOne({ _id: publicationId, user: req.user.sub });
-
-        if (utilService.isEmptyObject(req.files)) throw new error.BadRequestError('There is no attached image');
-        const isValidParam = !!req.files.image;
-        const filePath = isValidParam ? req.files.image.path : utilService.findValue(req.files, 'path');
-        const fileName = filePath.split('\\').pop();
-
-        if (!publication) {
-            await fsService.unlinkPromise(filePath);
-            throw new error.UnauthorizedError('You do not have permissions to update publication image');
-        }
-
-        if (!isValidParam) {
-            await fsService.unlinkPromise(filePath);
-            throw new error.BadRequestError('Invalid image param');
-        }
-
-        if (!isImage(fileName)) {
-            await fsService.unlinkPromise(filePath);
-            throw new error.BadRequestError('Invalid image format/extension');
-        }
-
-        const updatedPublication = await Publication.findByIdAndUpdate(publicationId, new FilePublication(fileName), { new: true });
-        if (!updatedPublication) throw new error.NotFoundError('Failed to update file publication');
-        const file = await fsService.existsPromise(`${publicationUploads.path}/${publication.file}`);
-        if (file) await fsService.unlinkPromise(`${publicationUploads.path}/${publication.file}`);
-
-        return res.status(200).send(updatedPublication);
     } catch (err) {
         next(err);
     }

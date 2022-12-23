@@ -1,10 +1,12 @@
 import { Sort } from '@core/enums/mongo-sort.enum';
-import { BadRequestError, UnauthorizedError } from '@core/models/error.model';
+import { BadRequestError, NotFoundError, UnauthorizedError } from '@core/models/error.model';
 import { Follow } from '@follow/models/follow.model';
+import { FilePublication } from '@publication/models/file-publication.model';
 import { IPublication, Publication, uploadsPath } from '@publication/models/publication.model';
 import fsService from '@utils/services/fs.service';
 import { Payload } from '@utils/services/jwt.service';
 import mongooseService from '@utils/services/mongoose.service';
+import isImage from 'is-image';
 import { PaginateResult, Types } from 'mongoose';
 
 const defaultPage: number = 1;
@@ -86,6 +88,39 @@ class PublicationService {
         if (!publication) return null;
 
         return publication;
+    }
+
+    async uploadImage(payload: Payload, publicationId: Types.ObjectId | string, file: Express.Multer.File): Promise<IPublication> {
+        if (!mongooseService.isValidObjectId(publicationId)) throw new BadRequestError('Invalid id');
+
+        const publication = await Publication.findOne({ _id: publicationId, user: payload.sub });
+
+        if (!file) throw new BadRequestError('There is no attached image');
+        const isValidParam = !!file;
+        const filePath = file.path;
+        const fileName = filePath.split('\\').pop();
+
+        if (!publication) {
+            await fsService.unlinkPromise(filePath);
+            throw new UnauthorizedError('You do not have permissions to update publication image');
+        }
+
+        if (!isValidParam) {
+            await fsService.unlinkPromise(filePath);
+            throw new BadRequestError('Invalid image param');
+        }
+
+        if (!isImage(fileName)) {
+            await fsService.unlinkPromise(filePath);
+            throw new BadRequestError('Invalid image format/extension');
+        }
+
+        const updatedPublication = await Publication.findByIdAndUpdate(publicationId, new FilePublication(fileName), { new: true });
+        if (!updatedPublication) throw new NotFoundError('Failed to update file publication');
+        const existingFile = await fsService.existsPromise(`${uploadsPath}/${publication.file}`);
+        if (existingFile) await fsService.unlinkPromise(`${uploadsPath}/${publication.file}`);
+
+        return updatedPublication;
     }
 }
 

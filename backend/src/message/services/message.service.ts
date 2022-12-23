@@ -50,6 +50,34 @@ class MessageService {
             pages: result.totalPages
         };
     }
+
+    async getSentMessages(payload: Payload, page?: number, limit?: number) {
+        if (!page) page = defaultPage;
+        if (!limit) limit = defaultItemsPerPage;
+        const user = payload.sub;
+
+        const result: PaginateResult<IMessage> = await Message.paginate(
+            { emitter: user },
+            {
+                sort: { createdAt: Sort.Descending },
+                populate: { path: 'emitter receiver' },
+                page,
+                limit
+            }
+        );
+        if (!result) return null;
+
+        return {
+            messages: result.docs.map((message) => {
+                message.emitter = new PublicUser(message.emitter as IUser);
+                message.receiver = new PublicUser(message.receiver as IUser);
+                return message;
+            }),
+            itemsPerPage: limit,
+            total: result.totalDocs,
+            pages: result.totalPages
+        };
+    }
 }
 
 export default new MessageService();

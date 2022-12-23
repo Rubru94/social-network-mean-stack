@@ -34,6 +34,22 @@ export class MessageController {
             throw new CustomError(error);
         }
     }
+
+    @Path('/sent/:page?')
+    @GET
+    async getSentMessages(
+        @PathParam('page') page?: string,
+        @QueryParam('itemsPerPage') itemsPerPage?: string
+    ): Promise<{ messages: IMessage[]; itemsPerPage: number; total: number; pages: number }> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            const res = await Service.getSentMessages(payload, +page, +itemsPerPage);
+            if (!res) throw new NotFoundError('Sent messages not found');
+            return res;
+        } catch (error) {
+            throw new CustomError(error);
+        }
+    }
 }
 
 /* const error = require('@core/models/error.model');
@@ -56,35 +72,6 @@ const utilService = require('@utils/services/util.service'); */
         const unviewedMessages = await Message.count({ receiver: user, viewed: false });
 
         res.status(200).send({ unviewedMessages });
-    } catch (err) {
-        next(err);
-    }
-} */
-
-/* async function getSentMessages(req, res, next) {
-    try {
-        const user = req.user.sub;
-        const page = req.params.page ?? 1;
-        const itemsPerPage = req.query?.itemsPerPage ?? 5;
-
-        Message.find({ emitter: user })
-            .sort({ createdAt: -1 })
-            .populate('emitter receiver')
-            .paginate(page, itemsPerPage, async (err, messages, total) => {
-                if (err) return next(err);
-                if (!messages) throw new error.NotFoundError('Emitter messages not found');
-
-                return res.status(200).send({
-                    messages: messages.map((message) => {
-                        message.receiver = new PublicUser(message.receiver);
-                        message.emitter = new PublicUser(message.emitter);
-                        return message;
-                    }),
-                    itemsPerPage,
-                    total,
-                    pages: Math.ceil(total / itemsPerPage)
-                });
-            });
     } catch (err) {
         next(err);
     }

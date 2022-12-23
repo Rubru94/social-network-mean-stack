@@ -1,6 +1,24 @@
-'use strict';
+import { CustomError } from '@core/models/error.model';
+import { IMessage } from '@message/models/message.model';
+import Service from '@message/services/message.service';
+import { Payload } from '@utils/services/jwt.service';
+import httpContext from 'express-http-context';
+import { Path, POST } from 'typescript-rest';
 
-const error = require('@core/models/error.model');
+@Path('api/message')
+export class MessageController {
+    @POST
+    async create(message: IMessage): Promise<IMessage> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            return await Service.create(payload, message);
+        } catch (err) {
+            throw new CustomError(err);
+        }
+    }
+}
+
+/* const error = require('@core/models/error.model');
 const FilePublication = require('@publication/models/file-publication.model');
 const fsService = require('@utils/services/fs.service');
 const isImage = require('is-image');
@@ -12,9 +30,9 @@ const Message = require('@message/models/message.model');
 const Publication = require('@publication/models/publication.model');
 const PublicUser = require('@user/models/public-user.model');
 const Follow = require('@follow/models/follow.model');
-const utilService = require('@utils/services/util.service');
+const utilService = require('@utils/services/util.service'); */
 
-async function getReceivedMessages(req, res, next) {
+/* async function getReceivedMessages(req, res, next) {
     try {
         const user = req.user.sub;
         const page = req.params.page ?? 1;
@@ -41,9 +59,9 @@ async function getReceivedMessages(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function getUnviewedCount(req, res, next) {
+/* async function getUnviewedCount(req, res, next) {
     try {
         const user = req.user.sub;
         const unviewedMessages = await Message.count({ receiver: user, viewed: false });
@@ -52,9 +70,9 @@ async function getUnviewedCount(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function getSentMessages(req, res, next) {
+/* async function getSentMessages(req, res, next) {
     try {
         const user = req.user.sub;
         const page = req.params.page ?? 1;
@@ -81,25 +99,9 @@ async function getSentMessages(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
+} */
 
-async function create(req, res, next) {
-    try {
-        delete req.body._id;
-        let message = new Message(req.body);
-        message.emitter = req.user.sub;
-        if (message.validateSync()) throw new error.BadRequestError(message.validateSync().message);
-
-        message = await message.save();
-        if (!message) throw new error.BadRequestError('Message not saved');
-
-        return res.status(200).send(message);
-    } catch (err) {
-        next(err);
-    }
-}
-
-async function setViewed(req, res, next) {
+/* async function setViewed(req, res, next) {
     try {
         const user = req.user.sub;
         const messagesUpdated = await Message.updateMany({ receiver: user, viewed: false }, { viewed: true }, { new: true });
@@ -108,12 +110,4 @@ async function setViewed(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
-
-module.exports = {
-    getReceivedMessages,
-    getSentMessages,
-    getUnviewedCount,
-    create,
-    setViewed
-};
+} */

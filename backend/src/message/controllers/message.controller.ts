@@ -4,7 +4,8 @@ import Service from '@message/services/message.service';
 import { Payload } from '@utils/services/jwt.service';
 import { UtilService } from '@utils/services/util.service';
 import httpContext from 'express-http-context';
-import { GET, Path, PathParam, POST, QueryParam } from 'typescript-rest';
+import { UpdateResult } from 'mongodb';
+import { GET, Path, PathParam, POST, PUT, QueryParam } from 'typescript-rest';
 
 @Path('api/message')
 export class MessageController {
@@ -13,6 +14,17 @@ export class MessageController {
         try {
             const payload: Payload = httpContext.get('user');
             return await Service.create(payload, message);
+        } catch (err) {
+            throw new CustomError(err);
+        }
+    }
+
+    @Path('/set-viewed')
+    @PUT
+    async setViewed(): Promise<UpdateResult> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            return await Service.setViewed(payload);
         } catch (err) {
             throw new CustomError(err);
         }
@@ -62,28 +74,3 @@ export class MessageController {
         }
     }
 }
-
-/* const error = require('@core/models/error.model');
-const FilePublication = require('@publication/models/file-publication.model');
-const fsService = require('@utils/services/fs.service');
-const isImage = require('is-image');
-const mongoosePagination = require('mongoose-pagination');
-const mongooseService = require('@utils/services/mongoose.service');
-const path = require('path');
-const User = require('@user/models/user.model');
-const Message = require('@message/models/message.model');
-const Publication = require('@publication/models/publication.model');
-const PublicUser = require('@user/models/public-user.model');
-const Follow = require('@follow/models/follow.model');
-const utilService = require('@utils/services/util.service'); */
-
-/* async function setViewed(req, res, next) {
-    try {
-        const user = req.user.sub;
-        const messagesUpdated = await Message.updateMany({ receiver: user, viewed: false }, { viewed: true }, { new: true });
-
-        return res.status(200).send(messagesUpdated);
-    } catch (err) {
-        next(err);
-    }
-} */

@@ -4,6 +4,7 @@ import { IMessage, Message } from '@message/models/message.model';
 import { PublicUser } from '@user/models/public-user.model';
 import { IUser } from '@user/models/user.model';
 import { Payload } from '@utils/services/jwt.service';
+import { UpdateResult } from 'mongodb';
 import { PaginateResult } from 'mongoose';
 
 const defaultPage: number = 1;
@@ -19,6 +20,13 @@ class MessageService {
         if (!message) throw new BadRequestError('Message not saved');
 
         return message;
+    }
+
+    async setViewed(payload: Payload): Promise<UpdateResult> {
+        const user = payload.sub;
+        const messagesUpdated = await Message.updateMany({ receiver: user, viewed: false }, { viewed: true }, { new: true });
+
+        return messagesUpdated;
     }
 
     async getReceivedMessages(

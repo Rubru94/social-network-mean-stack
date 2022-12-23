@@ -85,31 +85,15 @@ export class PublicationController {
             throw new CustomError(err);
         }
     }
-}
 
-/* 
-const error = require('@core/models/error.model');
-const FilePublication = require('@publication/models/file-publication.model');
-const Follow = require('@follow/models/follow.model');
-const fsService = require('@utils/services/fs.service');
-const isImage = require('is-image');
-const mongoosePagination = require('mongoose-pagination');
-const mongooseService = require('@utils/services/mongoose.service');
-const path = require('path');
-const Publication = require('@publication/models/publication.model');
-const utilService = require('@utils/services/util.service');
-const publicationUploads = require('@publication/models/uploads.model'); */
-
-/* async function getImageFile(req, res, next) {
-    try {
-        if (!req.params?.imageFile) throw new error.BadRequestError('No param imageFile');
-        const filePath = `./src/publication/uploads/${req.params.imageFile}`;
-
-        const file = await fsService.existsPromise(filePath);
-        if (!file) throw new error.NotFoundError('Image does not exist');
-
-        res.status(200).sendFile(path.resolve(filePath));
-    } catch (err) {
-        next(err);
+    @Path('/image/:imageFile')
+    @GET
+    async getImageFile(@PathParam('imageFile') imageFile: string): Promise<string> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            return await Service.getImageFile(payload, imageFile);
+        } catch (error) {
+            throw new CustomError(error);
+        }
     }
-} */
+}

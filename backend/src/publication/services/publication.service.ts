@@ -8,6 +8,7 @@ import { Payload } from '@utils/services/jwt.service';
 import mongooseService from '@utils/services/mongoose.service';
 import isImage from 'is-image';
 import { PaginateResult, Types } from 'mongoose';
+import path from 'path';
 
 const defaultPage: number = 1;
 const defaultItemsPerPage: number = 5;
@@ -121,6 +122,16 @@ class PublicationService {
         if (existingFile) await fsService.unlinkPromise(`${uploadsPath}/${publication.file}`);
 
         return updatedPublication;
+    }
+
+    async getImageFile(payload: Payload, imageFile: string): Promise<string> {
+        if (!imageFile) throw new BadRequestError('No param imageFile');
+        const filePath = `${uploadsPath}/${imageFile}`;
+
+        const file = await fsService.existsPromise(filePath);
+        if (!file) throw new NotFoundError('Image does not exist');
+
+        return path.resolve(filePath);
     }
 }
 

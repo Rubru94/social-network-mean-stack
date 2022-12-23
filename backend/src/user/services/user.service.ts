@@ -49,6 +49,7 @@ class UserService {
     }
 
     async login(user: IUser, token: string): Promise<{ token: string } | PublicUser> {
+        delete user._id;
         user = new User(user);
         if (user.validateSync()) throw new BadRequestError(user.validateSync().message);
 
@@ -63,6 +64,7 @@ class UserService {
     }
 
     async register(user: IUser): Promise<IUser> {
+        delete user._id;
         user = new User(user);
         if (user.validateSync()) throw new BadRequestError(user.validateSync().message);
 

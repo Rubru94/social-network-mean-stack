@@ -15,6 +15,7 @@ const defaultItemsPerPage: number = 5;
 
 class PublicationService {
     async create(payload: Payload, publication: IPublication): Promise<IPublication> {
+        delete publication._id;
         publication = new Publication(publication);
         publication.user ??= payload.sub;
         if (publication.validateSync()) throw new BadRequestError(publication.validateSync().message);

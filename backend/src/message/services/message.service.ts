@@ -12,6 +12,7 @@ const defaultItemsPerPage: number = 5;
 
 class MessageService {
     async create(payload: Payload, message: IMessage): Promise<IMessage> {
+        delete message._id;
         message = new Message(message);
         message.emitter = payload.sub;
         if (message.validateSync()) throw new BadRequestError(message.validateSync().message);

@@ -12,6 +12,7 @@ const defaultItemsPerPage: number = 5;
 
 class FollowService {
     async create(payload: Payload, follow: IFollow): Promise<IFollow> {
+        delete follow._id;
         follow = new Follow(follow);
         follow.user = follow.user ?? payload.sub;
         if (follow.validateSync()) throw new BadRequestError(follow.validateSync().message);

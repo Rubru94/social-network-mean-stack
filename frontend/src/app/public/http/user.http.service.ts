@@ -11,35 +11,37 @@ import { UserService } from '../services/user.service';
     providedIn: 'root'
 })
 export class UserHttpService {
-    api: string;
+    apiUser: string;
+    apiUserPublic: string;
 
     constructor(private http: HttpClient, private userService: UserService) {
-        this.api = `${environment.apiURL}/api/user`;
+        this.apiUser = `${environment.apiURL}/api/user`;
+        this.apiUserPublic = `${environment.apiURL}/api`;
     }
 
     register(user: User): Observable<User> {
-        return this.http.post<User>(`${this.api}/register`, user);
+        return this.http.post<User>(`${this.apiUserPublic}/register`, user);
     }
 
     login(user: User, token: boolean = false): Observable<User | { token: string }> {
-        return this.http.post<User | { token: string }>(`${this.api}/login`, user, { params: { token } });
+        return this.http.post<User | { token: string }>(`${this.apiUserPublic}/login`, user, { params: { token } });
     }
 
     counters(id: string = ''): Observable<CounterSet> {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.get<CounterSet>(`${this.api}/counters`, { headers, params: { user: id } });
+        return this.http.get<CounterSet>(`${this.apiUser}/counters`, { headers, params: { user: id } });
     }
 
     update(user: User): Observable<User> {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.put<User>(`${this.api}/update/${user._id}`, user, { headers });
+        return this.http.put<User>(`${this.apiUser}/update/${user._id}`, user, { headers });
     }
 
     uploadImage(user: User, file: File): Observable<User> {
         const formData: FormData = new FormData();
         formData.append('image', file, file.name);
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.post<User>(`${this.api}/upload-image/${user._id}`, formData, { headers });
+        return this.http.post<User>(`${this.apiUser}/upload-image/${user._id}`, formData, { headers });
     }
 
     getUsers(
@@ -48,7 +50,7 @@ export class UserHttpService {
     ): Observable<{ users: User[]; followings: string[]; followers: string[]; total: number; pages: number }> {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
         return this.http.get<{ users: User[]; followings: string[]; followers: string[]; total: number; pages: number }>(
-            `${this.api}/all/${page}`,
+            `${this.apiUser}/all/${page}`,
             {
                 headers,
                 params: { itemsPerPage }
@@ -58,6 +60,6 @@ export class UserHttpService {
 
     getUser(id: string = ''): Observable<{ user: User; following: Follow; follower: Follow }> {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.get<{ user: User; following: Follow; follower: Follow }>(`${this.api}/${id}`, { headers });
+        return this.http.get<{ user: User; following: Follow; follower: Follow }>(`${this.apiUser}/${id}`, { headers });
     }
 }

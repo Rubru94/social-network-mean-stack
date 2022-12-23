@@ -26,12 +26,12 @@ export class UserController {
         }
     }
 
-    @Path('/:id')
+    @Path('/counters')
     @GET
-    async findById(@PathParam('id') id: string): Promise<{ user: PublicUser; following: IFollow; follower: IFollow }> {
+    async getCounters(@QueryParam('user') user?: string): Promise<{ followingCount: number; followerCount: number; publications: number }> {
         try {
             const payload: Payload = httpContext.get('user');
-            const res = await Service.findById(payload, id);
+            const res = await Service.getCounters(payload, user);
             if (!res) throw new NotFoundError('User not found');
             return res;
         } catch (error) {
@@ -39,12 +39,12 @@ export class UserController {
         }
     }
 
-    @Path('/counters')
+    @Path('/:id')
     @GET
-    async getCounters(@QueryParam('user') user?: string): Promise<{ followingCount: number; followerCount: number; publications: number }> {
+    async findById(@PathParam('id') id: string): Promise<{ user: PublicUser; following: IFollow; follower: IFollow }> {
         try {
             const payload: Payload = httpContext.get('user');
-            const res = await Service.getCounters(payload, user);
+            const res = await Service.findById(payload, id);
             if (!res) throw new NotFoundError('User not found');
             return res;
         } catch (error) {

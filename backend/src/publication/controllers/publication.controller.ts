@@ -60,6 +60,19 @@ export class PublicationController {
             throw new CustomError(error);
         }
     }
+
+    @Path('/:id')
+    @GET
+    async findById(@PathParam('id') id: string): Promise<IPublication> {
+        try {
+            const payload: Payload = httpContext.get('user');
+            const res = await Service.findById(payload, id);
+            if (!res) throw new NotFoundError('Publication not found');
+            return res;
+        } catch (error) {
+            throw new CustomError(error);
+        }
+    }
 }
 
 /* 
@@ -74,19 +87,6 @@ const path = require('path');
 const Publication = require('@publication/models/publication.model');
 const utilService = require('@utils/services/util.service');
 const publicationUploads = require('@publication/models/uploads.model'); */
-
-/* async function findById(req, res, next) {
-    try {
-        const id = req.params?.id;
-        if (!mongooseService.isValidObjectId(id)) throw new error.BadRequestError('Invalid id');
-        const publication = await Publication.findById(id);
-        if (!publication) throw new error.NotFoundError('Publication not found');
-
-        res.status(200).send(publication);
-    } catch (err) {
-        next(err);
-    }
-} */
 
 /* async function getImageFile(req, res, next) {
     try {

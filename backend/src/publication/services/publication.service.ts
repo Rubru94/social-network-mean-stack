@@ -79,6 +79,14 @@ class PublicationService {
             pages: result.totalPages
         };
     }
+
+    async findById(payload: Payload, publicationId: Types.ObjectId | string): Promise<IPublication> {
+        if (!mongooseService.isValidObjectId(publicationId)) throw new BadRequestError('Invalid id');
+        const publication = await Publication.findById(publicationId);
+        if (!publication) return null;
+
+        return publication;
+    }
 }
 
 export default new PublicationService();

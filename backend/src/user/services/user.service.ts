@@ -101,7 +101,7 @@ class UserService {
         /**
          * @info { new: true } --> It returns updated object. By default it returns object to update (old object).
          */
-        const update = await User.findByIdAndUpdate(userId, updateUser, { new: true });
+        const update = await User.findByIdAndUpdate(userId, new PublicUser(updateUser), { new: true });
         if (!update) throw new NotFoundError('Failed to update user');
 
         return new PublicUser(update);

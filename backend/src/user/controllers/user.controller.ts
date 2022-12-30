@@ -58,8 +58,8 @@ export class UserController {
         try {
             const payload: Payload = httpContext.get('user');
             return await Service.update(payload, id, updateUser);
-        } catch (err) {
-            throw new CustomError(err);
+        } catch (error) {
+            throw new CustomError(error);
         }
     }
 
@@ -70,8 +70,8 @@ export class UserController {
             const payload: Payload = httpContext.get('user');
             const req = httpContext.get('request');
             return await Service.uploadImage(payload, userId, req?.files?.image);
-        } catch (err) {
-            throw new CustomError(err);
+        } catch (error) {
+            throw new CustomError(error);
         }
     }
 }

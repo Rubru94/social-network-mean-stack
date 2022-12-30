@@ -12,8 +12,8 @@ export class PublicationController {
         try {
             const payload: Payload = httpContext.get('user');
             return await Service.create(payload, follow);
-        } catch (err) {
-            throw new CustomError(err);
+        } catch (error) {
+            throw new CustomError(error);
         }
     }
 
@@ -81,8 +81,8 @@ export class PublicationController {
             const payload: Payload = httpContext.get('user');
             const req = httpContext.get('request');
             return await Service.uploadImage(payload, publicationId, req?.files?.image);
-        } catch (err) {
-            throw new CustomError(err);
+        } catch (error) {
+            throw new CustomError(error);
         }
     }
 }

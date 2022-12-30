@@ -29,8 +29,8 @@ async function bootstrap(): Promise<void> {
             server.listen(port, +host, () => {
                 console.info(`Server listening on host: ${host} and port ${port}`);
             });
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        console.error(error);
     }
 }
 

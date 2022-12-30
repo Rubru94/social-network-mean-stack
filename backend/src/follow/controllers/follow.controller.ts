@@ -14,8 +14,8 @@ export class FollowController {
         try {
             const payload: Payload = httpContext.get('user');
             return await Service.create(payload, follow);
-        } catch (err) {
-            throw new CustomError(err);
+        } catch (error) {
+            throw new CustomError(error);
         }
     }
 

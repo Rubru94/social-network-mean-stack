@@ -11,8 +11,8 @@ export class UserPublicController {
     async login(user: IUser, @QueryParam('token') token?: string): Promise<{ token: string } | PublicUser> {
         try {
             return await Service.login(user, token);
-        } catch (err) {
-            throw new CustomError(err);
+        } catch (error) {
+            throw new CustomError(error);
         }
     }
 
@@ -21,8 +21,8 @@ export class UserPublicController {
     async register(user: IUser): Promise<IUser> {
         try {
             return await Service.register(user);
-        } catch (err) {
-            throw new CustomError(err);
+        } catch (error) {
+            throw new CustomError(error);
         }
     }
 

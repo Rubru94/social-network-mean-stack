@@ -18,8 +18,8 @@ const ensureAuth = async (req: Request, res: Response, next: NextFunction) => {
          * @info inject payload in request
          */
         httpContext.set('user', payload);
-    } catch (err) {
-        next(new CustomError(err));
+    } catch (error) {
+        next(new CustomError(error));
     }
 
     next();

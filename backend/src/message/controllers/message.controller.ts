@@ -14,8 +14,8 @@ export class MessageController {
         try {
             const payload: Payload = httpContext.get('user');
             return await Service.create(payload, message);
-        } catch (err) {
-            throw new CustomError(err);
+        } catch (error) {
+            throw new CustomError(error);
         }
     }
 
@@ -25,8 +25,8 @@ export class MessageController {
         try {
             const payload: Payload = httpContext.get('user');
             return await Service.setViewed(payload);
-        } catch (err) {
-            throw new CustomError(err);
+        } catch (error) {
+            throw new CustomError(error);
         }
     }
 

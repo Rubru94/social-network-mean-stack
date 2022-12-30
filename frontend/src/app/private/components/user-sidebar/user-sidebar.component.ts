@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { environment } from '@environments/env';
 import { PublicationHttpService } from '@private/http/publication.http.service';
 import { PublicationService } from '@private/services/publication.service';
+import { UserHttpService } from '@public/http/user.http.service';
 import { CounterSet } from '@public/models/counter-set.model';
 import { FormStatus } from '@public/models/form-status.model';
 import { Publication } from '@public/models/publication.model';
@@ -20,6 +21,7 @@ export class UserSidebarComponent implements OnInit, DoCheck {
     counterSet?: CounterSet;
     token?: string;
     identity?: User;
+    userImage?: string;
     api: string;
     publication: Publication;
     status: FormStatus;
@@ -32,6 +34,7 @@ export class UserSidebarComponent implements OnInit, DoCheck {
         private fb: FormBuilder,
         private router: Router,
         private userService: UserService,
+        private userHttpService: UserHttpService,
         private publicationService: PublicationService,
         private publicationHttpService: PublicationHttpService
     ) {
@@ -57,14 +60,17 @@ export class UserSidebarComponent implements OnInit, DoCheck {
         return FormStatus;
     }
 
-    get identityImageSource(): string {
-        return `${this.api}/user/image/${this.identity?.image}`;
+    setUserImage(): void {
+        this.userHttpService.getImage(this.identity?.image).subscribe({
+            next: (res: { base64: string }) => (this.userImage = res.base64)
+        });
     }
 
     ngOnInit(): void {
         this.token = this.userService.token;
         this.identity = this.userService.identity;
         this.counterSet = this.userService.counterSet;
+        this.setUserImage();
 
         this.publicationForm = this.fb.group({
             text: new FormControl('', [Validators.required]),

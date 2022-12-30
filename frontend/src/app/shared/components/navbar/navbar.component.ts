@@ -1,6 +1,7 @@
 import { Component, DoCheck, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '@environments/env';
+import { UserHttpService } from '@public/http/user.http.service';
 import { User } from '@public/models/user.model';
 import { UserService } from '@public/services/user.service';
 
@@ -13,20 +14,24 @@ export class NavbarComponent implements OnInit, DoCheck {
     title: string;
     token?: string;
     identity?: User;
+    userImage?: string;
     api: string;
 
-    constructor(private router: Router, private userService: UserService) {
+    constructor(private router: Router, private userService: UserService, private userHttpService: UserHttpService) {
         this.title = 'Social Network';
         this.api = `${environment.apiURL}/api`;
     }
 
-    get identityImageSource(): string {
-        return `${this.api}/user/image/${this.identity?.image}`;
+    setUserImage(): void {
+        this.userHttpService.getImage(this.identity?.image).subscribe({
+            next: (res: { base64: string }) => (this.userImage = res.base64)
+        });
     }
 
     ngOnInit(): void {
         this.token = this.userService.token;
         this.identity = this.userService.identity;
+        this.setUserImage();
     }
 
     ngDoCheck(): void {

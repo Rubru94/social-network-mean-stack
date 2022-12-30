@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { environment } from '@environments/env';
 import { PublicationHttpService } from '@private/http/publication.http.service';
 import { PublicationService } from '@private/services/publication.service';
+import { UserHttpService } from '@public/http/user.http.service';
 import { FormStatus } from '@public/models/form-status.model';
 import { Publication } from '@public/models/publication.model';
 import { User } from '@public/models/user.model';
@@ -27,6 +28,7 @@ export class TimelineComponent implements OnInit {
     errMsg?: string;
     showMorePublications: boolean;
     publicationImagesToShow: (string | null)[];
+    publicationUserImages: (string | null)[];
 
     @Input()
     userId?: string;
@@ -34,6 +36,7 @@ export class TimelineComponent implements OnInit {
     constructor(
         private router: Router,
         private userService: UserService,
+        private userHttpService: UserHttpService,
         private publicationService: PublicationService,
         private publicationHttpService: PublicationHttpService
     ) {
@@ -47,6 +50,7 @@ export class TimelineComponent implements OnInit {
         this.status = FormStatus.None;
         this.showMorePublications = true;
         this.publicationImagesToShow = [];
+        this.publicationUserImages = [];
     }
 
     ngOnInit(): void {
@@ -73,6 +77,11 @@ export class TimelineComponent implements OnInit {
             next: (res: { publications: Publication[]; itemsPerPage: number; total: number; pages: number }) => {
                 this.publications = this.publications.concat(res.publications.map((p: Publication) => new Publication(p)));
                 this.publicationImagesToShow = Array(this.publications.length).fill(null);
+                this.publications.forEach((p: Publication) => {
+                    this.userHttpService.getImage(this.userFromPublication(p)?.image).subscribe({
+                        next: (res: { base64: string }) => this.publicationUserImages.push(res.base64)
+                    });
+                });
                 this.totalItems = res.total;
                 this.totalPages = res.pages;
                 this.itemsPerPage = res.itemsPerPage;
@@ -99,6 +108,7 @@ export class TimelineComponent implements OnInit {
     reloadPublications(): void {
         this.publications = [];
         this.publicationImagesToShow = [];
+        this.publicationUserImages = [];
         this.currentPage = 1;
         this.showMorePublications = true;
         this.loadPublications(this.currentPage);

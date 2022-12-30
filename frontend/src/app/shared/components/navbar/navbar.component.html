@@ -56,8 +56,8 @@
 
             <ul *ngIf="token" class="nav navbar-nav navbar-right profile">
                 <li class="avatar">
-                    <div *ngIf="identity?.image">
-                        <img alt="" src="{{ identityImageSource }}" />
+                    <div *ngIf="identity?.image && userImage">
+                        <img alt="" [src]="userImage | sanitizer : 'url'" />
                     </div>
                     <div *ngIf="!identity?.image">
                         <img alt="" src="assets/img/default-avatar.png" />

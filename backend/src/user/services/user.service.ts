@@ -137,14 +137,15 @@ class UserService {
         return new PublicUser(update);
     }
 
-    async getImageFile(payload: Payload, imageFile: string): Promise<string> {
+    async getImageFile(imageFile: string): Promise<{ base64: string }> {
         if (!imageFile) throw new BadRequestError('No param imageFile');
         const filePath = `${uploadsPath}/${imageFile}`;
 
         const file = await fsService.existsPromise(filePath);
         if (!file) throw new NotFoundError('Image does not exist');
 
-        return path.resolve(filePath);
+        const buffer = await fsService.readFile(path.resolve(filePath));
+        return { base64: `data:image/*;base64,${buffer.toString('base64')}` };
     }
 }
 

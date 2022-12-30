@@ -13,10 +13,12 @@ import { UserService } from '../services/user.service';
 export class UserHttpService {
     apiUser: string;
     apiUserPublic: string;
+    userImage: string;
 
     constructor(private http: HttpClient, private userService: UserService) {
         this.apiUser = `${environment.apiURL}/api/user`;
         this.apiUserPublic = `${environment.apiURL}/api`;
+        this.userImage = '';
     }
 
     register(user: User): Observable<User> {
@@ -42,6 +44,10 @@ export class UserHttpService {
         formData.append('image', file, file.name);
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
         return this.http.post<User>(`${this.apiUser}/upload-image/${user._id}`, formData, { headers });
+    }
+
+    getImage(image: string = ''): Observable<{ base64: string }> {
+        return this.http.get<{ base64: string }>(`${this.apiUserPublic}/image/user/${image}`);
     }
 
     getUsers(

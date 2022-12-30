@@ -21,6 +21,7 @@ export class UserProfileComponent implements OnInit {
     hasFollowing: boolean;
     hasFollower: boolean;
     identity?: User;
+    userImage?: string;
     counterSet?: CounterSet;
     status: FormStatus;
     errMsg?: string;
@@ -52,8 +53,10 @@ export class UserProfileComponent implements OnInit {
         return FormStatus;
     }
 
-    get userImageSource(): string {
-        return `${this.api}/user/image/${this.user.image}`;
+    setUserImage(): void {
+        this.userHttpService.getImage(this.identity?.image).subscribe({
+            next: (res: { base64: string }) => (this.userImage = res.base64)
+        });
     }
 
     loadPage(): void {
@@ -91,6 +94,7 @@ export class UserProfileComponent implements OnInit {
                 this.user = res.user;
                 this.hasFollowing = !!res.following?._id;
                 this.hasFollower = !!res.follower?._id;
+                this.setUserImage();
             },
             error: (err: Error) => {
                 this.status = FormStatus.Invalid;

@@ -9,8 +9,8 @@
 
     <div class="data-profile">
         <div class="avatar">
-            <div *ngIf="user.image">
-                <img alt="" src="{{ userImageSource }}" />
+            <div *ngIf="user?.image && userImage">
+                <img alt="" [src]="userImage | sanitizer : 'url'" />
             </div>
             <div *ngIf="!user.image">
                 <img alt="" src="assets/img/default-avatar.png" />

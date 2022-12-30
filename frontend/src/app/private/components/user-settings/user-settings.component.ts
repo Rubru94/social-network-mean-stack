@@ -73,6 +73,9 @@ export class UserSettingsComponent {
                         next: (res: User) => {
                             localStorage.setItem('identity', JSON.stringify(res));
                             this.user = new User(res);
+                            /**
+                             * @Subject for refresh image user when update image
+                             */
                             form.controls['image'].reset();
                         },
                         error: (err: Error) => {

@@ -15,8 +15,8 @@
                     <div class="publication-header">
                         <div class="panel-item publication-user-image pull-left">
                             <a href="#">
-                                <div *ngIf="userFromPublication(publication).image">
-                                    <img alt="" src="{{ api + '/user/image/' + userFromPublication(publication).image }}" />
+                                <div *ngIf="publicationUserImages[index]">
+                                    <img alt="" [src]="publicationUserImages[index] | sanitizer : 'url'" />
                                 </div>
                                 <div *ngIf="!userFromPublication(publication).image">
                                     <img alt="" src="assets/img/default-avatar.png" />

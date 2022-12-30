@@ -2,7 +2,7 @@ import { CustomError } from '@core/models/error.model';
 import { PublicUser } from '@user/models/public-user.model';
 import { IUser } from '@user/models/user.model';
 import Service from '@user/services/user.service';
-import { Path, POST, QueryParam } from 'typescript-rest';
+import { GET, Path, PathParam, POST, QueryParam } from 'typescript-rest';
 
 @Path('api')
 export class UserPublicController {
@@ -23,6 +23,16 @@ export class UserPublicController {
             return await Service.register(user);
         } catch (err) {
             throw new CustomError(err);
+        }
+    }
+
+    @Path('/image/user/:imageFile')
+    @GET
+    async getImageFile(@PathParam('imageFile') imageFile: string): Promise<{ base64: string }> {
+        try {
+            return await Service.getImageFile(imageFile);
+        } catch (error) {
+            throw new CustomError(error);
         }
     }
 }

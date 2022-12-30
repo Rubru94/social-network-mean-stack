@@ -5,10 +5,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MomentModule } from 'ngx-moment';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { SanitizerPipe } from './pipes/sanitizer.pipe';
 import { TruncatePipe } from './pipes/truncate.pipe';
 
 @NgModule({
-    declarations: [NavbarComponent, TruncatePipe],
+    declarations: [NavbarComponent, TruncatePipe, SanitizerPipe],
     imports: [
         CommonModule,
         RouterModule,
@@ -20,6 +21,6 @@ import { TruncatePipe } from './pipes/truncate.pipe';
             }
         })
     ],
-    exports: [ReactiveFormsModule, HttpClientModule, NavbarComponent, MomentModule, TruncatePipe]
+    exports: [ReactiveFormsModule, HttpClientModule, NavbarComponent, MomentModule, SanitizerPipe, TruncatePipe]
 })
 export class SharedModule {}

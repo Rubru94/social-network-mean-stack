@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '@environments/env';
 import { MessageHttpService } from '@private/messaging/http/message.http.service';
+import { UserHttpService } from '@public/http/user.http.service';
 import { FormStatus } from '@public/models/form-status.model';
 import { Message } from '@public/models/message.model';
 import { User } from '@public/models/user.model';
@@ -15,6 +16,7 @@ import { UserService } from '@public/services/user.service';
 export class ReceivedMessagesComponent implements OnInit {
     title: string;
     messages: Message[];
+    messageUserImages: (string | null)[];
     token?: string;
     identity?: User;
     api: string;
@@ -31,10 +33,12 @@ export class ReceivedMessagesComponent implements OnInit {
         private activatedRoute: ActivatedRoute,
         private router: Router,
         private userService: UserService,
+        private userHttpService: UserHttpService,
         private messageHttpService: MessageHttpService
     ) {
         this.title = 'Received messages';
         this.messages = [];
+        this.messageUserImages = [];
         this.api = `${environment.apiURL}/api`;
         this.status = FormStatus.None;
 
@@ -83,12 +87,19 @@ export class ReceivedMessagesComponent implements OnInit {
         this.messageHttpService.getReceivedMessages(page, this.itemsPerPage).subscribe({
             next: (res: { messages: Message[]; itemsPerPage: number; total: number; pages: number }) => {
                 this.messages = res.messages;
+                this.messageUserImages = [];
+                this.messages
+                    .filter((message: Message) => this.emitterFromMessage(message)?.image)
+                    .forEach((message: Message) => {
+                        this.userHttpService.getImage(this.emitterFromMessage(message)?.image).subscribe({
+                            next: (res: { base64: string }) => this.messageUserImages.push(res.base64)
+                        });
+                    });
                 this.totalPages = res.pages;
                 if (res.pages && page > res.pages) {
                     this.router.navigateByUrl('/private/messaging/received');
                     this.ngOnInit();
                 }
-                console.log(res);
             },
             error: (err: Error) => {
                 this.status = FormStatus.Invalid;

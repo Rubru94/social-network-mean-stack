@@ -21,6 +21,7 @@ export class PeopleComponent implements OnInit {
     totalPages: number;
     itemsPerPage: number;
     users: User[];
+    peopleUserImages: (string | null)[];
     follows: string[];
     status: FormStatus;
     errMsg?: string;
@@ -42,6 +43,7 @@ export class PeopleComponent implements OnInit {
         this.totalPages = 1;
         this.itemsPerPage = 4;
         this.users = [];
+        this.peopleUserImages = [];
         this.follows = [];
         this.status = FormStatus.None;
         this.api = `${environment.apiURL}/api`;
@@ -75,6 +77,14 @@ export class PeopleComponent implements OnInit {
         this.userHttpService.getUsers(page, this.itemsPerPage).subscribe({
             next: (res: { users: User[]; followings: string[]; followers: string[]; total: number; pages: number }) => {
                 this.users = res.users;
+                this.peopleUserImages = [];
+                this.users
+                    .filter((user: User) => user.image)
+                    .forEach((user: User) => {
+                        this.userHttpService.getImage(user?.image).subscribe({
+                            next: (res: { base64: string }) => this.peopleUserImages.push(res.base64)
+                        });
+                    });
                 this.totalPages = res.pages;
                 this.follows = res.followings;
                 if (res.pages && page > res.pages) {

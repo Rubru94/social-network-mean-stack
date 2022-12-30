@@ -8,13 +8,13 @@
     </div>
 
     <div class="people">
-        <div *ngFor="let user of users">
+        <div *ngFor="let user of users; let index = index">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="panel-item user-image pull-left">
                         <a href="#">
-                            <div *ngIf="user?.image">
-                                <img alt="" src="{{ api + '/user/image/' + user.image }}" />
+                            <div *ngIf="peopleUserImages[index]">
+                                <img alt="" [src]="peopleUserImages[index] | sanitizer : 'url'" />
                             </div>
                             <div *ngIf="!user?.image">
                                 <img alt="" src="assets/img/default-avatar.png" />

@@ -31,7 +31,7 @@ export class NavbarComponent implements OnInit, DoCheck {
     ngOnInit(): void {
         this.token = this.userService.token;
         this.identity = this.userService.identity;
-        this.setUserImage();
+        if (this.identity?.image) this.setUserImage();
     }
 
     ngDoCheck(): void {

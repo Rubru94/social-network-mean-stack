@@ -8,13 +8,13 @@
     </div>
 
     <div class="people">
-        <div *ngFor="let message of messages">
+        <div *ngFor="let message of messages; let index = index">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="panel-item user-image pull-left">
                         <a href="#">
-                            <div *ngIf="emitterFromMessage(message)?.image">
-                                <img alt="" src="{{ api + '/user/image/' + emitterFromMessage(message).image }}" />
+                            <div *ngIf="emitterFromMessage(message)?.image && messageUserImages[index]">
+                                <img alt="" [src]="messageUserImages[index] | sanitizer : 'url'" />
                             </div>
                             <div *ngIf="!emitterFromMessage(message)?.image">
                                 <img alt="" src="assets/img/default-avatar.png" />

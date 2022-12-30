@@ -69,7 +69,6 @@ export class SendingComponent implements OnInit {
 
     onSubmit(form: FormGroup) {
         this.message = new Message({ ...form.value, ...{ emitter: this.identity?._id } });
-        console.log(this.message);
         this.messageHttpService.create(this.message).subscribe({
             next: (res: Message) => {
                 this.status = FormStatus.Valid;

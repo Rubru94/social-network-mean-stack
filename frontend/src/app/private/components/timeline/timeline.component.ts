@@ -27,7 +27,7 @@ export class TimelineComponent implements OnInit {
     status: FormStatus;
     errMsg?: string;
     showMorePublications: boolean;
-    publicationImagesToShow: (string | null)[];
+    publicationImagesToShow: { id: string | null; image: string | null }[];
     publicationUserImages: (string | null)[];
 
     @Input()
@@ -76,11 +76,14 @@ export class TimelineComponent implements OnInit {
         this.publicationHttpService.getPublications(page, this.itemsPerPage, this.userId).subscribe({
             next: (res: { publications: Publication[]; itemsPerPage: number; total: number; pages: number }) => {
                 this.publications = this.publications.concat(res.publications.map((p: Publication) => new Publication(p)));
-                this.publicationImagesToShow = Array(this.publications.length).fill(null);
-                this.publications.forEach((p: Publication) => {
-                    this.userHttpService.getImage(this.userFromPublication(p)?.image).subscribe({
+                this.publications.forEach((publication: Publication) => {
+                    this.userHttpService.getImage(this.userFromPublication(publication)?.image).subscribe({
                         next: (res: { base64: string }) => this.publicationUserImages.push(res.base64)
                     });
+                    if (publication?.file)
+                        this.publicationHttpService.getImage(publication.file).subscribe({
+                            next: (res: { base64: string }) => this.publicationImagesToShow.push({ id: null, image: res.base64 })
+                        });
                 });
                 this.totalItems = res.total;
                 this.totalPages = res.pages;
@@ -119,7 +122,7 @@ export class TimelineComponent implements OnInit {
     }
 
     showImage(id: string, index: number): void {
-        this.publicationImagesToShow[index] = this.publicationImagesToShow[index] !== id ? id : null;
+        this.publicationImagesToShow[index].id = this.publicationImagesToShow[index].id !== id ? id : null;
     }
 
     removePublication(id: string): void {

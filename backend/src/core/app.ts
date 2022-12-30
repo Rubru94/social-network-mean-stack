@@ -1,5 +1,6 @@
 import { FollowController } from '@follow/controllers/follow.controller';
 import { MessageController } from '@message/controllers/message.controller';
+import { PublicationPublicController } from '@publication/controllers/publication-public.controller';
 import { PublicationController } from '@publication/controllers/publication.controller';
 import { uploadsPath as publicationUploadsPath } from '@publication/models/publication.model';
 import { UserPublicController } from '@user/controllers/user-public.controller';
@@ -74,7 +75,15 @@ class App {
          * All 'this.app.use' before 'Server.buildServices' because 'this.app' it pass as first param
          * Except handling errors that should run after.
          */
-        Server.buildServices(this.app, UserPublicController, UserController, FollowController, PublicationController, MessageController);
+        Server.buildServices(
+            this.app,
+            UserPublicController,
+            UserController,
+            FollowController,
+            PublicationPublicController,
+            PublicationController,
+            MessageController
+        );
         Server.ignoreNextMiddlewares(true);
     }
 

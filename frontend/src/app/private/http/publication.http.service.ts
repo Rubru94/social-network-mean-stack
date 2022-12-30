@@ -9,27 +9,33 @@ import { Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class PublicationHttpService {
-    api: string;
+    apiPublication: string;
+    apiPublicationPublic: string;
 
     constructor(private http: HttpClient, private userService: UserService) {
-        this.api = `${environment.apiURL}/api/publication`;
+        this.apiPublication = `${environment.apiURL}/api/publication`;
+        this.apiPublicationPublic = `${environment.apiURL}/api`;
     }
 
     create(publication: Partial<Publication>): Observable<Publication> {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.post<Publication>(`${this.api}`, publication, { headers });
+        return this.http.post<Publication>(`${this.apiPublication}`, publication, { headers });
     }
 
     uploadImage(publication: Publication, file: File): Observable<Publication> {
         const formData: FormData = new FormData();
         formData.append('image', file, file.name);
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.post<Publication>(`${this.api}/upload-image/${publication._id}`, formData, { headers });
+        return this.http.post<Publication>(`${this.apiPublication}/upload-image/${publication._id}`, formData, { headers });
+    }
+
+    getImage(image: string = ''): Observable<{ base64: string }> {
+        return this.http.get<{ base64: string }>(`${this.apiPublicationPublic}/image/publication/${image}`);
     }
 
     remove(id: string = ''): Observable<Publication[]> {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        return this.http.delete<Publication[]>(`${this.api}/${id}`, { headers });
+        return this.http.delete<Publication[]>(`${this.apiPublication}/${id}`, { headers });
     }
 
     getPublications(
@@ -38,7 +44,7 @@ export class PublicationHttpService {
         user: string = ''
     ): Observable<{ publications: Publication[]; itemsPerPage: number; total: number; pages: number }> {
         const headers = new HttpHeaders().set('Authorization', this.userService.token);
-        const endpoint = `${this.api}/all-${user !== '' ? 'user' : 'following'}/${page}`;
+        const endpoint = `${this.apiPublication}/all-${user !== '' ? 'user' : 'following'}/${page}`;
         return this.http.get<{ publications: Publication[]; itemsPerPage: number; total: number; pages: number }>(endpoint, {
             headers,
             params: { itemsPerPage, user }

@@ -13,8 +13,8 @@
                 <div class="panel-body">
                     <div class="panel-item user-image pull-left">
                         <a href="#">
-                            <div *ngIf="emitterFromMessage(message)?.image && messageUserImages[index]">
-                                <img alt="" [src]="messageUserImages[index] | sanitizer : 'url'" />
+                            <div *ngIf="emitterFromMessage(message)?.base64">
+                                <img alt="" [src]="emitterFromMessage(message).base64 | sanitizer : 'url'" />
                             </div>
                             <div *ngIf="!emitterFromMessage(message)?.image">
                                 <img alt="" src="assets/img/default-avatar.png" />

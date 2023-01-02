@@ -6,6 +6,7 @@ export class PublicUser {
     email: string;
     role?: string;
     image?: string;
+    base64?: string;
 
     constructor(user?: Partial<PublicUser>) {
         this._id = user?._id ?? '';
@@ -15,6 +16,7 @@ export class PublicUser {
         this.email = user?.email ?? '';
         this.role = user?.role;
         this.image = user?.image;
+        this.base64 = user?.base64;
     }
 
     setSettingsFormData(user?: Partial<User>) {

@@ -28,7 +28,6 @@ export class TimelineComponent implements OnInit {
     errMsg?: string;
     showMorePublications: boolean;
     publicationImagesToShow: { id: string | null; image: string | null }[];
-    publicationUserImages: (string | null)[];
 
     @Input()
     userId?: string;
@@ -50,7 +49,6 @@ export class TimelineComponent implements OnInit {
         this.status = FormStatus.None;
         this.showMorePublications = true;
         this.publicationImagesToShow = [];
-        this.publicationUserImages = [];
     }
 
     ngOnInit(): void {
@@ -78,7 +76,7 @@ export class TimelineComponent implements OnInit {
                 this.publications = this.publications.concat(res.publications.map((p: Publication) => new Publication(p)));
                 this.publications.forEach((publication: Publication) => {
                     this.userHttpService.getImage(this.userFromPublication(publication)?.image).subscribe({
-                        next: (res: { base64: string }) => this.publicationUserImages.push(res.base64)
+                        next: (res: { base64: string }) => ((publication.user as User).base64 = res.base64)
                     });
                     if (publication?.file)
                         this.publicationHttpService.getImage(publication.file).subscribe({
@@ -111,7 +109,6 @@ export class TimelineComponent implements OnInit {
     reloadPublications(): void {
         this.publications = [];
         this.publicationImagesToShow = [];
-        this.publicationUserImages = [];
         this.currentPage = 1;
         this.showMorePublications = true;
         this.loadPublications(this.currentPage);

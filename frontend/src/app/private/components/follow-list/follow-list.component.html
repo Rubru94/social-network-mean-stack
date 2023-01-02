@@ -13,8 +13,8 @@
                 <div class="panel-body">
                     <div class="panel-item user-image pull-left">
                         <a href="#">
-                            <div *ngIf="userFromFollow(follow)?.image">
-                                <img alt="" src="{{ api + '/user/image/' + userFromFollow(follow).image }}" />
+                            <div *ngIf="userFromFollow(follow)?.base64">
+                                <img alt="" [src]="userFromFollow(follow).base64 | sanitizer : 'url'" />
                             </div>
                             <div *ngIf="!userFromFollow(follow)?.image">
                                 <img alt="" src="assets/img/default-avatar.png" />

@@ -16,7 +16,6 @@ import { UserService } from '@public/services/user.service';
 export class ReceivedMessagesComponent implements OnInit {
     title: string;
     messages: Message[];
-    messageUserImages: (string | null)[];
     token?: string;
     identity?: User;
     api: string;
@@ -38,7 +37,6 @@ export class ReceivedMessagesComponent implements OnInit {
     ) {
         this.title = 'Received messages';
         this.messages = [];
-        this.messageUserImages = [];
         this.api = `${environment.apiURL}/api`;
         this.status = FormStatus.None;
 
@@ -87,12 +85,11 @@ export class ReceivedMessagesComponent implements OnInit {
         this.messageHttpService.getReceivedMessages(page, this.itemsPerPage).subscribe({
             next: (res: { messages: Message[]; itemsPerPage: number; total: number; pages: number }) => {
                 this.messages = res.messages;
-                this.messageUserImages = [];
                 this.messages
                     .filter((message: Message) => this.emitterFromMessage(message)?.image)
                     .forEach((message: Message) => {
                         this.userHttpService.getImage(this.emitterFromMessage(message)?.image).subscribe({
-                            next: (res: { base64: string }) => this.messageUserImages.push(res.base64)
+                            next: (res: { base64: string }) => ((message.emitter as User).base64 = res.base64)
                         });
                     });
                 this.totalPages = res.pages;

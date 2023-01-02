@@ -68,7 +68,7 @@ export class FollowListComponent implements OnInit {
 
     userFromFollow(follow: Follow): User {
         const user = this.followService.isFollowingView ? follow.followed : this.followService.isFollowerView ? follow.user : null;
-        return new User(user as User);
+        return user as User;
     }
 
     actualPage(): void {
@@ -111,6 +111,13 @@ export class FollowListComponent implements OnInit {
             followFunction.subscribe({
                 next: (res: { follows: Follow[]; followings: string[]; followers: string[]; total: number; pages: number }) => {
                     this.follows = res.follows;
+                    this.follows.forEach((follow: Follow) => {
+                        const user = this.userFromFollow(follow);
+                        if (user && user.image)
+                            this.userHttpService.getImage(user.image).subscribe({
+                                next: (res: { base64: string }) => (user.base64 = res.base64)
+                            });
+                    });
                     this.totalPages = res.pages;
                     this.followIds = res.followings;
                     if (res.pages && page > res.pages) {

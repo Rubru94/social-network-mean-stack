@@ -15,10 +15,10 @@
                     <div class="publication-header">
                         <div class="panel-item publication-user-image pull-left">
                             <a href="#">
-                                <div *ngIf="publicationUserImages[index]">
-                                    <img alt="" [src]="publicationUserImages[index] | sanitizer : 'url'" />
+                                <div *ngIf="userFromPublication(publication)?.base64">
+                                    <img alt="" [src]="userFromPublication(publication).base64 | sanitizer : 'url'" />
                                 </div>
-                                <div *ngIf="!userFromPublication(publication).image">
+                                <div *ngIf="!userFromPublication(publication)?.image">
                                     <img alt="" src="assets/img/default-avatar.png" />
                                 </div>
                             </a>

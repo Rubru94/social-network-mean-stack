@@ -13,8 +13,8 @@
                 <div class="panel-body">
                     <div class="panel-item user-image pull-left">
                         <a href="#">
-                            <div *ngIf="peopleUserImages[index]">
-                                <img alt="" [src]="peopleUserImages[index] | sanitizer : 'url'" />
+                            <div *ngIf="user?.base64">
+                                <img alt="" [src]="user?.base64 | sanitizer : 'url'" />
                             </div>
                             <div *ngIf="!user?.image">
                                 <img alt="" src="assets/img/default-avatar.png" />

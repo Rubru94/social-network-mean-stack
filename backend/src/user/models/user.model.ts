@@ -1,5 +1,5 @@
-import { Document, model, PaginateModel, Schema } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+import { UserSchema } from '@core/database/schemas/user/user.schema';
+import { Document, model, PaginateModel } from 'mongoose';
 
 export const uploadsPath = './src/user/uploads';
 
@@ -13,18 +13,4 @@ export interface IUser extends Document {
     image: string;
 }
 
-const UserSchema = new Schema<IUser>(
-    {
-        name: { type: String, default: '' },
-        surname: { type: String, default: '' },
-        nick: { type: String, default: '' },
-        email: { type: String, required: true },
-        password: { type: String, required: true },
-        role: { type: String, default: 'ROLE_USER' },
-        image: { type: String, default: null }
-    } /* ,
-    { timestamps: true } */ /**@mongo timestamps */
-);
-
-UserSchema.plugin(mongoosePaginate);
 export const User = model<IUser, PaginateModel<IUser>>('User', UserSchema);

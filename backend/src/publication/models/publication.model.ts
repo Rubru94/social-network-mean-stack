@@ -1,5 +1,5 @@
-import { Document, model, PaginateModel, Schema, Types } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+import { PublicationSchema } from '@core/database/schemas/publication/publication.schema';
+import { Document, model, PaginateModel, Types } from 'mongoose';
 
 export const uploadsPath = './src/publication/uploads';
 
@@ -10,15 +10,4 @@ export interface IPublication extends Document {
     createdAt: Date;
 }
 
-/**
- * @TODO separate all schemas to schemas directory into core/database
- */
-const PublicationSchema = new Schema<IPublication>({
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
-    text: { type: String, required: true },
-    file: { type: String, default: null },
-    createdAt: { type: Date, default: Date.now }
-});
-
-PublicationSchema.plugin(mongoosePaginate);
 export const Publication = model<IPublication, PaginateModel<IPublication>>('Publication', PublicationSchema);

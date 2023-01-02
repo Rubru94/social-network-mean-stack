@@ -1,16 +1,10 @@
+import { FollowSchema } from '@core/database/schemas/follow/follow.schema';
 import { PublicUser } from '@user/models/public-user.model';
-import { Document, model, PaginateModel, Schema, Types } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+import { Document, model, PaginateModel, Types } from 'mongoose';
 
 export interface IFollow extends Document {
     user: Types.ObjectId | PublicUser;
     followed: Types.ObjectId | PublicUser;
 }
 
-const FollowSchema = new Schema<IFollow>({
-    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    followed: { type: Schema.Types.ObjectId, ref: 'User', required: true }
-});
-
-FollowSchema.plugin(mongoosePaginate);
 export const Follow = model<IFollow, PaginateModel<IFollow>>('Follow', FollowSchema);

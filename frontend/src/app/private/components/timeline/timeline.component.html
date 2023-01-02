@@ -49,11 +49,11 @@
                             <button
                                 *ngIf="publication.file"
                                 class="btn btn-sm btn-warning"
-                                [class.btn-dark]="publicationImagesToShow[index] && publicationImagesToShow[index].id === publication._id"
+                                [class.btn-dark]="publicationImagesToShow[index] && publicationImagesToShow[index] === publication._id"
                                 (click)="showImage(publication._id, index)"
                             >
-                                <em *ngIf="publicationImagesToShow[index]?.id !== publication._id" class="bi bi-card-image"></em>
-                                <em *ngIf="publicationImagesToShow[index]?.id === publication._id" class="bi bi-x-circle-fill"></em>
+                                <em *ngIf="publicationImagesToShow[index] !== publication._id" class="bi bi-card-image"></em>
+                                <em *ngIf="publicationImagesToShow[index] === publication._id" class="bi bi-x-circle-fill"></em>
                             </button>
 
                             <!-- Button trigger modal -->
@@ -100,8 +100,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="publicationImagesToShow[index]?.id === publication._id" class="publication-image">
-                            <img alt="" [src]="publicationImagesToShow[index].image | sanitizer : 'url'" />
+                        <div *ngIf="publicationImagesToShow[index] === publication._id" class="publication-image">
+                            <img alt="" [src]="publication.base64 | sanitizer : 'url'" />
                         </div>
                     </div>
                 </div>

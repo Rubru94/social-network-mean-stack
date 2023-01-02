@@ -27,7 +27,7 @@ export class TimelineComponent implements OnInit {
     status: FormStatus;
     errMsg?: string;
     showMorePublications: boolean;
-    publicationImagesToShow: { id: string | null; image: string | null }[];
+    publicationImagesToShow: (string | null)[];
 
     @Input()
     userId?: string;
@@ -74,13 +74,14 @@ export class TimelineComponent implements OnInit {
         this.publicationHttpService.getPublications(page, this.itemsPerPage, this.userId).subscribe({
             next: (res: { publications: Publication[]; itemsPerPage: number; total: number; pages: number }) => {
                 this.publications = this.publications.concat(res.publications.map((p: Publication) => new Publication(p)));
+                this.publicationImagesToShow = Array(this.publications.length).fill(null);
                 this.publications.forEach((publication: Publication) => {
                     this.userHttpService.getImage(this.userFromPublication(publication)?.image).subscribe({
                         next: (res: { base64: string }) => ((publication.user as User).base64 = res.base64)
                     });
                     if (publication?.file)
                         this.publicationHttpService.getImage(publication.file).subscribe({
-                            next: (res: { base64: string }) => this.publicationImagesToShow.push({ id: null, image: res.base64 })
+                            next: (res: { base64: string }) => (publication.base64 = res.base64)
                         });
                 });
                 this.totalItems = res.total;
@@ -119,7 +120,7 @@ export class TimelineComponent implements OnInit {
     }
 
     showImage(id: string, index: number): void {
-        this.publicationImagesToShow[index].id = this.publicationImagesToShow[index].id !== id ? id : null;
+        this.publicationImagesToShow[index] = this.publicationImagesToShow[index] !== id ? id : null;
     }
 
     removePublication(id: string): void {

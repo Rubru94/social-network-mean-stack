@@ -5,6 +5,7 @@ export class Publication {
     user: User | string;
     text: string;
     file: string | null;
+    base64?: string;
     createdAt: Date;
 
     constructor(publication?: Partial<Publication>) {
@@ -12,6 +13,7 @@ export class Publication {
         this.user = publication?.user ?? '';
         this.text = publication?.text ?? '';
         this.file = publication?.file ?? null;
+        this.base64 = publication?.base64;
         this.createdAt = publication?.createdAt ?? new Date();
     }
 }

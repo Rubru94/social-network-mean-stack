@@ -13,6 +13,7 @@ button span {
 
 .panel-body {
     display: flex;
+    word-break: break-word;
     align-items: flex-start;
     align-content: center;
     border: 1px solid rgb(168, 168, 168);
@@ -46,6 +47,7 @@ button span {
     }
     .text {
         margin: 1rem 0;
+        width: -webkit-fill-available;
     }
     .user-image {
         width: 3rem;
